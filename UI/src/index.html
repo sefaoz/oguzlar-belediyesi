@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Oğuzlar Belediyesi</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts (Poppins) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"],
+          },
+          colors: {
+            primary: "#0D2A4F", // Koyu Mavi / Lacivert
+            secondary: "#4A90E2", // Açık Mavi
+            accent: "#F5A623", // Vurgu Turuncu
+            "light-gray": "#f8f9fa",
+            "dark-gray": "#343a40",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .dropdown-links {
+      overflow: hidden;
+    }
+
+    .dropdown-links a {
+      border-radius: 0;
+    }
+
+    .dropdown-links a:first-of-type {
+      border-top-left-radius: 0.375rem;
+      border-top-right-radius: 0.375rem;
+    }
+
+    .dropdown-links a:last-of-type {
+      border-bottom-left-radius: 0.375rem;
+      border-bottom-right-radius: 0.375rem;
+    }
+  </style>
+</head>
+
+<body class="bg-white font-sans">
+  <app-root></app-root>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<div class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Hero Section / Header Background -->
+    <div class="bg-primary py-12 relative">
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Breadcrumb -->
+            <nav class="flex text-sm text-gray-300 mb-4" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <ng-container *ngFor="let step of breadcrumbSteps; let last = last; let first = first">
+                        <!-- First Item (usually Home) -->
+                        <li *ngIf="first" class="inline-flex items-center">
+                            <a [routerLink]="step.url" class="hover:text-accent transition-colors">{{ step.label }}</a>
+                        </li>
+
+                        <!-- Middle Items -->
+                        <li *ngIf="!first && !last">
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mx-2"></i>
+                                <span *ngIf="!step.url" class="text-gray-300">{{ step.label }}</span>
+                                <a *ngIf="step.url" [routerLink]="step.url"
+                                    class="text-gray-300 hover:text-white transition-colors">{{ step.label }}</a>
+                            </div>
+                        </li>
+
+                        <!-- Last Item (Active Page) -->
+                        <li *ngIf="last" aria-current="page">
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mx-2"></i>
+                                <span class="text-accent font-medium">{{ step.label }}</span>
+                            </div>
+                        </li>
+                    </ng-container>
+                </ol>
+            </nav>
+
+            <h1 class="text-4xl font-bold text-white">{{ title }}</h1>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="flex-grow flex items-center justify-center py-20">
+        <div class="container mx-auto px-4 relative z-20">
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </div>
+</div>

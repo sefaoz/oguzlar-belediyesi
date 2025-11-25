@@ -1,0 +1,204 @@
+<!-- 1. EN ÜST ŞERİT (TOP BAR) -->
+<div class="bg-primary text-white py-2 text-sm hidden md:block relative z-40">
+    <div class="container mx-auto px-4 flex justify-end items-center">
+        <div class="flex items-center space-x-6">
+            <a href="#" class="hover:text-accent transition-colors"><i class="fas fa-landmark mr-1"></i> E-Devlet /
+                CİMER</a>
+            <a href="#" class="hover:text-accent transition-colors"><i class="fas fa-headset mr-1"></i> Çözüm
+                Merkezi</a>
+            <a href="#" class="hover:text-accent transition-colors"><i class="fas fa-wallet mr-1"></i> Online Borç
+                Ödeme</a>
+            <a href="#" class="hover:text-accent transition-colors"><i class="fas fa-search mr-1"></i> Arama</a>
+        </div>
+    </div>
+</div>
+
+<!-- 2. LOGO + ANA MENÜ BARI -->
+<header class="sticky top-0 z-50 transition-all duration-300" [ngClass]="{
+    'bg-primary shadow-md text-white': scrolled || isMobileMenuOpen || !isHomePage,
+    'bg-transparent text-white': !scrolled && !isMobileMenuOpen && isHomePage
+  }">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-3">
+            <a href="/" class="flex items-center space-x-2">
+                <img src="assets/images/logo.png" alt="Oğuzlar Belediyesi Logo"
+                    class="h-12 transition-all duration-300" />
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <button (click)="toggleMobileMenu()" class="lg:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+
+            <!-- Desktop Menu with Dropdowns -->
+            <nav class="hidden lg:flex items-center space-x-1">
+                <a href="/" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Anasayfa</a>
+
+                <!-- Başkan Dropdown -->
+                <div class="relative" (mouseenter)="onMouseEnter('baskan')" (mouseleave)="onMouseLeave()">
+                    <button
+                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
+                        Başkanımız
+                        <i class="fas fa-chevron-down text-xs ml-2"></i>
+                    </button>
+                    <div *ngIf="activeDropdown === 'baskan'"
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
+                        (mouseenter)="onMouseEnter('baskan')" (mouseleave)="onMouseLeave()">
+                        <a routerLink="/baskan-hakkinda"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkan
+                            Hakkında</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkandan
+                            Mesaj</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkana Mesaj
+                            Yaz</a>
+                    </div>
+                </div>
+
+                <a href="#" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Haberler</a>
+
+                <!-- Kurumsal Dropdown -->
+                <div class="relative" (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
+                    <button
+                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
+                        Kurumsal
+                        <i class="fas fa-chevron-down text-xs ml-2"></i>
+                    </button>
+                    <div *ngIf="activeDropdown === 'kurumsal'"
+                        class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
+                        (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Belediye
+                            Encümenü</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç Parkı</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">KVKK</a>
+                    </div>
+                </div>
+
+                <!-- Birimler Dropdown -->
+                <div class="relative" (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
+                    <button
+                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
+                        Birimler
+                        <i class="fas fa-chevron-down text-xs ml-2"></i>
+                    </button>
+                    <div *ngIf="activeDropdown === 'birimler'"
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
+                        (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel Kalem,
+                            Basın ve Halkla İlişkiler</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Zabıta
+                            Amirliği</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali Hizmetler
+                            Müdürlüğü</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat ve
+                            Emlak Birimi</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı İşleri
+                            Müdürlüğü</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fen İşleri
+                            Müdürlüğü</a>
+                    </div>
+                </div>
+
+                <!-- Oğuzlar'ı Keşfet Dropdown -->
+                <div class="relative" (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
+                    <button
+                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
+                        Oğuzlar'ı Keşfet
+                        <i class="fas fa-chevron-down text-xs ml-2"></i>
+                    </button>
+                    <div *ngIf="activeDropdown === 'kesfet'"
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
+                        (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Kent
+                            Rehberi</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Gezilecek
+                            Yerler</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarih ve
+                            Kültür</a>
+                        <div class="border-t my-1"></div>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fotoğraf
+                            Galerisi</a>
+                    </div>
+                </div>
+
+                <a href="#" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">İletişim</a>
+
+                <a href="#"
+                    class="bg-primary text-white font-bold py-2 px-3 rounded-lg hover:bg-accent transition-colors">E-Belediye</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div *ngIf="isMobileMenuOpen" class="lg:hidden bg-white shadow-xl border-t text-sm">
+        <div class="space-y-1 px-4 py-4">
+            <a href="/" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Anasayfa</a>
+
+            <!-- Mobile Submenu: Başkan -->
+            <div class="space-y-1">
+                <button (click)="toggleMobileSubmenu('baskan')"
+                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                    Başkanımız
+                    <i [class]="mobileSubmenu === 'baskan' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                </button>
+                <div *ngIf="mobileSubmenu === 'baskan'" class="space-y-1 px-6 text-sm text-primary/80">
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkan Hakkında</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkanın Mesajı</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkana Mesaj Yazın</a>
+                </div>
+            </div>
+
+            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Meclis</a>
+
+            <!-- Mobile Submenu: Kurumsal -->
+            <div class="space-y-1">
+                <button (click)="toggleMobileSubmenu('kurumsal')"
+                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                    Kurumsal
+                    <i [class]="mobileSubmenu === 'kurumsal' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                </button>
+                <div *ngIf="mobileSubmenu === 'kurumsal'" class="space-y-1 px-6 text-sm text-primary/80">
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Belediye Encümenü</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Araç Parkı</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">KVKK</a>
+                </div>
+            </div>
+
+            <!-- Mobile Submenu: Birimler -->
+            <div class="space-y-1">
+                <button (click)="toggleMobileSubmenu('birimler')"
+                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                    Birimler
+                    <i [class]="mobileSubmenu === 'birimler' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                </button>
+                <div *ngIf="mobileSubmenu === 'birimler'" class="space-y-1 px-6 text-sm text-primary/80">
+                    <p class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın & Halkla İlişkiler</p>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta Amirliği</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali Hizmetler Müdürlüğü</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat & Emlak Birimi</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı İşleri Müdürlüğü</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen İşleri Müdürlüğü</a>
+                </div>
+            </div>
+
+            <!-- Mobile Submenu: İlçemiz -->
+            <div class="space-y-1">
+                <button (click)="toggleMobileSubmenu('ilcemiz')"
+                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                    İlçemiz
+                    <i [class]="mobileSubmenu === 'ilcemiz' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                </button>
+                <div *ngIf="mobileSubmenu === 'ilcemiz'" class="space-y-1 px-6 text-sm text-primary/80">
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">İlçemizin Tarihi</a>
+                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Coğrafi Yapısı</a>
+                </div>
+            </div>
+
+            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Galeri</a>
+            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Haberler</a>
+            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">İletişim</a>
+
+            <a href="#" target="_blank" rel="noreferrer"
+                class="block rounded-full bg-accent px-4 py-2 text-center font-semibold text-white hover:bg-orange-500 transition-colors">E-Belediye</a>
+        </div>
+    </div>
+</header>
