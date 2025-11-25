@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {}
+    "net9.0": {
+      "OguzlarBelediyesi.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/OguzlarBelediyesi.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/OguzlarBelediyesi.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "OguzlarBelediyesi.Domain/1.0.0": {
+      "type": "project",
+      "path": "../OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj",
+      "msbuildProject": "../OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net9.0": []
+    "net9.0": [
+      "OguzlarBelediyesi.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\PC\\.nuget\\packages\\": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj": {
+              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

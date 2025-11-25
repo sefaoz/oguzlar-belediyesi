@@ -47,9 +47,11 @@
                         <a routerLink="/baskan-hakkinda"
                             class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkan
                             Hakkında</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkandan
+                        <a routerLink="/baskandan-mesaj"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkandan
                             Mesaj</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkana Mesaj
+                        <a routerLink="/baskana-mesaj"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkana Mesaj
                             Yaz</a>
                     </div>
                 </div>
@@ -120,7 +122,8 @@
                     </div>
                 </div>
 
-                <a href="#" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">İletişim</a>
+                <a routerLink="/iletisim"
+                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">İletişim</a>
 
                 <a href="#"
                     class="bg-primary text-white font-bold py-2 px-3 rounded-lg hover:bg-accent transition-colors">E-Belediye</a>
@@ -142,8 +145,10 @@
                 </button>
                 <div *ngIf="mobileSubmenu === 'baskan'" class="space-y-1 px-6 text-sm text-primary/80">
                     <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkan Hakkında</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkanın Mesajı</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkana Mesaj Yazın</a>
+                    <a routerLink="/baskandan-mesaj" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkanın
+                        Mesajı</a>
+                    <a routerLink="/baskana-mesaj" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkana Mesaj
+                        Yazın</a>
                 </div>
             </div>
 
@@ -195,7 +200,8 @@
 
             <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Galeri</a>
             <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Haberler</a>
-            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">İletişim</a>
+            <a routerLink="/iletisim"
+                class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">İletişim</a>
 
             <a href="#" target="_blank" rel="noreferrer"
                 class="block rounded-full bg-accent px-4 py-2 text-center font-semibold text-white hover:bg-orange-500 transition-colors">E-Belediye</a>

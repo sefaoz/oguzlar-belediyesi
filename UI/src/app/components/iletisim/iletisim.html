@@ -1,0 +1,147 @@
+<app-page-container title="İletişim" [breadcrumbSteps]="breadcrumbSteps">
+    <!-- Map Section -->
+    <div class="w-full h-96 rounded-lg overflow-hidden shadow-md mb-8">
+        <iframe src="https://maps.google.com/maps?q=Oğuzlar+Belediyesi+Çorum&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Contact Form Section -->
+        <div class="lg:w-2/3 bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+            <h2 class="text-xl font-bold text-dark mb-2">Görüş ve Önerilerinizi yazın</h2>
+            <p class="text-sm text-muted mb-6 font-medium">
+                Görüş, öneri, istek veya şikayetlerinizi Başkanımıza iletebilirsiniz, e-posta yada diğer bilgileriniz
+                paylaşılmayacaktır.
+            </p>
+
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Name -->
+                    <div>
+                        <input type="text" formControlName="name"
+                            class="w-full px-4 py-3 bg-input-bg border border-input-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                            [ngClass]="{'border-red-500': contactForm.get('name')?.invalid && contactForm.get('name')?.touched}"
+                            placeholder="Adınız Soyadınız">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <input type="email" formControlName="email"
+                            class="w-full px-4 py-3 bg-input-bg border border-input-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                            [ngClass]="{'border-red-500': contactForm.get('email')?.invalid && contactForm.get('email')?.touched}"
+                            placeholder="E-posta adresiniz">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Phone -->
+                    <div>
+                        <input type="tel" formControlName="phone"
+                            class="w-full px-4 py-3 bg-input-bg border border-input-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                            [ngClass]="{'border-red-500': contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched}"
+                            placeholder="Telefon">
+                    </div>
+                    <!-- Empty div for layout balance if needed, or full width message -->
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <textarea formControlName="message" rows="6"
+                        class="w-full px-4 py-3 bg-input-bg border border-input-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
+                        [ngClass]="{'border-red-500': contactForm.get('message')?.invalid && contactForm.get('message')?.touched}"
+                        placeholder="Mesajınızı"></textarea>
+                </div>
+
+                <!-- KVKK Checkbox -->
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="kvkk" type="checkbox" formControlName="kvkk"
+                            class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="kvkk" class="font-medium text-muted">
+                            KVKK Metnini okudum kabul ediyorum. <a href="#" class="text-primary hover:underline">Oğuzlar
+                                Belediyesi KVKK Politikası</a>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit"
+                        class="px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                        [disabled]="contactForm.invalid || isLoading">
+                        <span *ngIf="isLoading" class="mr-2">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                        </span>
+                        <span *ngIf="!isLoading">Gönder <i class="fas fa-chevron-right ml-2 text-xs"></i></span>
+                        <span *ngIf="isLoading">Gönderiliyor...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contact Info Section -->
+        <div class="lg:w-1/3">
+            <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-100 h-full">
+                <h3 class="text-lg font-bold text-dark mb-6">İletişim Bilgilerimiz</h3>
+
+                <div class="space-y-6">
+                    <!-- Address -->
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-map-marker-alt text-primary text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-dark text-sm mb-1">Adres:</span>
+                            <p class="text-muted text-sm leading-relaxed">
+                                Karadonlu Mahallesi Fatih Caddesi No:33/21 Oğuzlar/Çorum
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-phone-alt text-primary text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-dark text-sm mb-1">Telefon:</span>
+                            <p class="text-muted text-sm">
+                                +90 364 561 70 45
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Fax -->
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-fax text-primary text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-dark text-sm mb-1">Fax:</span>
+                            <p class="text-muted text-sm">
+                                +90 364 561 21 50
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-envelope text-primary text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-dark text-sm mb-1">E-mail:</span>
+                            <p class="text-muted text-sm">
+                                oguzlarbelediyesi@hotmail.com
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-page-container>

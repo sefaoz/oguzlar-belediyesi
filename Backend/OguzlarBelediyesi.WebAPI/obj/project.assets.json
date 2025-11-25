@@ -33,6 +33,42 @@
             "related": ".pdb;.xml"
           }
         }
+      },
+      "OguzlarBelediyesi.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "OguzlarBelediyesi.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/OguzlarBelediyesi.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/OguzlarBelediyesi.Application.dll": {}
+        }
+      },
+      "OguzlarBelediyesi.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/OguzlarBelediyesi.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/OguzlarBelediyesi.Domain.dll": {}
+        }
+      },
+      "OguzlarBelediyesi.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "OguzlarBelediyesi.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/OguzlarBelediyesi.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/OguzlarBelediyesi.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -67,11 +103,28 @@
         "microsoft.openapi.1.6.17.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
+    },
+    "OguzlarBelediyesi.Application/1.0.0": {
+      "type": "project",
+      "path": "../OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj",
+      "msbuildProject": "../OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj"
+    },
+    "OguzlarBelediyesi.Domain/1.0.0": {
+      "type": "project",
+      "path": "../OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj",
+      "msbuildProject": "../OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj"
+    },
+    "OguzlarBelediyesi.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../OguzlarBelediyesi.Infrastructure/OguzlarBelediyesi.Infrastructure.csproj",
+      "msbuildProject": "../OguzlarBelediyesi.Infrastructure/OguzlarBelediyesi.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Microsoft.AspNetCore.OpenApi >= 9.0.11"
+      "Microsoft.AspNetCore.OpenApi >= 9.0.11",
+      "OguzlarBelediyesi.Application >= 1.0.0",
+      "OguzlarBelediyesi.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -98,7 +151,14 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj": {
+              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj"
+            },
+            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Infrastructure\\OguzlarBelediyesi.Infrastructure.csproj": {
+              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Infrastructure\\OguzlarBelediyesi.Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
