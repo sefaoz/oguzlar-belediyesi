@@ -56,7 +56,8 @@
                     </div>
                 </div>
 
-                <a href="#" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Haberler</a>
+                <a routerLink="/haberler"
+                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Haberler</a>
 
                 <!-- Kurumsal Dropdown -->
                 <div class="relative" (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
@@ -110,6 +111,10 @@
                     <div *ngIf="activeDropdown === 'kesfet'"
                         class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
                         (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
+                        <a routerLink="/oguzlar-tarihi"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarihimiz</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Coğrafi
+                            Yapısı</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Kent
                             Rehberi</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Gezilecek
@@ -132,79 +137,5 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div *ngIf="isMobileMenuOpen" class="lg:hidden bg-white shadow-xl border-t text-sm">
-        <div class="space-y-1 px-4 py-4">
-            <a href="/" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Anasayfa</a>
-
-            <!-- Mobile Submenu: Başkan -->
-            <div class="space-y-1">
-                <button (click)="toggleMobileSubmenu('baskan')"
-                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
-                    Başkanımız
-                    <i [class]="mobileSubmenu === 'baskan' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                </button>
-                <div *ngIf="mobileSubmenu === 'baskan'" class="space-y-1 px-6 text-sm text-primary/80">
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkan Hakkında</a>
-                    <a routerLink="/baskandan-mesaj" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkanın
-                        Mesajı</a>
-                    <a routerLink="/baskana-mesaj" class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkana Mesaj
-                        Yazın</a>
-                </div>
-            </div>
-
-            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Meclis</a>
-
-            <!-- Mobile Submenu: Kurumsal -->
-            <div class="space-y-1">
-                <button (click)="toggleMobileSubmenu('kurumsal')"
-                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
-                    Kurumsal
-                    <i [class]="mobileSubmenu === 'kurumsal' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                </button>
-                <div *ngIf="mobileSubmenu === 'kurumsal'" class="space-y-1 px-6 text-sm text-primary/80">
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Belediye Encümenü</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Araç Parkı</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">KVKK</a>
-                </div>
-            </div>
-
-            <!-- Mobile Submenu: Birimler -->
-            <div class="space-y-1">
-                <button (click)="toggleMobileSubmenu('birimler')"
-                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
-                    Birimler
-                    <i [class]="mobileSubmenu === 'birimler' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                </button>
-                <div *ngIf="mobileSubmenu === 'birimler'" class="space-y-1 px-6 text-sm text-primary/80">
-                    <p class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın & Halkla İlişkiler</p>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta Amirliği</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali Hizmetler Müdürlüğü</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat & Emlak Birimi</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı İşleri Müdürlüğü</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen İşleri Müdürlüğü</a>
-                </div>
-            </div>
-
-            <!-- Mobile Submenu: İlçemiz -->
-            <div class="space-y-1">
-                <button (click)="toggleMobileSubmenu('ilcemiz')"
-                    class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
-                    İlçemiz
-                    <i [class]="mobileSubmenu === 'ilcemiz' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                </button>
-                <div *ngIf="mobileSubmenu === 'ilcemiz'" class="space-y-1 px-6 text-sm text-primary/80">
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">İlçemizin Tarihi</a>
-                    <a href="#" class="block px-3 py-2 rounded-md hover:bg-light-gray">Coğrafi Yapısı</a>
-                </div>
-            </div>
-
-            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Galeri</a>
-            <a href="#" class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Haberler</a>
-            <a routerLink="/iletisim"
-                class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">İletişim</a>
-
-            <a href="#" target="_blank" rel="noreferrer"
-                class="block rounded-full bg-accent px-4 py-2 text-center font-semibold text-white hover:bg-orange-500 transition-colors">E-Belediye</a>
-        </div>
-    </div>
+    <app-mobile-menu *ngIf="isMobileMenuOpen" (closeMenu)="toggleMobileMenu()"></app-mobile-menu>
 </header>

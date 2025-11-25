@@ -1,0 +1,98 @@
+<div class="lg:hidden bg-white shadow-xl border-t text-sm">
+    <div class="space-y-1 px-4 py-4">
+        <a href="/" (click)="onLinkClick()"
+            class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Anasayfa</a>
+
+        <!-- Mobile Submenu: Başkan -->
+        <div class="space-y-1">
+            <button (click)="toggleMobileSubmenu('baskan')"
+                class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                Başkanımız
+                <i [class]="mobileSubmenu === 'baskan' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div *ngIf="mobileSubmenu === 'baskan'" class="space-y-1 px-6 text-sm text-primary/80">
+                <a routerLink="/baskan-hakkinda" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkan
+                    Hakkında</a>
+                <a routerLink="/baskandan-mesaj" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkanın
+                    Mesajı</a>
+                <a routerLink="/baskana-mesaj" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Başkana Mesaj
+                    Yazın</a>
+            </div>
+        </div>
+
+        <a routerLink="/haberler" (click)="onLinkClick()"
+            class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Haberler</a>
+
+        <!-- Mobile Submenu: Kurumsal -->
+        <div class="space-y-1">
+            <button (click)="toggleMobileSubmenu('kurumsal')"
+                class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                Kurumsal
+                <i [class]="mobileSubmenu === 'kurumsal' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div *ngIf="mobileSubmenu === 'kurumsal'" class="space-y-1 px-6 text-sm text-primary/80">
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Belediye
+                    Encümenü</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Araç
+                    Parkı</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">KVKK</a>
+            </div>
+        </div>
+
+        <!-- Mobile Submenu: Birimler -->
+        <div class="space-y-1">
+            <button (click)="toggleMobileSubmenu('birimler')"
+                class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                Birimler
+                <i [class]="mobileSubmenu === 'birimler' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div *ngIf="mobileSubmenu === 'birimler'" class="space-y-1 px-6 text-sm text-primary/80">
+                <p (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın &
+                    Halkla İlişkiler</p>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta
+                    Amirliği</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali
+                    Hizmetler Müdürlüğü</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat &
+                    Emlak Birimi</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı İşleri
+                    Müdürlüğü</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen İşleri
+                    Müdürlüğü</a>
+            </div>
+        </div>
+
+        <!-- Mobile Submenu: Oğuzlar'ı Keşfet -->
+        <div class="space-y-1">
+            <button (click)="toggleMobileSubmenu('kesfet')"
+                class="flex w-full items-center justify-between px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">
+                Oğuzlar'ı Keşfet
+                <i [class]="mobileSubmenu === 'kesfet' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div *ngIf="mobileSubmenu === 'kesfet'" class="space-y-1 px-6 text-sm text-primary/80">
+                <a routerLink="/oguzlar-tarihi" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Oğuzlar Tarihi</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Coğrafi
+                    Yapısı</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Kent
+                    Rehberi</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Gezilecek
+                    Yerler</a>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tarih ve
+                    Kültür</a>
+                <div class="border-t my-1"></div>
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fotoğraf
+                    Galerisi</a>
+            </div>
+        </div>
+
+        <a routerLink="/iletisim" (click)="onLinkClick()"
+            class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">İletişim</a>
+
+        <a href="#" target="_blank" rel="noreferrer" (click)="onLinkClick()"
+            class="block rounded-full bg-accent px-4 py-2 text-center font-semibold text-white hover:bg-orange-500 transition-colors">E-Belediye</a>
+    </div>
+</div>

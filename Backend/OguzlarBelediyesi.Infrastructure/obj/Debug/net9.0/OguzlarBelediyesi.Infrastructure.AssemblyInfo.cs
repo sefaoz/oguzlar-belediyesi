@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OguzlarBelediyesi.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df1ce837ca7c8ff3cdf7f356b60181118ccb3764")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19260ba5c8b45aea78c972f90716132ad51210ba")]
 [assembly: System.Reflection.AssemblyProductAttribute("OguzlarBelediyesi.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OguzlarBelediyesi.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

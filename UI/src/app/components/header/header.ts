@@ -2,11 +2,12 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { MobileMenu } from '../mobile-menu/mobile-menu';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MobileMenu],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
@@ -15,7 +16,6 @@ export class HeaderComponent implements OnInit {
   scrolled = false;
   isHomePage = true;
   activeDropdown: string | null = null;
-  mobileSubmenu: string | null = null;
   hoverTimer: any;
 
   constructor(private router: Router) { }
@@ -41,10 +41,6 @@ export class HeaderComponent implements OnInit {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-
-  toggleMobileSubmenu(menuName: string) {
-    this.mobileSubmenu = this.mobileSubmenu === menuName ? null : menuName;
   }
 
   onMouseEnter(menuName: string) {
