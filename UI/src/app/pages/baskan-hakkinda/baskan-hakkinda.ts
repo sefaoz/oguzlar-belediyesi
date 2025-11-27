@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
+import { PageContentModel } from '../../shared/models/page-content.model';
+import { PageContentService } from '../../shared/services/page-content.service';
 
 @Component({
   selector: 'app-baskan-hakkinda',
@@ -9,10 +11,19 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
   templateUrl: './baskan-hakkinda.html',
   styleUrls: ['./baskan-hakkinda.css']
 })
-export class BaskanHakkindaComponent {
+export class BaskanHakkindaComponent implements OnInit {
   breadcrumbSteps: BreadcrumbStep[] = [
     { label: 'Anasayfa', url: '/' },
     { label: 'Başkanımız' },
-    { label: 'Başkan Hakkında', active: true }
+    { label: 'Başkan Hakkında', url: '/baskan-hakkinda' }
   ];
+  content?: PageContentModel;
+
+  constructor(private readonly pageContentService: PageContentService) {}
+
+  ngOnInit(): void {
+    this.pageContentService.getPageContent('baskan-hakkinda').subscribe(content => {
+      this.content = content;
+    });
+  }
 }

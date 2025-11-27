@@ -1,0 +1,192 @@
+<app-page-container [title]="tender?.title || 'İhale Detayı'" [breadcrumbSteps]="breadcrumbSteps">
+    <div class="container mx-auto px-4 py-8" *ngIf="tender; else notFound">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-xl shadow-md p-6 md:p-10 border border-gray-100">
+                    <!-- Header -->
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span
+                                class="inline-block bg-accent/10 text-accent font-semibold px-3 py-1 rounded-full text-sm">
+                                İhaleler
+                            </span>
+                            <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="{
+                                'bg-green-100 text-green-700': tender.status === 'active',
+                                'bg-red-100 text-red-700': tender.status !== 'active'
+                              }">
+                                {{ getStatusLabel(tender.status) }}
+                            </span>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                            {{ tender.title }}
+                        </h1>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            <span>{{ tender.date }}</span>
+                            <span class="mx-3">•</span>
+                            <span class="font-mono">Kayıt No: {{ tender.registrationNumber }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <article class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+                        <p class="text-xl font-medium text-gray-800 mb-8 border-l-4 border-primary pl-4 italic">
+                            {{ tender.title }} ihalesi ile ilgili detaylar aşağıda yer almaktadır.
+                        </p>
+
+                        <!-- Dummy Body Content -->
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-bold text-gray-900">İhale Hakkında</h3>
+                            <p>
+                                Belediyemiz Fen İşleri Müdürlüğü tarafından yürütülen {{ tender.title }} işi için ihale
+                                süreci başlamıştır.
+                                İhaleye katılmak isteyen isteklilerin aşağıda belirtilen şartları sağlaması
+                                gerekmektedir.
+                            </p>
+
+                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                <h4 class="font-bold text-gray-900 mb-4">İhale Detay Tablosu</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-500">İhale Kayıt Numarası:</span>
+                                        <span class="font-semibold">{{ tender.registrationNumber }}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-500">İhale Tarihi:</span>
+                                        <span class="font-semibold">{{ tender.date }}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-500">İhale Usulü:</span>
+                                        <span class="font-semibold">Açık İhale Usulü</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                                        <span class="text-gray-500">İhale Türü:</span>
+                                        <span class="font-semibold">Hizmet Alımı</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>
+                                İhale dokümanı, idarenin adresinde görülebilir ve 500 TRY karşılığında aynı adresten
+                                satın alınabilir.
+                                İhaleye teklif verecek olanların ihale dokümanını satın almaları zorunludur.
+                            </p>
+
+                            <h3 class="text-xl font-bold text-gray-900 mt-6">Katılım Şartları</h3>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>Mevzuatı gereği kayıtlı olduğu Ticaret ve/veya Sanayi Odası ya da ilgili Esnaf ve
+                                    Sanatkarlar Odası belgesi.</li>
+                                <li>Teklif vermeye yetkili olduğunu gösteren imza beyannamesi veya imza sirküleri.</li>
+                                <li>Şekli ve içeriği İdari Şartnamede belirlenen teklif mektubu.</li>
+                                <li>Şekli ve içeriği İdari Şartnamede belirlenen geçici teminat.</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Download Documents -->
+                    <div class="mt-10 pt-8 border-t border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">İhale Dokümanları</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <a href="#"
+                                class="flex items-center p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-red-100 text-red-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                    <i class="far fa-file-pdf text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900 group-hover:text-primary">İdari Şartname</p>
+                                    <p class="text-xs text-gray-500">PDF, 2.4 MB</p>
+                                </div>
+                                <i class="fas fa-download ml-auto text-gray-400 group-hover:text-primary"></i>
+                            </a>
+                            <a href="#"
+                                class="flex items-center p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                    <i class="far fa-file-word text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900 group-hover:text-primary">Teknik Şartname</p>
+                                    <p class="text-xs text-gray-500">DOCX, 1.1 MB</p>
+                                </div>
+                                <i class="fas fa-download ml-auto text-gray-400 group-hover:text-primary"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:w-1/4">
+                <div class="sticky top-24 space-y-8">
+                    <!-- Info Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">İhale Bilgileri</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center text-gray-700">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm mr-3">
+                                    <i class="far fa-calendar-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-medium">İhale Tarihi</p>
+                                    <p class="font-semibold">{{ tender.date }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm mr-3">
+                                    <i class="fas fa-hashtag"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-medium">Kayıt No</p>
+                                    <p class="font-semibold">{{ tender.registrationNumber }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm mr-3">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-medium">Durum</p>
+                                    <p class="font-semibold" [ngClass]="{
+                                        'text-green-600': tender.status === 'active',
+                                        'text-red-600': tender.status !== 'active'
+                                    }">{{ getStatusLabel(tender.status) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Share Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Paylaş</h3>
+                        <div class="flex flex-col gap-3">
+                            <button
+                                class="flex items-center justify-center gap-3 w-full bg-[#1877F2] text-white py-2.5 rounded-lg hover:bg-[#1877F2]/90 transition-colors font-medium">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                            <button
+                                class="flex items-center justify-center gap-3 w-full bg-[#1DA1F2] text-white py-2.5 rounded-lg hover:bg-[#1DA1F2]/90 transition-colors font-medium">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </button>
+                            <button
+                                class="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-2.5 rounded-lg hover:bg-[#25D366]/90 transition-colors font-medium">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #notFound>
+        <div class="text-center py-12">
+            <h2 class="text-2xl font-bold text-gray-700">İhale bulunamadı.</h2>
+            <a routerLink="/ihaleler" class="text-primary hover:underline mt-4 inline-block">İhalelere Dön</a>
+        </div>
+    </ng-template>
+</app-page-container>

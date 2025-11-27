@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
+import { PageContentModel } from '../../shared/models/page-content.model';
+import { PageContentService } from '../../shared/services/page-content.service';
 
 @Component({
   selector: 'app-tarihimiz',
@@ -9,10 +11,19 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
   templateUrl: './tarihimiz.html',
   styleUrl: './tarihimiz.css',
 })
-export class TarihimizComponent {
+export class TarihimizComponent implements OnInit {
   breadcrumbSteps: BreadcrumbStep[] = [
     { label: 'Anasayfa', url: '/' },
     { label: "Oğuzlar'ı Keşfet" },
-    { label: 'Oğuzlar Tarihi', url: '/oguzlar-tarihi' }
+    { label: 'İlçemizin Tarihi', url: '/tarihimiz' }
   ];
+  content?: PageContentModel;
+
+  constructor(private readonly pageContentService: PageContentService) {}
+
+  ngOnInit(): void {
+    this.pageContentService.getPageContent('tarihimiz').subscribe(content => {
+      this.content = content;
+    });
+  }
 }

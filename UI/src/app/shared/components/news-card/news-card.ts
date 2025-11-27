@@ -1,18 +1,21 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 export interface NewsItem {
   image: string;
   date: string;
   title: string;
   description: string;
-  link: string;
+  link?: string;
+  slug?: string;
+  photos?: string[];
 }
 
 @Component({
   selector: 'app-news-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './news-card.html',
   styleUrl: './news-card.css',
 })

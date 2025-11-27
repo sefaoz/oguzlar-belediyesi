@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
+import { PageContentModel } from '../../shared/models/page-content.model';
+import { PageContentService } from '../../shared/services/page-content.service';
 
 @Component({
   selector: 'app-baskana-mesaj',
@@ -10,22 +12,32 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
   templateUrl: './baskana-mesaj.html',
   styleUrl: './baskana-mesaj.css',
 })
-export class BaskanaMesaj {
+export class BaskanaMesaj implements OnInit {
   contactForm: FormGroup;
   breadcrumbSteps: BreadcrumbStep[] = [
     { label: 'Anasayfa', url: '/' },
     { label: 'Başkanımız' },
-    { label: 'Başkana Mesaj Yaz', active: true }
+    { label: 'Başkana Mesaj Yaz', url: '/baskana-mesaj' }
   ];
   isLoading = false;
+  content?: PageContentModel;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private readonly pageContentService: PageContentService
+  ) {
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       message: ['', Validators.required],
       kvkk: [false, Validators.requiredTrue]
+    });
+  }
+
+  ngOnInit(): void {
+    this.pageContentService.getPageContent('baskana-mesaj').subscribe(content => {
+      this.content = content;
     });
   }
 

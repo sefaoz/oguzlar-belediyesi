@@ -23,6 +23,9 @@
             </div>
         </div>
 
+        <a routerLink="/meclis" (click)="onLinkClick()"
+            class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Meclis</a>
+
         <a routerLink="/haberler" (click)="onLinkClick()"
             class="block px-3 py-2 rounded-md font-semibold text-primary hover:bg-light-gray">Haberler</a>
 
@@ -50,17 +53,21 @@
                 <i [class]="mobileSubmenu === 'birimler' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
             </button>
             <div *ngIf="mobileSubmenu === 'birimler'" class="space-y-1 px-6 text-sm text-primary/80">
-                <p (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın &
+                <p (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın
+                    &
                     Halkla İlişkiler</p>
                 <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta
                     Amirliği</a>
                 <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali
                     Hizmetler Müdürlüğü</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat &
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat
+                    &
                     Emlak Birimi</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı İşleri
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı
+                    İşleri
                     Müdürlüğü</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen İşleri
+                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen
+                    İşleri
                     Müdürlüğü</a>
             </div>
         </div>
@@ -73,9 +80,10 @@
                 <i [class]="mobileSubmenu === 'kesfet' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
             </button>
             <div *ngIf="mobileSubmenu === 'kesfet'" class="space-y-1 px-6 text-sm text-primary/80">
-                <a routerLink="/oguzlar-tarihi" (click)="onLinkClick()"
-                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Oğuzlar Tarihi</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Coğrafi
+                <a routerLink="/ilcemizin-tarihi" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">İlçemizin Tarihi</a>
+                <a href="/cografi-yapi" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Coğrafi
                     Yapısı</a>
                 <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Kent
                     Rehberi</a>

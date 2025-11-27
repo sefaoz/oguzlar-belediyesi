@@ -1,1 +1,9 @@
+@import url('https://unpkg.com/primeng@20.3.0/resources/themes/lara-light-indigo/theme.css');
+@import url('https://unpkg.com/primeng@20.3.0/resources/primeng.min.css');
+@import url('https://unpkg.com/primeicons@7.0.0/primeicons.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* You can add global styles to this file, and also import other style files */

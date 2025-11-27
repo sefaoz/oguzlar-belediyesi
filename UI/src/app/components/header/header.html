@@ -56,6 +56,9 @@
                     </div>
                 </div>
 
+                <a routerLink="/meclis"
+                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Meclis</a>
+
                 <a routerLink="/haberler"
                     class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Haberler</a>
 
@@ -71,7 +74,8 @@
                         (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Belediye
                             Encümenü</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç Parkı</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç
+                            Parkı</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">KVKK</a>
                     </div>
                 </div>
@@ -86,15 +90,19 @@
                     <div *ngIf="activeDropdown === 'birimler'"
                         class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
                         (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel Kalem,
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel
+                            Kalem,
                             Basın ve Halkla İlişkiler</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Zabıta
                             Amirliği</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali Hizmetler
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali
+                            Hizmetler
                             Müdürlüğü</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat ve
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat
+                            ve
                             Emlak Birimi</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı İşleri
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı
+                            İşleri
                             Müdürlüğü</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fen İşleri
                             Müdürlüğü</a>
@@ -111,9 +119,11 @@
                     <div *ngIf="activeDropdown === 'kesfet'"
                         class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
                         (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
-                        <a routerLink="/oguzlar-tarihi"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarihimiz</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Coğrafi
+                        <a routerLink="/ilcemizin-tarihi"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">İlçemizin
+                            Tarihi</a>
+                        <a href="/cografi-yapi"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Coğrafi
                             Yapısı</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Kent
                             Rehberi</a>

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NewsCard, NewsItem } from '../../shared/components/news-card/news-card';
-import { PageContainerComponent } from '../../shared/components/page-container/page-container';
-
+import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
 import { FormsModule } from '@angular/forms';
+
+import { NewsService } from '../../shared/services/news.service';
 
 @Component({
   selector: 'app-haberler',
@@ -12,67 +13,116 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './haberler.html',
   styleUrl: './haberler.css',
 })
-export class HaberlerComponent {
-  breadcrumbSteps = [
+export class HaberlerComponent implements OnInit {
+  breadcrumbSteps: BreadcrumbStep[] = [
     { label: 'Anasayfa', url: '/' },
     { label: 'Haberler', url: '/haberler' }
   ];
 
   searchTerm: string = '';
 
-  newsList: NewsItem[] = [
-    {
-      image: 'https://picsum.photos/400/250?image=20',
-      date: '12 Kasım 2025',
-      title: 'Yeni Park Alanı Halkın Hizmetine Açıldı',
-      description: 'Çocuklar ve aileler için tasarlanan modern oyun ve dinlenme alanları büyük beğeni topladı.',
-      link: '#'
-    },
-    {
-      image: 'https://picsum.photos/400/250?image=30',
-      date: '11 Kasım 2025',
-      title: 'Altyapı Yenileme Çalışmaları Tamamlandı',
-      description: 'İlçemizin ana caddelerindeki su ve kanalizasyon hatları tamamen yenilendi.',
-      link: '#'
-    },
-    {
-      image: 'https://picsum.photos/400/250?image=40',
-      date: '10 Kasım 2025',
-      title: 'Sokak Hayvanları İçin Yeni Barınak',
-      description: 'Modern ve hijyenik koşullara sahip yeni hayvan barınağımız hizmete girdi.',
-      link: '#'
-    },
-    {
-      image: 'https://picsum.photos/400/250?image=50',
-      date: '08 Kasım 2025',
-      title: 'Kültür Merkezi İnşaatı Hızla Devam Ediyor',
-      description: 'İlçemize değer katacak yeni kültür merkezinin kaba inşaatı tamamlandı.',
-      link: '#'
-    },
-    {
-      image: 'https://picsum.photos/400/250?image=60',
-      date: '05 Kasım 2025',
-      title: 'Geleneksel Oğuzlar Festivali Başlıyor',
-      description: 'Bu yıl 15.si düzenlenecek olan festivalimiz renkli görüntülere sahne olacak.',
-      link: '#'
-    },
-    {
-      image: 'https://picsum.photos/400/250?image=70',
-      date: '01 Kasım 2025',
-      title: 'Belediyemizden Öğrencilere Kırtasiye Desteği',
-      description: 'İlçemizdeki ihtiyaç sahibi öğrencilere kırtasiye seti dağıtımı yapıldı.',
-      link: '#'
-    }
+  newsList: NewsItem[] = [];
+
+  // Filters
+  selectedMonth: number | null = null;
+  selectedYear: number | null = null;
+
+  months = [
+    { value: 1, label: 'Ocak' },
+    { value: 2, label: 'Şubat' },
+    { value: 3, label: 'Mart' },
+    { value: 4, label: 'Nisan' },
+    { value: 5, label: 'Mayıs' },
+    { value: 6, label: 'Haziran' },
+    { value: 7, label: 'Temmuz' },
+    { value: 8, label: 'Ağustos' },
+    { value: 9, label: 'Eylül' },
+    { value: 10, label: 'Ekim' },
+    { value: 11, label: 'Kasım' },
+    { value: 12, label: 'Aralık' }
   ];
 
-  get filteredNews(): NewsItem[] {
-    if (!this.searchTerm) {
-      return this.newsList;
+  years: number[] = [];
+
+  constructor(private readonly newsService: NewsService) {
+    const now = new Date();
+    this.selectedMonth = now.getMonth() + 1;
+    this.selectedYear = now.getFullYear();
+
+    const currentYear = now.getFullYear();
+    for (let i = currentYear; i >= 2020; i--) {
+      this.years.push(i);
     }
-    const term = this.searchTerm.toLowerCase();
-    return this.newsList.filter(news =>
-      news.title.toLowerCase().includes(term) ||
-      news.description.toLowerCase().includes(term)
-    );
+  }
+
+  ngOnInit(): void {
+    this.newsService.getNews().subscribe(news => {
+      this.newsList = news;
+    });
+  }
+
+  monthMap: { [key: string]: number } = {
+    'Ocak': 1, 'Şubat': 2, 'Mart': 3, 'Nisan': 4, 'Mayıs': 5, 'Haziran': 6,
+    'Temmuz': 7, 'Ağustos': 8, 'Eylül': 9, 'Ekim': 10, 'Kasım': 11, 'Aralık': 12
+  };
+
+  get filteredNews(): NewsItem[] {
+    let filtered = this.newsList;
+
+    // Search Filter
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(news =>
+        news.title.toLowerCase().includes(term) ||
+        news.description.toLowerCase().includes(term)
+      );
+    }
+
+    // Month Filter
+    if (this.selectedMonth) {
+      filtered = filtered.filter(news => {
+        // Try DD.MM.YYYY
+        let parts = news.date.split('.');
+        if (parts.length === 3) {
+          return parseInt(parts[1], 10) === +this.selectedMonth!;
+        }
+
+        // Try DD MonthName YYYY (e.g. 12 Kasım 2025)
+        parts = news.date.split(' ');
+        if (parts.length >= 3) {
+          const monthName = parts[1];
+          return this.monthMap[monthName] === +this.selectedMonth!;
+        }
+        return false;
+      });
+    }
+
+    // Year Filter
+    if (this.selectedYear) {
+      filtered = filtered.filter(news => {
+        // Try DD.MM.YYYY
+        let parts = news.date.split('.');
+        if (parts.length === 3) {
+          return parseInt(parts[2], 10) === +this.selectedYear!;
+        }
+
+        // Try DD MonthName YYYY (e.g. 12 Kasım 2025)
+        parts = news.date.split(' ');
+        if (parts.length >= 3) {
+          const year = parts[2];
+          return parseInt(year, 10) === +this.selectedYear!;
+        }
+        return false;
+      });
+    }
+
+    return filtered;
+  }
+
+  clearFilters() {
+    this.searchTerm = '';
+    const now = new Date();
+    this.selectedMonth = now.getMonth() + 1;
+    this.selectedYear = now.getFullYear();
   }
 }

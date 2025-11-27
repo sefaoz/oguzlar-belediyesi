@@ -1,5 +1,16 @@
 <app-page-container title="Haberler" [breadcrumbSteps]="breadcrumbSteps">
-    <div class="flex justify-end mb-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div class="flex gap-4 w-full md:w-auto items-center">
+            <select [(ngModel)]="selectedMonth"
+                class="w-full md:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-white">
+                <option *ngFor="let month of months" [ngValue]="month.value">{{ month.label }}</option>
+            </select>
+            <select [(ngModel)]="selectedYear"
+                class="w-full md:w-32 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-white">
+                <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
+            </select>
+        </div>
+
         <div class="relative w-full md:w-64">
             <input type="text" [(ngModel)]="searchTerm" placeholder="Haberlerde ara..."
                 class="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
@@ -9,24 +20,42 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- News Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" *ngIf="filteredNews.length > 0; else noNews">
         <app-news-card *ngFor="let news of filteredNews" [news]="news"></app-news-card>
     </div>
 
+    <!-- No News Template -->
+    <ng-template #noNews>
+        <div class="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-100">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                <i class="far fa-newspaper text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-700 mb-2">Haber Bulunamadı</h3>
+            <p class="text-gray-500">Arama kriterlerinize uygun haber bulunmamaktadır.</p>
+            <button (click)="clearFilters()" class="mt-4 text-primary font-medium hover:underline">
+                Filtreleri Temizle
+            </button>
+        </div>
+    </ng-template>
+
     <!-- Pagination (Static for now) -->
-    <div class="flex justify-center my-12">
+    <div class="flex justify-center my-12" *ngIf="filteredNews.length > 0">
         <nav class="flex items-center space-x-2">
-            <a href="#" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
+            <button
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50">
                 <i class="fas fa-chevron-left"></i>
-            </a>
-            <a href="#" class="px-4 py-2 bg-primary text-white rounded-lg border border-primary">1</a>
-            <a href="#" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">2</a>
-            <a href="#" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">3</a>
-            <span class="px-2 text-gray-400">...</span>
-            <a href="#" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">8</a>
-            <a href="#" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
+            </button>
+            <button
+                class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-medium">1</button>
+            <button
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">2</button>
+            <button
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">3</button>
+            <button
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
                 <i class="fas fa-chevron-right"></i>
-            </a>
+            </button>
         </nav>
     </div>
 </app-page-container>

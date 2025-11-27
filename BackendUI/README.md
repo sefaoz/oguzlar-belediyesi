@@ -54,6 +54,12 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## PrimeNG & Tailwind setup
+
+- The backend UI uses [PrimeNG](https://www.primefaces.org/primeng/) for rich UI components. Install the dependencies once with `npm install primeng primeicons primeflex` and import the modules you need in the corresponding feature modules or standalone components.
+- Tailwind CSS powers the utility-based styling. The project ships with `tailwind.config.js` and `postcss.config.js` plus `@tailwind base/components/utilities` in `src/styles.css`. After installing `tailwindcss` (and its PostCSS/autoprefixer peer dependencies), any component’s template styles may use Tailwind classes immediately.
+- Both libraries are bundled through the Angular CLI, so running `ng serve` or `ng build` will include the PrimeNG themes and the generated Tailwind utilities automatically.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

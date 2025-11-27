@@ -1,8 +1,7 @@
 <app-page-container title="İletişim" [breadcrumbSteps]="breadcrumbSteps">
     <!-- Map Section -->
     <div class="w-full h-96 rounded-lg overflow-hidden shadow-md mb-8">
-        <iframe src="https://maps.google.com/maps?q=Oğuzlar+Belediyesi+Çorum&t=&z=15&ie=UTF8&iwloc=&output=embed"
-            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+        <iframe [src]="safeMapUrl" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade">
         </iframe>
     </div>
@@ -15,6 +14,10 @@
                 Görüş, öneri, istek veya şikayetlerinizi Başkanımıza iletebilirsiniz, e-posta yada diğer bilgileriniz
                 paylaşılmayacaktır.
             </p>
+
+            <div *ngIf="content?.paragraphs?.length" class="space-y-2 text-muted text-sm mb-6">
+                <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
+            </div>
 
             <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -89,57 +92,24 @@
                 <h3 class="text-lg font-bold text-dark mb-6">İletişim Bilgilerimiz</h3>
 
                 <div class="space-y-6">
-                    <!-- Address -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 mt-1">
-                            <i class="fas fa-map-marker-alt text-primary text-lg"></i>
+                    <ng-container *ngFor="let detail of content?.contactDetails">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas text-primary text-lg" [ngClass]="{
+                                        'fa-map-marker-alt': detail.label === 'Adres',
+                                        'fa-phone-alt': detail.label === 'Telefon',
+                                        'fa-fax': detail.label === 'Fax',
+                                        'fa-envelope': detail.label === 'E-posta'
+                                    }"></i>
+                            </div>
+                            <div>
+                                <span class="block font-bold text-dark text-sm mb-1">{{ detail.label }}:</span>
+                                <p class="text-muted text-sm leading-relaxed">
+                                    {{ detail.value }}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <span class="block font-bold text-dark text-sm mb-1">Adres:</span>
-                            <p class="text-muted text-sm leading-relaxed">
-                                Karadonlu Mahallesi Fatih Caddesi No:33/21 Oğuzlar/Çorum
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 mt-1">
-                            <i class="fas fa-phone-alt text-primary text-lg"></i>
-                        </div>
-                        <div>
-                            <span class="block font-bold text-dark text-sm mb-1">Telefon:</span>
-                            <p class="text-muted text-sm">
-                                +90 364 561 70 45
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Fax -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 mt-1">
-                            <i class="fas fa-fax text-primary text-lg"></i>
-                        </div>
-                        <div>
-                            <span class="block font-bold text-dark text-sm mb-1">Fax:</span>
-                            <p class="text-muted text-sm">
-                                +90 364 561 21 50
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 mt-1">
-                            <i class="fas fa-envelope text-primary text-lg"></i>
-                        </div>
-                        <div>
-                            <span class="block font-bold text-dark text-sm mb-1">E-mail:</span>
-                            <p class="text-muted text-sm">
-                                oguzlarbelediyesi@hotmail.com
-                            </p>
-                        </div>
-                    </div>
+                    </ng-container>
                 </div>
             </div>
         </div>

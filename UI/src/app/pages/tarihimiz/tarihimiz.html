@@ -1,56 +1,8 @@
-<app-page-container title="Tarihimiz" [breadcrumbSteps]="breadcrumbSteps">
+<app-page-container title="İlçemizin Tarihi" [breadcrumbSteps]="breadcrumbSteps">
     <div class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="p-6 space-y-6 text-gray-700 leading-relaxed">
-            <h2 class="text-2xl font-bold text-primary mb-4">İlçemizin Tarihi</h2>
-            <p>
-                Büyük Selçuklular, 1071 Malazgirt Meydan Muharebesini müteakip Anadolu’ya yerleşmeye başladıkları sırada
-                kendilerine bağlı aşiretleri toplu olmayarak muhtelif tarihlerde kısım kısım Anadolu’nun muhtelif
-                yerlerine iskan etmişlerdi.
-            </p>
-            <p>
-                Yerleşme sürecinin böyle işlediğini, Oğuzların Anadolu’da yerleştikleri mahalleri gösteren bir çok köy,
-                nehir ve yerleşim birimleri isimlerinin bu gün de, o adlarla anılmalarından anlamak mümkündür. Özellikle
-                Çorum, İskilip, Osmancık, Bayat ve benzeri yerleşim birimlerinde, Asarcık, Kayı, Kozviran, Şaphane,
-                Şakmana, Tekke, Obruk, Laçin, Dodurga, Kırkdilim, Berk, Alpagut, Derinöz, İbik, Çatkara, Karmışağıl,
-                Kızılcapelit, Çepni, Eşençayı gibi köyler; bununla birlikte, Sandal, Otman, Şelbi, Tekke Yaylası, Yazu,
-                Kızıltepe, Çağal, Kulpar, Dikmen gibi mevkii isimleri de bu iddiayı doğrular niteliktedir. Aynı isimlere
-                Anadolu’nun çeşitli yerlerinde de rastlamak mümkündür.
-            </p>
-            <p>
-                “Çorum Sancağının Osmanlı İdari Teşkilatındaki Yeri – 1” adlı araştırmasında değerli araştırmacı Üçler
-                Bulduk, bu gün ki Oğuzlar ’ı, Karabörk Divanı olarak ele almakta ve kısaca şu bilgiyi vermektedir.
-            </p>
-            <blockquote class="border-l-4 border-primary pl-4 italic bg-gray-50 py-2 pr-2 rounded-r">
-                “Karabörk Divanı, günümüzde İskilip ve Çorum Merkez İlçelerini birbirinden ayıran Kızılırmak nehrinin
-                kuzeyinde yer almaktadır. Batıda İskilip, doğuda Osmancık Kazası ve kuzeyde de Tahtettarik Divanı ile
-                çevrili olan Karabörk, kendisine bağlı 20 köy ile, Bayat’tan sonra en fazla köye sahip ikinci nahiyedir.
-                1272 tarihli Cacabey Vakfiyesinde geçen (Çay Karyesi) Kacac Özü Divanı olmalıdır. Nitekim bu Divanın
-                adını taşıyan Kucac Karyesi de Özü Divanı olmalıdır.Nitekim bu divanın adını taşıyan Kucac Karyesi de
-                Karabörk Nahiyesinin köylerindendir. Kızılpelit, Şaphane, Gökçukur, Karacaşehir, Kozluviran köyleri
-                gelir ve nüfus açısından nahiyenin diğer önemli karyeleridir. Nahiye dahilindeki toplam nüfus 6340 kişi
-                civarındadır.”
-            </blockquote>
-            <p>
-                Bu bilgi bu gün ki Oğuzlar ile ilgili bilinen en eski tarihi bilgidir.Sayılan köylerin bazıları bugün
-                Oğuzlar’a bağlıdır.
-            </p>
-            <p>
-                Önü Kızılırmak, iki tarafı yüksek dağlarla çevrili Karaviran, tarihi adı ile Karabörk Divanı,
-                Kızılırmak’a doğru uzanan bir vadi içinde, çıkışı olmayan bir cebi andırmaktadır. 1576 tarihinde divan
-                olduğu ve 20 den fazla köyü olduğu kesindir.
-            </p>
-            <p>
-                Oğuzlar İlçesi konumu itibariyle yakın zamana kadar dışarı ile irtibatı olmayan kendi kendine yetebilen,
-                kendi ürettikleri ile yaşayabilen nadir yerleşim birimlerindendir.
-            </p>
-            <p>
-                Kapalı bir yerleşim birimi oluşu, bağlı bulunduğu il ve ilçelerle hemen hemen hiçbir özellikte benzerlik
-                göstermemesinden anlaşılmaktadır. Giyim, kuşam, konuşma örf ve adetlerinde tamamen farklıdır.Konuşulan
-                kelimelerin pek çoğunun Türk Lehçelerindeki kelimelere benzerliği tespit edilmiştir.Bu bakımdan Oğuzlar
-                halkının Oğuzlar boyundan geldiği ve bu bölgeye yerleştiği gerçeği ortaya çıkmaktadır. Yağmur dualarında
-                ölmüş at başına ayetlerin yazılarak suya bırakılması, sinsin ve diğer bazı oyunların bu kültürün
-                devamını yansıttığı fikrini doğrulamaktadır.
-            </p>
+            <h2 class="text-2xl font-bold text-primary mb-4">{{ content?.title }}</h2>
+            <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
         </div>
     </div>
 </app-page-container>

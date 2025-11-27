@@ -3,55 +3,17 @@
         <div class="flex flex-col md:flex-row min-h-[500px]">
             <!-- Image Section -->
             <div class="h-96 md:h-auto md:w-1/3 lg:w-1/4 relative">
-                <img src="assets/images/mustafa_cebeci.jpg" alt="Mustafa Cebeci"
+                <img [src]="content?.imageUrl || 'assets/images/mustafa_cebeci.jpg'" alt="Mustafa Cebeci"
                     class="w-full h-full object-cover absolute inset-0">
             </div>
 
             <!-- Content Section -->
             <div class="md:w-2/3 lg:w-3/4 p-8 md:p-12 flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-primary mb-2">Mustafa CEBECİ</h2>
-                <h3 class="text-xl text-accent font-semibold mb-6">Oğuzlar Belediye Başkanı</h3>
+                <h2 class="text-3xl font-bold text-primary mb-2">{{ content?.title }}</h2>
+                <h3 class="text-xl text-accent font-semibold mb-6">{{ content?.subtitle }}</h3>
 
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                    <p>
-                        Kıymetli Hemşehrilerim;
-                    </p>
-                    <p>
-                        İsmini oğuz boyundan alan güzel ilçemiz OĞUZLAR, tarihiyle, eşsiz doğasıyla ve insanıyla
-                        bölgemizin
-                        gözde ilçelerinden biridir. Çorumun önemli değeri olan OĞUZLAR’da, hayatın her alanında en iyiye
-                        ulaşmak için yola çıktık.ilçemizin değerlerine sahip çıkmak, her bir insanımızın yüzünü
-                        güldürmek ve
-                        hizmetlerimizi en doğru ve ulaşılır şekilde yapmak için buradayız.
-                    </p>
-                    <p>
-                        Bu kutlu vazifeyi ifa ederken, siz değerli halkımızdan gördüğümüz güven ve destek en büyük
-                        gücümüz
-                        olacaktır.
-                    </p>
-                    <p>
-                        Bir şehrin Belediye Başkanı aynı zamanda o şehrin “Şehrül-Emin”idir. Üzerimizdeki bu
-                        sorumluluğun
-                        bilinciyle, çalışma arkadaşlarımızla birlikte, şehrimizdeki bütün kesimlerin beklentilerine
-                        cevap
-                        vermeye, iyi ve kötü gününde yanlarında olmaya çalışacağız. İnsana, çevreye ve doğaya değer
-                        veren,
-                        barış ve hoşgörünün egemen olduğu bir anlayışla hareket edecek; emeğe, dayanışmaya ve insani
-                        değerlere sahip çıkmayı görev bileceğiz.
-                    </p>
-                    <p>
-                        Bizlere yakışır bir şekilde değişim ve gelişimde sürekliliği yakalayan, sosyal belediyeciliğin
-                        hayat
-                        bulduğu, şeffaf belediyecilik anlayışı çerçevesinde halkın yönetimde söz sahibi olduğu, belediye
-                        hizmetlerinin şehrin her noktasına ulaştığı, yaşam kalitesi yüksek bir ilçe oluşturmak en büyük
-                        hedefimizdir.
-                    </p>
-                    <p>
-                        Hep birlikte daha güzel bir OĞUZLAR için çalışma fırsatını şahsıma layık gören siz değerli
-                        hemşehrilerime teşekkürü bir borç biliyorum. Halkımızın bize emanet ettiği bu güzel OĞUZLAR’da,
-                        daha
-                        güzel ve mutlu yarınlarda buluşmak dileği ile en kalbi muhabbetlerimi ve saygılarımı sunuyorum.
-                    </p>
+                    <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
                 </div>
             </div>
         </div>

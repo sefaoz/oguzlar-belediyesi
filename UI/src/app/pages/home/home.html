@@ -75,11 +75,12 @@
                 <app-news-card *ngFor="let news of newsList" [news]="news"></app-news-card>
             </div>
             <div class="text-center mt-12">
-                <a href="#"
+                <a href="/haberler"
                     class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-accent transition-colors">Tüm
                     Haberler</a>
             </div>
         </div>
+
     </section>
 
     <!-- 4. DUYURULAR & ETKİNLİKLER -->
@@ -91,22 +92,20 @@
                         Duyurular
                     </h3>
                     <div class="space-y-4">
-                        <a href="#"
-                            class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
-                            <span class="font-medium text-gray-700">Emlak ve Çevre Temizlik Vergisi 2. Taksit Son Ödeme
-                                Tarihi</span>
-                            <span class="text-sm text-gray-500">30.11.2025</span>
-                        </a>
-                        <a href="#"
-                            class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
-                            <span class="font-medium text-gray-700">Kış Spor Okulları Kayıtları Başlamıştır</span>
-                            <span class="text-sm text-gray-500">15.11.2025</span>
-                        </a>
-                        <a href="#"
-                            class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
-                            <span class="font-medium text-gray-700">Su Kesintisi Duyurusu - Merkez Mahallesi</span>
-                            <span class="text-sm text-gray-500">14.11.2025</span>
-                        </a>
+                        <ng-container *ngIf="announcements.length > 0; else noAnnouncements">
+                            <a *ngFor="let item of announcements" [routerLink]="['/duyurular', item.slug]"
+                                class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+                                <span class="font-medium text-gray-700 line-clamp-1">{{ item.title }}</span>
+                                <span class="text-sm text-gray-500 whitespace-nowrap ml-4">{{ item.date }}</span>
+                            </a>
+                        </ng-container>
+                        <ng-template #noAnnouncements>
+                            <div
+                                class="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-sm text-center">
+                                <i class="fas fa-bullhorn text-4xl text-gray-300 mb-3"></i>
+                                <p class="text-gray-500 font-medium">Şu anda aktif duyuru bulunmamaktadır.</p>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
                 <div>
@@ -119,66 +118,81 @@
                                 <i class="fas fa-calendar-alt mr-2"></i>
                                 Yaklaşan Etkinlikler
                             </h4>
-                            <ul class="space-y-2 text-gray-600">
-                                <li>
-                                    <a href="#" class="hover:text-accent"><strong>20 Kasım:</strong> Tiyatro
-                                        Gösterisi</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="hover:text-accent"><strong>25 Kasım:</strong> Fidan Dikme
-                                        Şenliği</a>
+                            <ul class="space-y-2 text-gray-600" *ngIf="events.length > 0; else noEvents">
+                                <li *ngFor="let item of events">
+                                    <a [routerLink]="['/etkinlikler', item.slug]"
+                                        class="hover:text-accent flex items-start">
+                                        <strong class="mr-2 whitespace-nowrap">{{ item.date }}:</strong>
+                                        <span class="line-clamp-1">{{ item.title }}</span>
+                                    </a>
                                 </li>
                             </ul>
+                            <ng-template #noEvents>
+                                <div
+                                    class="flex flex-col items-center justify-center p-6 bg-white/50 rounded-lg text-center">
+                                    <i class="fas fa-calendar-times text-3xl text-gray-300 mb-2"></i>
+                                    <p class="text-gray-500 text-sm">Yaklaşan etkinlik bulunmamaktadır.</p>
+                                </div>
+                            </ng-template>
                         </div>
                         <div>
                             <h4 class="text-lg font-semibold text-primary mb-3">
                                 <i class="fas fa-gavel mr-2"></i> İhale İlanları
                             </h4>
-                            <ul class="space-y-2 text-gray-600">
-                                <li>
-                                    <a href="#" class="hover:text-accent">Büro Malzemeleri Alımı</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="hover:text-accent">Parke Taşı Döşeme İşi</a>
+                            <ul class="space-y-2 text-gray-600" *ngIf="tenders.length > 0; else noTenders">
+                                <li *ngFor="let item of tenders">
+                                    <a [routerLink]="['/ihaleler', item.slug]"
+                                        class="hover:text-accent block line-clamp-1">
+                                        {{ item.title }}
+                                    </a>
                                 </li>
                             </ul>
+                            <ng-template #noTenders>
+                                <div
+                                    class="flex flex-col items-center justify-center p-6 bg-white/50 rounded-lg text-center">
+                                    <i class="fas fa-file-signature text-3xl text-gray-300 mb-2"></i>
+                                    <p class="text-gray-500 text-sm">Aktif ihale ilanı bulunmamaktadır.</p>
+                                </div>
+                            </ng-template>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="/duyurular"
+                    class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-accent transition-colors">
+                    Tüm Duyuru, Etkinlik ve İhaleler
+                </a>
             </div>
         </div>
     </section>
 
     <!-- BAŞKAN'DAN MESAJ BÖLÜMÜ -->
-    <section class="py-20">
+    <section class="py-20" *ngIf="presidentMessage">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap items-center -mx-4">
                 <div class="w-full lg:w-1/3 px-4 mb-8 lg:mb-0">
-                    <img src="assets/images/mustafa_cebeci.jpg" alt="Belediye Başkanı"
+                    <img [src]="presidentMessage.imageUrl || 'assets/images/mustafa_cebeci.jpg'" alt="Belediye Başkanı"
                         class="rounded-lg shadow-2xl w-full object-cover aspect-[4/5]" />
                 </div>
                 <div class="w-full lg:w-2/3 px-4">
-                    <h4 class="text-secondary font-semibold">Belediye Başkanından</h4>
+                    <h4 class="text-secondary font-semibold">{{ presidentMessage.subtitle }}</h4>
                     <h2 class="text-3xl md:text-4xl font-bold text-primary mt-1 mb-2">
-                        Değerli Oğuzlarlı Hemşehrilerim
+                        {{ presidentMessage.title }}
                     </h2>
                     <p class="text-lg font-medium text-gray-600 mb-6">
                         Mustafa Cebeci - Oğuzlar Belediye Başkanı
                     </p>
-                    <p class="text-lg italic text-gray-700 border-l-4 border-accent pl-6 mb-6">
-                        "Kıymetli hemşehrilerim; İsmini Oğuz boyundan alan güzel ilçemiz
-                        Oğuzlar, tarihiyle, eşsiz doğasıyla ve insanıyla bölgenin gözde
-                        ilçelerinden biridir."
-                    </p>
-                    <p class="text-gray-600 mb-8">
-                        Bu kutlu vazifeyi ifa ederken siz değerli halkımızdan gördüğümüz
-                        güven ve destek en büyük gücümüz olacaktır. İnsanına,
-                        çevresine ve doğasına değer veren; barış ve hoşgörünün egemen
-                        olduğu bir anlayışla hareket ederek emeğe ve insani değerlere
-                        sahip çıkmayı görev bileceğiz.
-                    </p>
-                    <a href="#"
-                        class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-accent transition-colors">Başkanın
+                    <div class="space-y-6">
+                        <p *ngFor="let paragraph of presidentMessage.paragraphs; let i = index" [ngClass]="{
+                                'text-lg italic text-gray-700 border-l-4 border-accent pl-6 mb-6': i === 0,
+                                'text-gray-600 mb-6': i !== 0
+                            }">
+                            {{ paragraph }}
+                        </p>
+                    </div>
+                    <a routerLink="/baskandan-mesaj"
+                        class="inline-block mt-6 bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-accent transition-colors">Başkanın
                         Mesajının Tamamı</a>
                 </div>
             </div>

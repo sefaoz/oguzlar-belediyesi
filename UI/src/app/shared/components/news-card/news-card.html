@@ -9,6 +9,9 @@
         <p class="text-muted text-sm mb-4 flex-grow">
             {{ news.description }}
         </p>
-        <a [href]="news.link" class="font-semibold text-accent hover:underline mt-auto">Haberi Oku &rarr;</a>
+        <a *ngIf="news.slug" [routerLink]="['/haberler', news.slug]"
+            class="font-semibold text-accent hover:underline mt-auto cursor-pointer">Haberi Oku &rarr;</a>
+        <a *ngIf="!news.slug && news.link" [href]="news.link"
+            class="font-semibold text-accent hover:underline mt-auto">Haberi Oku &rarr;</a>
     </div>
 </div>
