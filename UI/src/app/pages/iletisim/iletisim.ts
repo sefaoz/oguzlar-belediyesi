@@ -5,6 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-iletisim',
@@ -25,7 +26,8 @@ export class IletisimComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private readonly pageContentService: PageContentService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private readonly seoService: SeoService
   ) {
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
@@ -50,6 +52,11 @@ export class IletisimComponent implements OnInit {
       if (content?.mapEmbedUrl) {
         this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(content.mapEmbedUrl);
       }
+      this.seoService.updateSeo({
+        title: 'İletişim',
+        description: 'Oğuzlar Belediyesi iletişim bilgileri, adres, telefon ve ulaşım haritası.',
+        slug: 'iletisim'
+      });
     });
   }
 

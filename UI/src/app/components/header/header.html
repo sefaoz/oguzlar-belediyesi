@@ -74,9 +74,11 @@
                         (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Belediye
                             Encümenü</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç
+                        <a routerLink="/arac-parki"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç
                             Parkı</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">KVKK</a>
+                        <a routerLink="/kvkk"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">KVKK</a>
                     </div>
                 </div>
 
@@ -90,21 +92,23 @@
                     <div *ngIf="activeDropdown === 'birimler'"
                         class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
                         (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel
-                            Kalem,
+                        <a href="/birimler/ozel-kalem"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel Kalem,
                             Basın ve Halkla İlişkiler</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Zabıta
+                        <a href="/birimler/zabita"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Zabıta
                             Amirliği</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali
-                            Hizmetler
+                        <a href="/birimler/mali-hizmetler"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali Hizmetler
                             Müdürlüğü</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat
-                            ve
+                        <a href="/birimler/tahsilat-emlak"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat ve
                             Emlak Birimi</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı
-                            İşleri
+                        <a href="/birimler/yazi-isleri"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı İşleri
                             Müdürlüğü</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fen İşleri
+                        <a href="/birimler/fen-isleri"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fen İşleri
                             Müdürlüğü</a>
                     </div>
                 </div>
@@ -129,10 +133,12 @@
                             Rehberi</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Gezilecek
                             Yerler</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarih ve
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarih
+                            ve
                             Kültür</a>
                         <div class="border-t my-1"></div>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fotoğraf
+                        <a routerLink="/fotograf-galerisi"
+                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fotoğraf
                             Galerisi</a>
                     </div>
                 </div>

@@ -11,24 +11,59 @@ public sealed class NewsRepository : INewsRepository
 {
     private static readonly IReadOnlyList<NewsItem> News = new[]
     {
-        new NewsItem("https://picsum.photos/400/250?image=20", "12 Kasım 2025", "Yeni Park Alanı Halkın Hizmetine Açıldı",
-            "Çocuklar ve aileler için tasarlanan modern oyun ve dinlenme alanları büyük beğeni topladı.",
-            "yeni-park-alani-halkin-hizmetine-acildi"),
-        new NewsItem("https://picsum.photos/400/250?image=30", "11 Kasım 2025", "Altyapı Yenileme Çalışmaları Tamamlandı",
-            "İlçemizin ana caddelerindeki su ve kanalizasyon hatları tamamen yenilendi.",
-            "altyapi-yenileme-calismalari-tamamlandi"),
-        new NewsItem("https://picsum.photos/400/250?image=40", "10 Kasım 2025", "Sokak Hayvanları İçin Yeni Barınak",
-            "Modern ve hijyenik koşullara sahip yeni hayvan barınağımız hizmete girdi.",
-            "sokak-hayvanlari-icin-yeni-barinak"),
-        new NewsItem("https://picsum.photos/400/250?image=50", "08 Kasım 2025", "Kültür Merkezi İnşaatı Hızla Devam Ediyor",
-            "İlçemize değer katacak yeni kültür merkezinin kaba inşaatı tamamlandı.",
-            "kultur-merkezi-insaati-hizla-devam-ediyor"),
-        new NewsItem("https://picsum.photos/400/250?image=60", "05 Kasım 2025", "Geleneksel Oğuzlar Festivali Başlıyor",
-            "Bu yıl 15.si düzenlenecek olan festivalimiz renkli görüntülere sahne olacak.",
-            "geleneksel-oguzlar-festivali-basliyor"),
-        new NewsItem("https://picsum.photos/400/250?image=70", "01 Kasım 2025", "Belediyemizden Öğrencilere Kırtasiye Desteği",
-            "İlçemizdeki ihtiyaç sahibi öğrencilere kırtasiye seti dağıtımı yapıldı.",
-            "belediyemizden-ogrencilere-kirtasiye-destegi")
+        new NewsItem(
+            "https://picsum.photos/800/600?random=1",
+            "25 Kasım 2025",
+            "Oğuzlar Belediyesi Yeni Hizmet Binası Açıldı",
+            "Modern kütüphane, zabıta birimi ve halkla ilişkiler noktasında hizmet kalitemizi artırıyoruz.",
+            "yeni-hizmet-binasi",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=1",
+                "https://picsum.photos/1200/800?random=2",
+                "https://picsum.photos/1200/800?random=3"
+            }),
+        new NewsItem(
+            "https://picsum.photos/800/600?random=4",
+            "20 Kasım 2025",
+            "Ceviz Festivali Hazırlıkları Başladı",
+            "Yerli ve yabancı misafirlerimizin buluşacağı festival alanı için sahne kurulumu tamamlanmak üzere.",
+            "ceviz-festivali-hazirliklari",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=4",
+                "https://picsum.photos/1200/800?random=5"
+            }),
+        new NewsItem(
+            "https://picsum.photos/800/600?random=6",
+            "15 Kasım 2025",
+            "Obruk Barajı Çevresi Düzenleniyor",
+            "Çevre düzenlemeleri, yürüyüş yolları ve peyzaj çalışmaları halkımızın kullanımına hazırlanıyor.",
+            "obruk-baraji-duzenleniyor",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=6",
+                "https://picsum.photos/1200/800?random=7",
+                "https://picsum.photos/1200/800?random=8"
+            }),
+        new NewsItem(
+            "https://picsum.photos/800/600?random=9",
+            "10 Kasım 2025",
+            "Kış Spor Okulları Kayıtları Açıldı",
+            "Gençlerimizin sporla buluşması için kayak, masa tenisi ve yüzme kurs kayıtları başladı.",
+            "kis-spor-okullari"),
+        new NewsItem(
+            "https://picsum.photos/800/600?random=10",
+            "05 Kasım 2025",
+            "Yol Bakım Onarım Çalışmaları Sürüyor",
+            "Fen işleri ekiplerimiz ilçe merkezinde ve kırsal mahallelerde yol bakım seferberliğini sürdürüyor.",
+            "yol-bakim-onarimlari"),
+        new NewsItem(
+            "https://picsum.photos/800/600?random=11",
+            "29 Ekim 2025",
+            "29 Ekim Cumhuriyet Bayramı Coşkulu Kutlandı",
+            "Cumhuriyetimizin 102. yılı tüm birimlerin ortak kutlamasıyla gerçekleştirildi.",
+            "cumhuriyet-bayrami")
     };
 
     public Task<IEnumerable<NewsItem>> GetAllAsync()

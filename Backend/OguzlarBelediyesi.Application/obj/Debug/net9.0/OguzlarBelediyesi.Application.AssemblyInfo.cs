@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OguzlarBelediyesi.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e7f472889390b39f60db9e4324b3c57f173c84a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+07414d5cd2f1cdefa5853813cbda75481a3737d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("OguzlarBelediyesi.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OguzlarBelediyesi.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

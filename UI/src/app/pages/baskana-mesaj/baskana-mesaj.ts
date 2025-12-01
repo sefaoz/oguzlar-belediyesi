@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-baskana-mesaj',
@@ -24,7 +25,8 @@ export class BaskanaMesaj implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private readonly pageContentService: PageContentService
+    private readonly pageContentService: PageContentService,
+    private readonly seoService: SeoService
   ) {
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
@@ -38,6 +40,11 @@ export class BaskanaMesaj implements OnInit {
   ngOnInit(): void {
     this.pageContentService.getPageContent('baskana-mesaj').subscribe(content => {
       this.content = content;
+      this.seoService.updateSeo({
+        title: 'Başkana Mesaj',
+        description: 'Oğuzlar Belediye Başkanı\'na doğrudan mesaj, istek ve şikayetlerinizi iletin.',
+        slug: 'baskana-mesaj'
+      });
     });
   }
 

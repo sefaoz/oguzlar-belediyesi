@@ -1,16 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-export interface Announcement {
-    title: string;
-    date: string;
-    summary: string;
-    slug: string;
-    category?: string;
-    content?: string;
-    publishedAt?: string;
-}
+import { Announcement } from '../../models/announcement.model';
 
 @Component({
     selector: 'app-announcement-card',

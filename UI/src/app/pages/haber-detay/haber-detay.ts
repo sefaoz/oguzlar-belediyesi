@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
-import { NewsItem } from '../../shared/components/news-card/news-card';
+import { NewsItem } from '../../shared/models/news.model';
 import { NewsService } from '../../shared/services/news.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-haber-detay',
@@ -18,7 +19,8 @@ export class HaberDetayComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly newsService: NewsService
+    private readonly newsService: NewsService,
+    private readonly seoService: SeoService
   ) { }
 
   ngOnInit(): void {
@@ -29,6 +31,15 @@ export class HaberDetayComponent implements OnInit {
           next: item => {
             this.newsItem = item;
             this.updateBreadcrumbs();
+            if (item) {
+              this.seoService.updateSeo({
+                title: item.title,
+                description: item.description,
+                image: item.image,
+                slug: `haberler/${item.slug}`,
+                type: 'article'
+              });
+            }
           },
           error: () => {
             this.newsItem = undefined;

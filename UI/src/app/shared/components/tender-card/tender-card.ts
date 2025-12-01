@@ -1,17 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-export interface Tender {
-    title: string;
-    date: string;
-    status: 'active' | 'passive' | 'completed';
-    registrationNumber: string;
-    slug: string;
-    description?: string;
-    estimatedValue?: number;
-    publishedAt?: string;
-}
+import { Tender } from '../../models/tender.model';
 
 @Component({
     selector: 'app-tender-card',

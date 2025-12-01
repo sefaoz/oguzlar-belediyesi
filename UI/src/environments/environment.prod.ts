@@ -7,7 +7,13 @@ export const environmentProd: EnvironmentConfig = {
   apiBaseUrl,
   newsApiUrl: `${apiBaseUrl}/news`,
   pageContentUrl: `${apiBaseUrl}/pages`,
+  galleryApiUrl: `${apiBaseUrl}/gallery`,
   announcementApiUrl: `${apiBaseUrl}/announcements`,
   eventApiUrl: `${apiBaseUrl}/events`,
-  tenderApiUrl: `${apiBaseUrl}/tenders`
+  tenderApiUrl: `${apiBaseUrl}/tenders`,
+  meclisApiUrl: `${apiBaseUrl}/meclis`,
+  kvkkApiUrl: `${apiBaseUrl}/kvkk`,
+  vehicleApiUrl: `${apiBaseUrl}/vehicles`,
+  unitApiUrl: `${apiBaseUrl}/units`,
+  useMockData: true
 };

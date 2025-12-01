@@ -1,16 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-export interface EventItem {
-    title: string;
-    date: string;
-    location: string;
-    image?: string;
-    slug: string;
-    description?: string;
-    publishedAt?: string;
-}
+import { EventItem } from '../../models/event.model';
 
 @Component({
     selector: 'app-event-card',
@@ -45,7 +36,7 @@ export class EventCardComponent {
     @Input() event!: EventItem;
 
     getMonth(dateStr: string): string {
-        // Simple mock parsing, ideally use a date library or proper Date object
+        // Simple placeholder parsing, ideally use a date library or proper Date object
         // Assuming format "DD.MM.YYYY" or similar text
         return 'KASIM';
     }

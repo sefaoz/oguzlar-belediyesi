@@ -1,0 +1,31 @@
+<app-page-container title="KVKK ve Aydınlatma Metinleri" [breadcrumbSteps]="breadcrumbSteps">
+    <div class="grid gap-6">
+        <div *ngFor="let doc of documents"
+            class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 border-l-4 border-primary group">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="{
+                                'bg-blue-100 text-blue-800': doc.type === 'Politika',
+                                'bg-green-100 text-green-800': doc.type === 'Form',
+                                'bg-purple-100 text-purple-800': doc.type === 'Aydınlatma Metni'
+                            }">
+                            {{ doc.type }}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-primary transition-colors">{{
+                        doc.title }}</h3>
+                </div>
+                <a [href]="doc.fileUrl" target="_blank"
+                    class="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors duration-200 shrink-0 border border-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span class="font-medium">PDF İndir</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</app-page-container>

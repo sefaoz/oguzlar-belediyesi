@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
-import { Tender } from '../../shared/components/tender-card/tender-card';
+import { Tender } from '../../shared/models/tender.model';
 import { TenderService } from '../../shared/services/tender.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-ihale-detay',
@@ -18,7 +19,8 @@ export class IhaleDetay implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly tenderService: TenderService
+    private readonly tenderService: TenderService,
+    private readonly seoService: SeoService
   ) { }
 
   ngOnInit(): void {
@@ -29,6 +31,14 @@ export class IhaleDetay implements OnInit {
           next: item => {
             this.tender = item;
             this.updateBreadcrumbs();
+            if (item) {
+              this.seoService.updateSeo({
+                title: item.title,
+                description: item.description,
+                slug: `ihaleler/${item.slug}`,
+                type: 'article'
+              });
+            }
           },
           error: () => {
             this.tender = undefined;

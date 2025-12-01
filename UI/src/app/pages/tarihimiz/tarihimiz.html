@@ -1,6 +1,8 @@
 <app-page-container title="İlçemizin Tarihi" [breadcrumbSteps]="breadcrumbSteps">
     <div class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="p-6 space-y-6 text-gray-700 leading-relaxed">
+            <img [src]="content?.imageUrl ?? 'assets/images/slider.jpg'"
+                class="w-full h-96 object-cover rounded-lg shadow-md mb-6" [alt]="content?.title ?? 'Oğuzlar Tarihi'">
             <h2 class="text-2xl font-bold text-primary mb-4">{{ content?.title }}</h2>
             <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
         </div>

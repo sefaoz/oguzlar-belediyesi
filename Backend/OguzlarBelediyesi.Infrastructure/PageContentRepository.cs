@@ -66,7 +66,8 @@ public sealed class PageContentRepository : IPageContentRepository
                     "İlçemizde ana kaya genelde kalker, andezit ve gnays olup yer yer metamorfik (filit) ve efrişik kayaçlara da rastlanmaktadır.",
                     "Kızılırmak’ın etkisiyle oluşan vadiler, kıvrımlı yamaçlar ve geçiş iklimi sayesinde zengin bitki örtüsü gelişmiştir; sahil şeridinden iç kısımlara kadar geniş bir flora çeşitliliği göze çarpmaktadır.",
                     "Karasal iklimden izler taşıyan Oğuzlar, doğa tutkunları için hem yeşili hem de kültürel mirası bir arada sunar."
-                }
+                },
+                ImageUrl: "https://picsum.photos/1600/900?random=64"
             ),
             ["iletisim"] = new PageContent(
                 Title: "İletişim",
@@ -95,7 +96,8 @@ public sealed class PageContentRepository : IPageContentRepository
                     "1576 tarihi itibariyle Karabörk Nahiyesi’ni oluşturan köylerin nüfusu 6.340 kişi civarındaydı ve bu bölge sosyal, kültürel olarak büyük bir hareket alanına sahipti.",
                     "Kızılırmak’ın kıvrımlı vadileri, yüksek dağlarla çevrili alanları ve kendine yetebilen yerleşim birimi olması; Oğuzlar halkının binlerce yıllık kültürünün korunmasına hizmet etmiştir.",
                     "Giyim, kuşam, dil ve adetlerde görülen farklılıklar bu bölgenin içe kapalı ama kendine özgü zengin bir yaşam alanı olduğunun göstergesidir."
-                }
+                },
+                ImageUrl: "https://picsum.photos/1600/900?random=66"
             )
         };
 

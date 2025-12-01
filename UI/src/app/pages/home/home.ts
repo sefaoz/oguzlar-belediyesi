@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NewsCard, NewsItem } from '../../shared/components/news-card/news-card';
+import { NewsCard } from '../../shared/components/news-card/news-card';
 import { RouterModule } from '@angular/router';
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { NewsService } from '../../shared/services/news.service';
@@ -8,9 +8,11 @@ import { PageContentService } from '../../shared/services/page-content.service';
 import { AnnouncementService } from '../../shared/services/announcement.service';
 import { EventService } from '../../shared/services/event.service';
 import { TenderService } from '../../shared/services/tender.service';
-import { Announcement } from '../../shared/components/announcement-card/announcement-card';
-import { EventItem } from '../../shared/components/event-card/event-card';
-import { Tender } from '../../shared/components/tender-card/tender-card';
+import { SeoService } from '../../shared/services/seo.service';
+import { NewsItem } from '../../shared/models/news.model';
+import { Announcement } from '../../shared/models/announcement.model';
+import { EventItem } from '../../shared/models/event.model';
+import { Tender } from '../../shared/models/tender.model';
 
 @Component({
   selector: 'app-home',
@@ -31,7 +33,8 @@ export class HomeComponent implements OnInit {
     private readonly pageContentService: PageContentService,
     private readonly announcementService: AnnouncementService,
     private readonly eventService: EventService,
-    private readonly tenderService: TenderService
+    private readonly tenderService: TenderService,
+    private readonly seoService: SeoService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +56,12 @@ export class HomeComponent implements OnInit {
 
     this.pageContentService.getPageContent('home-baskan-mesaji').subscribe(content => {
       this.presidentMessage = content;
+    });
+
+    this.seoService.updateSeo({
+      title: 'Ana Sayfa',
+      description: 'Oğuzlar Belediyesi resmi web sitesi. Haberler, projeler, etkinlikler ve belediye hizmetleri.',
+      keywords: 'oğuzlar, belediye, çorum, oğuzlar belediyesi'
     });
   }
 }

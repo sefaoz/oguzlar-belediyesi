@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
-import { Announcement } from '../../shared/components/announcement-card/announcement-card';
+import { Announcement } from '../../shared/models/announcement.model';
 import { AnnouncementService } from '../../shared/services/announcement.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-duyuru-detay',
@@ -18,7 +19,8 @@ export class DuyuruDetay implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly announcementService: AnnouncementService
+    private readonly announcementService: AnnouncementService,
+    private readonly seoService: SeoService
   ) { }
 
   ngOnInit(): void {
@@ -29,6 +31,14 @@ export class DuyuruDetay implements OnInit {
           next: item => {
             this.announcement = item;
             this.updateBreadcrumbs();
+            if (item) {
+              this.seoService.updateSeo({
+                title: item.title,
+                description: item.summary,
+                slug: `duyurular/${item.slug}`,
+                type: 'article'
+              });
+            }
           },
           error: () => {
             this.announcement = undefined;

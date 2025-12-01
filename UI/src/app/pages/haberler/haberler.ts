@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NewsCard, NewsItem } from '../../shared/components/news-card/news-card';
+import { NewsCard } from '../../shared/components/news-card/news-card';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
 import { FormsModule } from '@angular/forms';
 
 import { NewsService } from '../../shared/services/news.service';
+import { SeoService } from '../../shared/services/seo.service';
+import { NewsItem } from '../../shared/models/news.model';
 
 @Component({
   selector: 'app-haberler',
@@ -44,7 +46,10 @@ export class HaberlerComponent implements OnInit {
 
   years: number[] = [];
 
-  constructor(private readonly newsService: NewsService) {
+  constructor(
+    private readonly newsService: NewsService,
+    private readonly seoService: SeoService
+  ) {
     const now = new Date();
     this.selectedMonth = now.getMonth() + 1;
     this.selectedYear = now.getFullYear();
@@ -58,6 +63,12 @@ export class HaberlerComponent implements OnInit {
   ngOnInit(): void {
     this.newsService.getNews().subscribe(news => {
       this.newsList = news;
+    });
+
+    this.seoService.updateSeo({
+      title: 'Haberler',
+      description: 'Oğuzlar Belediyesi güncel haberler, duyurular ve gelişmeler.',
+      slug: 'haberler'
     });
   }
 

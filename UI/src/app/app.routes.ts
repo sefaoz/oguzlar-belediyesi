@@ -15,6 +15,11 @@ import { IhalelerComponent } from './pages/ihaleler/ihaleler';
 import { DuyuruDetay } from './pages/duyuru-detay/duyuru-detay';
 import { EtkinlikDetay } from './pages/etkinlik-detay/etkinlik-detay';
 import { IhaleDetay } from './pages/ihale-detay/ihale-detay';
+import { FotografGalerisi } from './pages/fotograf-galerisi/fotograf-galerisi';
+import { Meclis } from './pages/meclis/meclis';
+import { Kvkk } from './pages/kvkk/kvkk';
+import { AracParki } from './pages/arac-parki/arac-parki';
+import { BirimlerComponent } from './pages/birimler/birimler';
 
 export const routes: Routes = [
   {
@@ -29,14 +34,20 @@ export const routes: Routes = [
       { path: 'haberler', component: HaberlerComponent },
       { path: 'haberler/:slug', component: HaberDetayComponent },
       { path: 'ilcemizin-tarihi', component: TarihimizComponent },
-      { path: 'ilcemizin-tarihi', component: TarihimizComponent },
       { path: 'cografi-yapi', component: CografiYapi },
       { path: 'duyurular', component: DuyurularComponent },
       { path: 'duyurular/:slug', component: DuyuruDetay },
       { path: 'etkinlikler', component: EtkinliklerComponent },
       { path: 'etkinlikler/:slug', component: EtkinlikDetay },
       { path: 'ihaleler', component: IhalelerComponent },
-      { path: 'ihaleler/:slug', component: IhaleDetay }
+      { path: 'ihaleler/:slug', component: IhaleDetay },
+      { path: 'fotograf-galerisi', component: FotografGalerisi },
+      { path: 'fotograf-galerisi/:slug', component: FotografGalerisi },
+      { path: 'meclis', component: Meclis },
+      { path: 'kvkk', component: Kvkk },
+      { path: 'arac-parki', component: AracParki },
+      { path: 'birimler', redirectTo: 'birimler/ozel-kalem', pathMatch: 'full' },
+      { path: 'birimler/:unit', component: BirimlerComponent }
     ]
   }
 ];

@@ -1,0 +1,96 @@
+<app-page-container [title]="selectedFolder ? selectedFolder.title : 'Fotoğraf Galerisi'"
+    [breadcrumbSteps]="breadcrumbs">
+
+    <!-- FOLDER LIST VIEW -->
+    <div *ngIf="!selectedFolder" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
+        <div *ngFor="let folder of folders" (click)="selectFolder(folder)"
+            class="group cursor-pointer bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+
+            <!-- Folder Cover -->
+            <div class="relative h-56 overflow-hidden">
+                <img [src]="folder.coverImage" [alt]="folder.title"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
+
+                <!-- Image Count Badge -->
+                <div
+                    class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
+                    <i class="fas fa-images mr-1"></i> {{ folder.imageCount }} Fotoğraf
+                </div>
+            </div>
+
+            <!-- Folder Info -->
+            <div class="p-6">
+                <div class="flex items-center text-xs text-gray-500 mb-2">
+                    <i class="far fa-calendar-alt mr-1.5 text-accent"></i>
+                    {{ folder.date }}
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 group-hover:text-primary transition-colors mb-2">
+                    {{ folder.title }}
+                </h3>
+                <div
+                    class="flex items-center text-sm text-primary font-medium group-hover:translate-x-2 transition-transform duration-300">
+                    Görüntüle <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE LIST VIEW -->
+    <div *ngIf="selectedFolder" class="animate-fade-in">
+        <button (click)="goBack()"
+            class="mb-8 flex items-center text-gray-600 hover:text-primary transition-colors font-medium">
+            <i class="fas fa-arrow-left mr-2"></i> Galerilere Dön
+        </button>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div *ngFor="let image of images" (click)="openPreview(image)"
+                class="group relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-all">
+                <img [src]="image.thumbnailUrl" [alt]="image.title"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div
+                    class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <i
+                        class="fas fa-search-plus text-white text-3xl drop-shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</app-page-container>
+
+<!-- IMAGE PREVIEW MODAL -->
+<div *ngIf="selectedImage" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-fade-in">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity" (click)="closePreview()"></div>
+
+    <!-- Close Button (Fixed to screen top-right) -->
+    <button (click)="closePreview()"
+        class="absolute top-4 right-4 md:top-8 md:right-8 text-white/80 hover:text-white hover:bg-white/10 p-3 rounded-full transition-all z-[60]">
+        <i class="fas fa-times text-3xl md:text-4xl"></i>
+    </button>
+
+    <!-- Navigation Buttons (Fixed to screen edges) -->
+    <button (click)="prevImage($event)"
+        class="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 md:p-4 rounded-full transition-all z-[60]">
+        <i class="fas fa-chevron-left text-3xl md:text-5xl"></i>
+    </button>
+
+    <button (click)="nextImage($event)"
+        class="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 md:p-4 rounded-full transition-all z-[60]">
+        <i class="fas fa-chevron-right text-3xl md:text-5xl"></i>
+    </button>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-7xl w-full max-h-full flex flex-col items-center justify-center pointer-events-none"
+        (click)="$event.stopPropagation()">
+        <!-- Image -->
+        <img [src]="selectedImage.url" [alt]="selectedImage.title"
+            class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl animate-scale-in select-none pointer-events-auto">
+
+        <!-- Caption -->
+        <div *ngIf="selectedImage.title" class="mt-4 text-white text-center font-medium text-lg pointer-events-auto">
+            {{ selectedImage.title }}
+        </div>
+    </div>
+</div>

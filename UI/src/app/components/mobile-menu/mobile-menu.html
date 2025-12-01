@@ -39,9 +39,11 @@
             <div *ngIf="mobileSubmenu === 'kurumsal'" class="space-y-1 px-6 text-sm text-primary/80">
                 <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Belediye
                     Encümenü</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Araç
+                <a routerLink="/arac-parki" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Araç
                     Parkı</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">KVKK</a>
+                <a routerLink="/kvkk" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">KVKK</a>
             </div>
         </div>
 
@@ -53,21 +55,23 @@
                 <i [class]="mobileSubmenu === 'birimler' ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
             </button>
             <div *ngIf="mobileSubmenu === 'birimler'" class="space-y-1 px-6 text-sm text-primary/80">
-                <p (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın
-                    &
-                    Halkla İlişkiler</p>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta
+                <a href="/birimler/ozel-kalem" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Özel Kalem, Basın &
+                    Halkla İlişkiler</a>
+                <a href="/birimler/zabita" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Zabıta
                     Amirliği</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali
+                <a href="/birimler/mali-hizmetler" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Mali
                     Hizmetler Müdürlüğü</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat
-                    &
+                <a href="/birimler/tahsilat-emlak" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Tahsilat &
                     Emlak Birimi</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı
-                    İşleri
+                <a href="/birimler/yazi-isleri" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Yazı İşleri
                     Müdürlüğü</a>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen
-                    İşleri
+                <a href="/birimler/fen-isleri" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Fen İşleri
                     Müdürlüğü</a>
             </div>
         </div>
@@ -92,7 +96,8 @@
                 <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Tarih ve
                     Kültür</a>
                 <div class="border-t my-1"></div>
-                <a href="#" (click)="onLinkClick()" class="block px-3 py-2 rounded-md hover:bg-light-gray">Fotoğraf
+                <a routerLink="/fotograf-galerisi" (click)="onLinkClick()"
+                    class="block px-3 py-2 rounded-md hover:bg-light-gray">Fotoğraf
                     Galerisi</a>
             </div>
         </div>

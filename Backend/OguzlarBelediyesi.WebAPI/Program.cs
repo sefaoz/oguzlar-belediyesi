@@ -18,6 +18,11 @@ const string OguzlarCorsPolicy = "_oguzlarCors";
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<INewsRepository, NewsRepository>();
 builder.Services.AddSingleton<IPageContentRepository, PageContentRepository>();
+builder.Services.AddSingleton<IGalleryRepository, GalleryRepository>();
+builder.Services.AddSingleton<ICouncilRepository, CouncilRepository>();
+builder.Services.AddSingleton<IKvkkRepository, KvkkRepository>();
+builder.Services.AddSingleton<IVehicleRepository, VehicleRepository>();
+builder.Services.AddSingleton<IMunicipalUnitRepository, MunicipalUnitRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ITenderRepository, TenderRepository>();
@@ -106,6 +111,62 @@ app.MapGet("/api/pages/{key}", async (string key, IPageContentRepository reposit
     return pageContent is not null ? Results.Ok(pageContent) : Results.NotFound();
 })
 .WithName("GetPageContent");
+
+app.MapGet("/api/meclis", async (ICouncilRepository repository) =>
+{
+    var documents = await repository.GetAllAsync();
+    return Results.Ok(documents);
+})
+    .WithName("GetCouncilDocuments");
+
+app.MapGet("/api/gallery/folders", async (IGalleryRepository repository) =>
+{
+    var folders = await repository.GetFoldersAsync();
+    return Results.Ok(folders);
+})
+    .WithName("GetGalleryFolders");
+
+app.MapGet("/api/gallery/folders/{folderId}", async (string folderId, IGalleryRepository repository) =>
+{
+    var folder = await repository.GetFolderByIdAsync(folderId);
+    return folder is not null ? Results.Ok(folder) : Results.NotFound();
+})
+    .WithName("GetGalleryFolder");
+
+app.MapGet("/api/gallery/folders/slug/{slug}", async (string slug, IGalleryRepository repository) =>
+{
+    var folder = await repository.GetFolderBySlugAsync(slug);
+    return folder is not null ? Results.Ok(folder) : Results.NotFound();
+})
+    .WithName("GetGalleryFolderBySlug");
+
+app.MapGet("/api/gallery/folders/{folderId}/images", async (string folderId, IGalleryRepository repository) =>
+{
+    var images = await repository.GetImagesByFolderAsync(folderId);
+    return Results.Ok(images);
+})
+.WithName("GetGalleryImages");
+
+app.MapGet("/api/kvkk", async (IKvkkRepository repository) =>
+{
+    var documents = await repository.GetAllAsync();
+    return Results.Ok(documents);
+})
+    .WithName("GetKvkkDocuments");
+
+app.MapGet("/api/vehicles", async (IVehicleRepository repository) =>
+{
+    var vehicles = await repository.GetAllAsync();
+    return Results.Ok(vehicles);
+})
+    .WithName("GetVehicles");
+
+app.MapGet("/api/units", async (IMunicipalUnitRepository repository) =>
+{
+    var units = await repository.GetAllAsync();
+    return Results.Ok(units);
+})
+    .WithName("GetMunicipalUnits");
 
 app.MapGet("/api/announcements", async ([AsParameters] AnnouncementQuery query, IAnnouncementRepository repository) =>
 {

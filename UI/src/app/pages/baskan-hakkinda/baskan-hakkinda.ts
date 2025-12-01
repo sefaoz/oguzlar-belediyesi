@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/page-container/page-container';
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-baskan-hakkinda',
@@ -19,11 +20,19 @@ export class BaskanHakkindaComponent implements OnInit {
   ];
   content?: PageContentModel;
 
-  constructor(private readonly pageContentService: PageContentService) {}
+  constructor(
+    private readonly pageContentService: PageContentService,
+    private readonly seoService: SeoService
+  ) { }
 
   ngOnInit(): void {
     this.pageContentService.getPageContent('baskan-hakkinda').subscribe(content => {
       this.content = content;
+      this.seoService.updateSeo({
+        title: 'Başkan Hakkında',
+        description: 'Oğuzlar Belediye Başkanı hakkında bilgiler, özgeçmiş ve vizyon.',
+        slug: 'baskan-hakkinda'
+      });
     });
   }
 }
