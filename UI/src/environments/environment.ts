@@ -11,6 +11,7 @@ export interface EnvironmentConfig {
   kvkkApiUrl: string;
   vehicleApiUrl: string;
   unitApiUrl: string;
+  sliderApiUrl: string;
   useMockData: boolean;
 }
 
@@ -29,5 +30,6 @@ export const environment: EnvironmentConfig = {
   kvkkApiUrl: `${apiBaseUrl}/kvkk`,
   vehicleApiUrl: `${apiBaseUrl}/vehicles`,
   unitApiUrl: `${apiBaseUrl}/units`,
+  sliderApiUrl: `${apiBaseUrl}/sliders`,
   useMockData: false
 };

@@ -1,0 +1,605 @@
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.Infrastructure.Persistence.Database;
+using OguzlarBelediyesi.Infrastructure.Persistence.Entities;
+using OguzlarBelediyesi.Infrastructure.Security;
+
+namespace OguzlarBelediyesi.Infrastructure.Persistence.Data;
+
+public sealed class DataSeeder
+{
+    private readonly OguzlarBelediyesiDbContext _context;
+    private readonly PasswordHasher _passwordHasher;
+
+    public DataSeeder(OguzlarBelediyesiDbContext context, PasswordHasher passwordHasher)
+    {
+        _context = context;
+        _passwordHasher = passwordHasher;
+    }
+
+    public async Task SeedAsync()
+    {
+        await _context.Database.EnsureCreatedAsync();
+
+        var shouldSave = false;
+
+        if (!await _context.Users.AnyAsync())
+        {
+            var adminUser = new User
+            {
+                Username = "admin",
+                PasswordHash = _passwordHasher.Hash("Admin123!"),
+                Role = "Administrator"
+            };
+
+            await _context.Users.AddAsync(adminUser);
+            shouldSave = true;
+        }
+
+        if (!await _context.Announcements.AnyAsync())
+        {
+            await _context.Announcements.AddRangeAsync(DefaultAnnouncements);
+            shouldSave = true;
+        }
+
+        if (!await _context.Events.AnyAsync())
+        {
+            await _context.Events.AddRangeAsync(DefaultEvents);
+            shouldSave = true;
+        }
+
+        if (!await _context.Tenders.AnyAsync())
+        {
+            await _context.Tenders.AddRangeAsync(DefaultTenders);
+            shouldSave = true;
+        }
+
+        if (!await _context.NewsItems.AnyAsync())
+        {
+            await _context.NewsItems.AddRangeAsync(DefaultNews);
+            shouldSave = true;
+        }
+
+        if (!await _context.PageContents.AnyAsync())
+        {
+            await _context.PageContents.AddRangeAsync(DefaultPageContents);
+            shouldSave = true;
+        }
+
+        if (!await _context.GalleryFolders.AnyAsync())
+        {
+            await _context.GalleryFolders.AddRangeAsync(DefaultGalleryFolders);
+            shouldSave = true;
+        }
+
+        if (!await _context.GalleryImages.AnyAsync())
+        {
+            await _context.GalleryImages.AddRangeAsync(DefaultGalleryImages);
+            shouldSave = true;
+        }
+
+        if (!await _context.CouncilDocuments.AnyAsync())
+        {
+            await _context.CouncilDocuments.AddRangeAsync(DefaultCouncilDocuments);
+            shouldSave = true;
+        }
+
+        if (!await _context.KvkkDocuments.AnyAsync())
+        {
+            await _context.KvkkDocuments.AddRangeAsync(DefaultKvkkDocuments);
+            shouldSave = true;
+        }
+
+        if (!await _context.MunicipalUnits.AnyAsync())
+        {
+            await _context.MunicipalUnits.AddRangeAsync(DefaultMunicipalUnits);
+            shouldSave = true;
+        }
+
+        if (!await _context.Vehicles.AnyAsync())
+        {
+            await _context.Vehicles.AddRangeAsync(DefaultVehicles);
+            shouldSave = true;
+        }
+
+        if (!await _context.Sliders.AnyAsync())
+        {
+            await _context.Sliders.AddRangeAsync(DefaultSliders);
+            shouldSave = true;
+        }
+
+        if (shouldSave)
+        {
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    private static readonly Announcement[] DefaultAnnouncements = new[]
+    {
+        new Announcement
+        {
+            Title = "Oğuzlar Şehir Parkı Halkın Hizmetinde",
+            Summary = "Yeni düzenlenen yeşil alan, yürüyüş yolları ve oyun gruplarıyla 27 Kasım tarihinde açıldı.",
+            Content = "Oğuzlar Belediyesi olarak doğayı koruyarak vatandaşlar için modern bir park alanı oluşturduk. Yeni yürüyüş yolları, dinlenme alanları ve çocuk oyun grupları bölge sakinlerini bekliyor.",
+            Category = "Genel Duyuru",
+            Date = "27 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 27),
+            Slug = "oguzlar-sehir-parki-halkin-hizmetinde"
+        },
+        new Announcement
+        {
+            Title = "Altyapı Yenileme Çalışmaları Tamamlanıyor",
+            Summary = "Ana arterlerdeki kanalizasyon ve içme suyu hatlarının yenilenmesine ilişkin çalışmalar hızlandı.",
+            Content = "Fen işleri ekiplerimiz, 2025 sezonu boyunca kritik hatlarda yenileme gerçekleştirdi. Bu sayede su baskını riski azaltıldı ve altyapı dayanıklılığı artırıldı.",
+            Category = "Altyapı",
+            Date = "22 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 22),
+            Slug = "altyapi-yenileme-calismalari-tamamlaniyor"
+        },
+        new Announcement
+        {
+            Title = "İhtiyaç Sahibi Ailelere Sosyal Yardım Desteği",
+            Summary = "Sosyal hizmet birimi, kış ayları öncesi ihtiyaç sahibi ailelere gıda ve kıyafet desteği sağladı.",
+            Content = "Belediyemiz sosyal yardım hattına yapılan başvurular doğrultusunda kış yardımı paketleri dağıtıldı. Ailelere bireysel destek programları hazırlanmaya devam ediyor.",
+            Category = "Sosyal Hizmet",
+            Date = "18 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 18),
+            Slug = "sosyal-yardim-destegi-2025"
+        },
+        new Announcement
+        {
+            Title = "Yeni Kütüphane Gönüllü Okuyucularını Bekliyor",
+            Summary = "Kültür merkezindeki kütüphanenin koleksiyonu genişletilerek vatandaşların hizmetine alındı.",
+            Content = "Kitap bağışları ve mobil kütüphane projeleriyle desteklenen yeni kütüphanemiz, gençler için atölye ve okuma saatleri organize ediyor.",
+            Category = "Kültür Etkinliği",
+            Date = "15 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 15),
+            Slug = "yeni-kutuphane-gonullu-okuyucu"
+        }
+    };
+
+    private static readonly Event[] DefaultEvents = new[]
+    {
+        new Event
+        {
+            Title = "Geleneksel Ceviz Festivali",
+            Description = "Geleneksel lezzetler, konserler ve sergilerle dolu festivalimizde tüm halkımızı bekliyoruz.",
+            Location = "Oğuzlar Meydanı",
+            Date = "25 Kasım 2025",
+            EventDate = new DateTime(2025, 11, 25, 14, 0, 0),
+            Image = "https://picsum.photos/800/600?random=101",
+            Slug = "geleneksel-ceviz-festivali"
+        },
+        new Event
+        {
+            Title = "Gençlik Konseri",
+            Description = "Genç müzisyenlerimizin sahne alacağı konser, kültür merkezinde düzenlenecek.",
+            Location = "Kültür Merkezi",
+            Date = "15 Aralık 2025",
+            EventDate = new DateTime(2025, 12, 15, 19, 0, 0),
+            Image = "https://picsum.photos/800/600?random=102",
+            Slug = "genclik-konseri"
+        },
+        new Event
+        {
+            Title = "Doğa Yürüyüşü",
+            Description = "Obruk Barajı çevresinde rehber eşliğinde doğa yürüyüşü ve fotoğrafçılık etkinliği.",
+            Location = "Obruk Barajı Çevresi",
+            Date = "20 Aralık 2025",
+            EventDate = new DateTime(2025, 12, 20, 10, 30, 0),
+            Image = "https://picsum.photos/800/600?random=103",
+            Slug = "doga-yuruyusu"
+        },
+        new Event
+        {
+            Title = "Tiyatro Gösterisi: Bir Anadolu Masalı",
+            Description = "Yerel sanatçılar tarafından sahnelenecek tiyatro gösterisi kültür merkezimizde izleyici ile buluşuyor.",
+            Location = "Belediye Konferans Salonu",
+            Date = "05 Ocak 2026",
+            EventDate = new DateTime(2026, 1, 5, 18, 0, 0),
+            Image = "https://picsum.photos/800/600?random=104",
+            Slug = "tiyatro-gosterisi-bir-anadolu-masali"
+        }
+    };
+
+    private static readonly Tender[] DefaultTenders = new[]
+    {
+        new Tender
+        {
+            Title = "Belediye Hizmet Binası Tadilat İşi",
+            Description = "Hizmet binamızın bodrum katındaki tesisat ve cephe tadilat işleri ihale edilecektir.",
+            Date = "10 Aralık 2025",
+            PublishedAt = new DateTime(2025, 11, 10),
+            RegistrationNumber = "2025/123456",
+            Status = "active",
+            EstimatedValue = 150000m,
+            Slug = "hizmet-binasi-tadilat"
+        },
+        new Tender
+        {
+            Title = "Araç Kiralama Hizmet Alımı",
+            Description = "Personel ve hizmet araçları için 12 aylık kiralama hizmeti ihalesi yapılacaktır.",
+            Date = "05 Aralık 2025",
+            PublishedAt = new DateTime(2025, 11, 5),
+            RegistrationNumber = "2025/123457",
+            Status = "active",
+            EstimatedValue = 250000m,
+            Slug = "arac-kiralama-hizmeti-alimi"
+        },
+        new Tender
+        {
+            Title = "Park ve Bahçeler İçin Fidan Alımı",
+            Description = "Yeni düzenlenecek peyzaj alanlarında kullanılmak üzere ceviz, gül ve sedir fidanlarının alımı yapılacaktır.",
+            Date = "20 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 20),
+            RegistrationNumber = "2025/123450",
+            Status = "completed",
+            EstimatedValue = 80000m,
+            Slug = "fidan-alimi-2025"
+        },
+        new Tender
+        {
+            Title = "Kırtasiye Malzemesi Alımı",
+            Description = "Eğitim desteği kapsamında ihtiyaç sahibi öğrencilerimiz için kırtasiye malzemesi alımı.",
+            Date = "15 Kasım 2025",
+            PublishedAt = new DateTime(2025, 11, 15),
+            RegistrationNumber = "2025/123449",
+            Status = "passive",
+            EstimatedValue = 45000m,
+            Slug = "kirtasiye-malzemesi-alimi"
+            }
+        };
+
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
+    private static readonly NewsEntity[] DefaultNews = new[]
+    {
+        CreateNews("yeni-hizmet-binasi", "25 Kasım 2025", "Oğuzlar Belediyesi Yeni Hizmet Binası Açıldı",
+            "Modern kütüphane, zabıta birimi ve halkla ilişkiler noktasında hizmet kalitemizi artırıyoruz.",
+            "https://picsum.photos/800/600?random=1",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=1",
+                "https://picsum.photos/1200/800?random=2",
+                "https://picsum.photos/1200/800?random=3"
+            }),
+        CreateNews("ceviz-festivali-hazirliklari", "20 Kasım 2025", "Ceviz Festivali Hazırlıkları Başladı",
+            "Yerli ve yabancı misafirlerimizin buluşacağı festival alanı için sahne kurulumu tamamlanmak üzere.",
+            "https://picsum.photos/800/600?random=4",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=4",
+                "https://picsum.photos/1200/800?random=5"
+            }),
+        CreateNews("obruk-baraji-duzenleniyor", "15 Kasım 2025", "Obruk Barajı Çevresi Düzenleniyor",
+            "Çevre düzenlemeleri, yürüyüş yolları ve peyzaj çalışmaları halkımızın kullanımına hazırlanıyor.",
+            "https://picsum.photos/800/600?random=6",
+            new[]
+            {
+                "https://picsum.photos/1200/800?random=6",
+                "https://picsum.photos/1200/800?random=7",
+                "https://picsum.photos/1200/800?random=8"
+            }),
+        CreateNews("kis-spor-okullari", "10 Kasım 2025", "Köy Spor Okulları Kayıtları Açıldı",
+            "Gençlerimizin sporla buluşması için kayak, masa tenisi ve yüzme kurs kayıtları başladı.",
+            "https://picsum.photos/800/600?random=9"),
+        CreateNews("yol-bakim-onarimlari", "05 Kasım 2025", "Yol Bakım Onarım Çalışmaları Sürüyor",
+            "Fen işleri ekiplerimiz ilçe merkezinde ve kırsal mahallelerde yol bakım seferberliğini sürdürüyor.",
+            "https://picsum.photos/800/600?random=10"),
+        CreateNews("cumhuriyet-bayrami", "29 Ekim 2025", "29 Ekim Cumhuriyet Bayramı Coşkuyla Kutlandı",
+            "Cumhuriyetimizin 102. yılı tüm birimlerin ortak kutlamasıyla gerçekleştirildi.",
+            "https://picsum.photos/800/600?random=11")
+    };
+
+    private static readonly PageContentEntity[] DefaultPageContents = new[]
+    {
+        CreatePageContent("baskan-hakkinda", "Mustafa CEBECİ", "Oğuzlar Belediye Başkanı", new[]
+        {
+            "1980 yılında Çorum'un Oğuzlar ilçesinde doğdu. İlk, orta ve lise öğrenimini Oğuzlar'da tamamladı.",
+            "Anadolu Üniversitesi İşletme Fakültesi'nden mezun oldu. Siyasi hayatına genç yaşlarda başlayan Cebeci, ilçemizin kalkınması ve gelişmesi için çeşitli sivil toplum kuruluşlarında aktif görevler aldı.",
+            "31 Mart 2024 yerel seçimlerinde Oğuzlar halkının teveccühü ile Belediye Başkanı seçildi. Evli ve 3 çocuk babasıdır.",
+            "Göreve geldiği günden bu yana \"Daha Yaşanabilir Bir Oğuzlar\" vizyonuyla çalışmalarını sürdürmekte, şeffaf, katılımcı ve halk odaklı belediyecilik anlayışını benimsemektedir."
+        }, imageUrl: "assets/images/mustafa_cebeci.jpg"),
+        CreatePageContent("baskan-mesaji", "Kıymetli Hemşehrilerim", "Başkanın Mesajı", new[]
+        {
+            "İsmini Oğuz boyundan alan güzel ilçemiz OĞUZLAR, tarihiyle, eşsiz doğasıyla ve insanıyla bölgemizin gözde ilçelerinden biridir.",
+            "İlçemizin değerlerine sahip çıkmak, her bir insanımızın yüzünü güldürmek ve hizmetlerimizi en doğru ve ulaşılır şekilde yapmak için buradayız.",
+            "Bu kutlu vazifeyi ifa ederken, siz değerli halkımızdan gördüğümüz güven ve destek en büyük gücümüz olacaktır.",
+            "Bir şehrin Belediye Başkanı aynı zamanda o şehrin şeffaflığı için de sorumludur. Görevimizi çift taraflı dayanışma anlayışı ile icra edeceğiz.",
+            "Halkımızın bize emanet ettiği bu güzel OĞUZLAR'da, daha güzel ve mutlu yarınlarda buluşmak dileğiyle en kalbi muhabbetlerimi sunuyorum."
+        }, imageUrl: "assets/images/mustafa_cebeci.jpg"),
+        CreatePageContent("baskana-mesaj", "Başkana Mesaj Yaz", "Görüşlerinizi iletin", new[]
+        {
+            "Oğuzlar Belediyesi olarak her görüşü, fikri ve öneriyi kıymetli buluyoruz. Bu form üzerinden Başkanımıza mesajınızı doğrudan ulaştırabilirsiniz.",
+            "Mesajlarınız, ekiplerimiz tarafından titizlikle incelenecek ve en kısa sürede kişisel geri dönüş yapılmaya çalışılacaktır.",
+            "KVKK onayını verdikten sonra mesajınızı iletmeyi unutmayınız."
+        }),
+        CreatePageContent("home-baskan-mesaji", "Değerli Oğuzlarlı Hemşehrilerim", "Belediye Başkanından", new[]
+        {
+            "Bu kutlu vazifeyi ifa ederken siz değerli halkımızdan gördüğümüz güven ve destek en büyük gücümüz olacaktır.",
+            "Daha yaşanabilir ve kıymetini bilen bir Oğuzlar için; her alanın birbiriyle uyumlu çalıştığı, insanına değer veren bir belediyecilik anlayışı sergiliyor; şeffaf, katılımcı ve hizmet odaklı olmanın kıymetini biliyoruz.",
+            "İlçemizin güzelliğini korumak, insanımızın yaşam kalitesini yükseltmek ve gelecek nesillere güçlü bir Oğuzlar bırakmak için yorulmadan çalışıyoruz."
+        }, imageUrl: "assets/images/mustafa_cebeci.jpg"),
+        CreatePageContent("cografi-yapi", "Coğrafi Yapı", "Doğal ve kültürel zenginliklerimiz", new[]
+        {
+            "Oğuzlar ilçesi Karadeniz Bölgesi'nin Orta Karadeniz Bölümünde yer alır; Çorum il merkezinin 63 km kuzeybatısındadır ve rakımı 650 metredir.",
+            "İlçemizde ana kaya genelde kalker, andezit ve gnays olup yer yer metamorfik (filit) ve efridik kayaçlara da rastlanmaktadır.",
+            "Kızılırmak’ın etkisiyle oluşan vadiler, kıvrımlı yamaçlar ve geçiş iklimi sayesinde zengin bitki örtüsü gelişmiştir; sahil yerinden iç kısımlara kadar geniş bir flora çeşitliliği göze çarpmaktadır.",
+            "Karasal iklimden izler taşıyan Oğuzlar, doğa tutkunları için hem yeşili hem de kültürel miraşı bir arada sunar."
+        }, imageUrl: "https://picsum.photos/1600/900?random=64"),
+        CreatePageContent("iletisim", "İletişim", "2 adımda bize ulaşın", new[]
+        {
+            "Görüş, öneri, istek veya şikayetlerinizi Başkanımıza iletebilirsiniz. İletişim bilgileriniz gizli tutulacaktır.",
+            "Formu doldurduktan sonra ekiplerimiz en kısa sürede sizinle iletişime geçecektir."
+        }, mapEmbedUrl: "https://maps.google.com/maps?q=Oğuzlar+Belediyesi+Çorum&t=&z=15&ie=UTF8&iwloc=&output=embed",
+            contactDetails: new[]
+            {
+                new ContactDetail("Adres", "Karadonlu Mahallesi Fatih Caddesi No:33/21 Oğuzlar/Çorum"),
+                new ContactDetail("Telefon", "+90 364 561 70 45"),
+                new ContactDetail("Fax", "+90 364 561 21 50"),
+                new ContactDetail("E-posta", "oguzlarbelediyesi@hotmail.com")
+            }),
+        CreatePageContent("tarihimiz", "İlçemizin Tarihi", "Geçmişten Bugüne Oğuzlar", new[]
+        {
+            "Büyük Selçuklular, 1071 Malazgirt Meydan Muharebesi sonrasında Anadolu’ya yerleşmeye başladıklarında Oğuzlar ve çevresini çeşitli tarihlerde iskan etmişlerdir.",
+            "Karabük Divanı olarak da bilinen bu coğrafyada Çorum, İskilip, Osmancık gibi yerleşim birimlerinde Oğuzlar boyundan gelen birçok köy ve mevkii vardır.",
+            "1576 tarihi itibariyle Karabük Nahiyesi’ni oluşturan köylerin nüfusu 6.340 kişi civarındaydı ve bu bölge sosyal, kültürel olarak büyük bir hareket alanına sahipti.",
+            "Kızılırmak’ın kıvrımlı vadileri, yüksek dağlarla çevrili alanları ve kendine yetebilen yerleşim birimi olması; Oğuzlar halkının binlerce yıllık kültürünü korumasına hizmet etmiştir.",
+            "Giyim, yaşam, dil ve adetlerde görülen farklılıklar bu bölgenin içe kapalı ama kendine özgü zengin bir yaşam alanı olduğunu gösterir."
+        }, imageUrl: "https://picsum.photos/1600/900?random=66")
+    };
+
+    private static readonly GalleryFolderEntity[] DefaultGalleryFolders = new[]
+    {
+        CreateFolder("1", "Oguzlar Ceviz Festivali 2024", "oguzlar-ceviz-festivali-2024", "https://picsum.photos/id/10/800/600", 12, "15.10.2024"),
+        CreateFolder("2", "Altinkoz Tesisleri Açılışı", "altinkoz-tesisleri-acilisi", "https://picsum.photos/id/20/800/600", 8, "20.09.2024"),
+        CreateFolder("3", "Doğa Yürüyüşü Etkinliği", "doga-yuruyusu-etkinligi", "https://picsum.photos/id/28/800/600", 25, "05.09.2024"),
+        CreateFolder("4", "Obruk Barajı Manzaraları", "obruk-baraji-manzaralari", "https://picsum.photos/id/40/800/600", 15, "01.08.2024"),
+        CreateFolder("5", "Belediye Çalışmaları", "belediye-calismalari", "https://picsum.photos/id/50/800/600", 42, "12.07.2024"),
+        CreateFolder("6", "Köy Manzaraları", "koy-manzaralari", "https://picsum.photos/id/60/800/600", 10, "10.01.2024")
+    };
+
+    private static readonly GalleryImageEntity[] DefaultGalleryImages = BuildGalleryImages(DefaultGalleryFolders);
+
+    private static readonly CouncilDocumentEntity[] DefaultCouncilDocuments = new[]
+    {
+        new CouncilDocumentEntity
+        {
+            Id = 1,
+            Title = "2023 Mali Yıllık Faaliyet Raporu",
+            Type = "Rapor",
+            Date = new DateTime(2024, 1, 15),
+            Description = "2023 bütçesinin kapanışı, gelir-gider tabloları ve birim bazlı analizleri sunulmaktadır.",
+            FileUrl = "https://documents.oguzlar.bel.tr/faaliyet-2023.pdf"
+        },
+        new CouncilDocumentEntity
+        {
+            Id = 2,
+            Title = "2022 Faaliyet Raporu",
+            Type = "Rapor",
+            Date = new DateTime(2023, 1, 20),
+            Description = "2022 yılı boyunca yürütülen projelerin detaylı raporu."
+        },
+        new CouncilDocumentEntity
+        {
+            Id = 3,
+            Title = "Meclis Üyeleri ve Görev Dağılımı",
+            Type = "Liste",
+            Date = new DateTime(2024, 4, 1),
+            Description = "Güncel meclis üyeleri ve komisyon görevleri listesi.",
+            FileUrl = "https://documents.oguzlar.bel.tr/meclis-uyeleri.pdf"
+        }
+    };
+
+    private static readonly KvkkDocumentEntity[] DefaultKvkkDocuments = new[]
+    {
+        CreateKvkk(1, "Oğuzlar Belediyesi KVKK Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/oguzlar-belediyesi-kvkk-politikasi_17.pdf"),
+        CreateKvkk(2, "Oğuzlar Belediyesi KVKK Başvuru Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/kvkk-basvuru-formu_03.pdf"),
+        CreateKvkk(3, "Oğuzlar Belediye Sosyal Medya Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/sosyal-medya-aydinlatma-metni_21.pdf"),
+        CreateKvkk(4, "Oğuzlar Belediyesi Kişisel Veri Saklama ve İmha Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/kisisel-veri-saklama-ve-imha-politikasi_01.pdf"),
+        CreateKvkk(5, "Oğuzlar Belediyesi Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/aydinlatma-metni_52.pdf"),
+        CreateKvkk(6, "Oğuzlar Belediyesi Çerez Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/cerez-politikasi_55.pdf"),
+        CreateKvkk(7, "Oğuzlar Belediyesi İzin Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/izin-formu_58.pdf")
+    };
+
+    private static readonly MunicipalUnitEntity[] DefaultMunicipalUnits = new[]
+    {
+        CreateMunicipalUnit("ozel-kalem", "Özel Kalem, Basın ve Halkla İlişkiler", "Özel Kalem... programları düzenler.", "fa-pen-fancy",
+            new[]
+            {
+                new UnitStaff("Ahmet YILMAZ", "Özel Kalem Müdürü", "assets/images/placeholder-person.jpg")
+            }),
+        CreateMunicipalUnit("zabita", "Zabıta Amirliği", "Zabıta Amirliği, belde halkının esenlik...", "fa-shield-alt",
+            new[]
+            {
+                new UnitStaff("Ali KÖRENCİ", "Zabıta Amiri", "assets/images/zabita-amiri.jpg")
+            }),
+        CreateMunicipalUnit("mali-hizmetler", "Mali Hizmetler Müdürlüğü", "Mali Hizmetler Müdürlüğü, belediyenin mali kaynaklarını yönetir.", "fa-coins",
+            new[]
+            {
+                new UnitStaff("Mehmet DEMİR", "Mali Hizmetler Müdürü", "assets/images/placeholder-person.jpg")
+            }),
+        CreateMunicipalUnit("tahsilat-emlak", "Tahsilat ve Emlak Birimi", "Tahsilat ve Emlak Birimi, belediye gelirlerinin tahsilatını ve emlak işlemlerini yürütür.", "fa-file-invoice-dollar",
+            new[]
+            {
+                new UnitStaff("Ayşe KAYA", "Birim Sorumlusu", "assets/images/placeholder-person.jpg")
+            }),
+        CreateMunicipalUnit("yazi-isleri", "Yazı İşleri Müdürlüğü", "Yazı İşleri Müdürlüğü, belediyenin resmi yazışmalarını ve meclis kararlarını takip eder.", "fa-file-signature",
+            new[]
+            {
+                new UnitStaff("Fatma ÇELİK", "Yazı İşleri Müdürü", "assets/images/placeholder-person.jpg")
+            }),
+        CreateMunicipalUnit("fen-isleri", "Fen İşleri Müdürlüğü", "Fen İşleri Müdürlüğü, ilçenin altyapı ve istiyapı çalışmalarını yürütür.", "fa-hard-hat",
+            new[]
+            {
+                new UnitStaff("Mustafa ÇAHİN", "Fen İşleri Müdürü", "assets/images/placeholder-person.jpg")
+            })
+    };
+
+    private static readonly VehicleEntity[] DefaultVehicles = new[]
+    {
+        new VehicleEntity
+        {
+            Id = 1,
+            Name = "JCB Kazıcı Yükleyici",
+            Type = "İş Makinesi",
+            Plate = "19 AA 001",
+            Description = "Altyapı ve kazı çalışmalarında kullanılan çok amaçlı iş makinesi.",
+            ImageUrl = "assets/images/slider.jpg"
+        },
+        new VehicleEntity
+        {
+            Id = 2,
+            Name = "Ford Cargo Süpürge Kamyonu",
+            Type = "Hizmet Aracı",
+            Plate = "19 AA 002",
+            Description = "İlçemizin temizlik hizmetlerinde kullanılan hidrolik sıkıştırmalı süpürge kamyonu.",
+            ImageUrl = "assets/images/slider.jpg"
+        },
+        new VehicleEntity
+        {
+            Id = 3,
+            Name = "Mercedes-Benz İtfaiye Aracı",
+            Type = "Hizmet Aracı",
+            Plate = "19 AA 003",
+            Description = "Yangın ve kurtarma operasyonları için tam donanımlı araç.",
+            ImageUrl = "assets/images/slider.jpg"
+        },
+        new VehicleEntity
+        {
+            Id = 4,
+            Name = "Otokar Sultan Otobüs",
+            Type = "Toplu Taşıma",
+            Plate = "19 AA 004",
+            Description = "Vatandaşlarımızın ulaşımı için kullanılan şehir içi yolcu otobüsü.",
+            ImageUrl = "assets/images/slider.jpg"
+        },
+        new VehicleEntity
+        {
+            Id = 5,
+            Name = "Caterpillar Greyder",
+            Type = "İş Makinesi",
+            Plate = "19 AA 005",
+            Description = "Yol yapım ve bakım çalışmalarında kullanılan greyder.",
+            ImageUrl = "assets/images/slider.jpg"
+        },
+        new VehicleEntity
+        {
+            Id = 6,
+            Name = "Ford Transit Cenaze Aracı",
+            Type = "Hizmet Aracı",
+            Plate = "19 AA 006",
+            Description = "Cenaze nakil hizmetlerinde kullanılan soğutuculu araç.",
+            ImageUrl = "assets/images/slider.jpg"
+        }
+    };
+
+    private static readonly SliderEntity[] DefaultSliders = new[]
+    {
+        CreateSlider("1", "Hoş Geldiniz", "Oğuzlar Belediyesi Resmi Web Sitesi", "assets/images/slider.jpg", null, 1, true),
+        CreateSlider("2", "Kültür ve Sanat", "Etkinliklerimizden haberdar olun", "assets/images/slider2.jpg", null, 2, true)
+    };
+
+    private static SliderEntity CreateSlider(string id, string title, string description, string imageUrl, string? link, int order, bool isActive)
+    {
+        return new SliderEntity
+        {
+            Id = id,
+            Title = title,
+            Description = description,
+            ImageUrl = imageUrl,
+            Link = link,
+            Order = order,
+            IsActive = isActive
+        };
+    }
+
+    private static NewsEntity CreateNews(string slug, string date, string title, string description, string image, IEnumerable<string>? photos = null)
+    {
+        return new NewsEntity
+        {
+            Slug = slug,
+            Date = date,
+            Title = title,
+            Description = description,
+            Image = image,
+            PhotosJson = JsonSerializer.Serialize(photos ?? Array.Empty<string>(), JsonOptions)
+        };
+    }
+
+    private static PageContentEntity CreatePageContent(string key, string title, string subtitle, IEnumerable<string> paragraphs, string? imageUrl = null, string? mapEmbedUrl = null, IEnumerable<ContactDetail>? contactDetails = null)
+    {
+        return new PageContentEntity
+        {
+            Key = key,
+            Title = title,
+            Subtitle = subtitle,
+            ParagraphsJson = JsonSerializer.Serialize(paragraphs, JsonOptions),
+            ImageUrl = imageUrl,
+            MapEmbedUrl = mapEmbedUrl,
+            ContactDetailsJson = contactDetails is null ? null : JsonSerializer.Serialize(contactDetails, JsonOptions)
+        };
+    }
+
+    private static GalleryFolderEntity CreateFolder(string id, string title, string slug, string coverImage, int count, string date)
+    {
+        return new GalleryFolderEntity
+        {
+            Id = id,
+            Title = title,
+            Slug = slug,
+            CoverImage = coverImage,
+            ImageCount = count,
+            Date = date
+        };
+    }
+
+    private static GalleryImageEntity[] BuildGalleryImages(GalleryFolderEntity[] folders)
+    {
+        var list = new List<GalleryImageEntity>();
+
+        foreach (var folder in folders)
+        {
+            for (var i = 0; i < folder.ImageCount; i++)
+            {
+                var imageId = int.Parse(folder.Id) * 10 + i;
+                list.Add(new GalleryImageEntity
+                {
+                    Id = $"{folder.Id}-{i}",
+                    FolderId = folder.Id,
+                    Url = $"https://picsum.photos/id/{imageId}/1200/800",
+                    ThumbnailUrl = $"https://picsum.photos/id/{imageId}/400/300",
+                    Title = $"{folder.Title} - {i + 1}"
+                });
+            }
+        }
+
+        return list.ToArray();
+    }
+
+    private static KvkkDocumentEntity CreateKvkk(int id, string title, string type, string url)
+    {
+        return new KvkkDocumentEntity
+        {
+            Id = id,
+            Title = title,
+            Type = type,
+            FileUrl = url
+        };
+    }
+
+    private static MunicipalUnitEntity CreateMunicipalUnit(string id, string title, string? content, string icon, IEnumerable<UnitStaff> staff)
+    {
+        return new MunicipalUnitEntity
+        {
+            Id = id,
+            Title = title,
+            Content = content,
+            Icon = icon,
+            StaffJson = JsonSerializer.Serialize(staff, JsonOptions)
+        };
+    }
+}

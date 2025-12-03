@@ -15,5 +15,6 @@ export const environmentProd: EnvironmentConfig = {
   kvkkApiUrl: `${apiBaseUrl}/kvkk`,
   vehicleApiUrl: `${apiBaseUrl}/vehicles`,
   unitApiUrl: `${apiBaseUrl}/units`,
+  sliderApiUrl: `${apiBaseUrl}/sliders`,
   useMockData: true
 };

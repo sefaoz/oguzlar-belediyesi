@@ -3,7 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using OguzlarBelediyesi.Application;
+using OguzlarBelediyesi.Application.Contracts.Repositories;
+using OguzlarBelediyesi.Application.Contracts.Services;
 using OguzlarBelediyesi.Domain;
 using OguzlarBelediyesi.Infrastructure.Security;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NewsCard } from '../../shared/components/news-card/news-card';
 import { RouterModule } from '@angular/router';
@@ -13,6 +13,8 @@ import { NewsItem } from '../../shared/models/news.model';
 import { Announcement } from '../../shared/models/announcement.model';
 import { EventItem } from '../../shared/models/event.model';
 import { Tender } from '../../shared/models/tender.model';
+import { SliderService } from '../../services/slider.service';
+import { Slider } from '../../models/slider';
 
 @Component({
   selector: 'app-home',
@@ -21,12 +23,16 @@ import { Tender } from '../../shared/models/tender.model';
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   newsList: NewsItem[] = [];
   announcements: Announcement[] = [];
   events: EventItem[] = [];
   tenders: Tender[] = [];
   presidentMessage?: PageContentModel;
+
+  sliders: Slider[] = [];
+  currentSlideIndex = 0;
+  intervalId: any;
 
   constructor(
     private readonly newsService: NewsService,
@@ -34,7 +40,8 @@ export class HomeComponent implements OnInit {
     private readonly announcementService: AnnouncementService,
     private readonly eventService: EventService,
     private readonly tenderService: TenderService,
-    private readonly seoService: SeoService
+    private readonly seoService: SeoService,
+    private readonly sliderService: SliderService
   ) { }
 
   ngOnInit(): void {
@@ -58,10 +65,49 @@ export class HomeComponent implements OnInit {
       this.presidentMessage = content;
     });
 
+    this.sliderService.getSliders().subscribe(data => {
+      this.sliders = data.filter(s => s.isActive).sort((a, b) => a.order - b.order);
+      if (this.sliders.length > 0) {
+        this.startAutoSlide();
+      }
+    });
+
     this.seoService.updateSeo({
       title: 'Ana Sayfa',
       description: 'Oğuzlar Belediyesi resmi web sitesi. Haberler, projeler, etkinlikler ve belediye hizmetleri.',
       keywords: 'oğuzlar, belediye, çorum, oğuzlar belediyesi'
     });
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  startAutoSlide() {
+    this.intervalId = setInterval(() => {
+      this.nextSlide();
+    }, 5000);
+  }
+
+  nextSlide() {
+    if (this.sliders.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.sliders.length;
+    }
+  }
+
+  prevSlide() {
+    if (this.sliders.length > 0) {
+      this.currentSlideIndex = (this.currentSlideIndex - 1 + this.sliders.length) % this.sliders.length;
+    }
+  }
+
+  goToSlide(index: number) {
+    this.currentSlideIndex = index;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.startAutoSlide();
+    }
   }
 }
