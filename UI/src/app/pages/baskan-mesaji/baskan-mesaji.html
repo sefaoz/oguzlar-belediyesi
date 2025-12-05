@@ -12,8 +12,8 @@
                 <h2 class="text-3xl font-bold text-primary mb-2">{{ content?.title }}</h2>
                 <h3 class="text-xl text-accent font-semibold mb-6">{{ content?.subtitle }}</h3>
 
-                <div class="space-y-4 text-gray-700 leading-relaxed">
-                    <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
+                <div class="space-y-4 text-gray-700 leading-relaxed prose max-w-none">
+                    <div [innerHTML]="safeContent"></div>
                 </div>
             </div>
         </div>

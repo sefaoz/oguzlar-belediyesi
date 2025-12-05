@@ -1,6 +1,8 @@
 namespace OguzlarBelediyesi.Domain;
 
 public sealed record PageContent(
+    Guid Id,
+    string Key,
     string Title,
     string Subtitle,
     IReadOnlyList<string> Paragraphs,

@@ -24,6 +24,7 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
     public DbSet<MunicipalUnitEntity> MunicipalUnits => Set<MunicipalUnitEntity>();
     public DbSet<VehicleEntity> Vehicles => Set<VehicleEntity>();
     public DbSet<SliderEntity> Sliders => Set<SliderEntity>();
+    public DbSet<MenuItemEntity> MenuItems => Set<MenuItemEntity>();
     public DbSet<SerilogLogEntry> SerilogLogs => Set<SerilogLogEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -184,6 +185,19 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
             entity.Property(e => e.Link).HasMaxLength(512);
             entity.Property(e => e.Order);
             entity.Property(e => e.IsActive);
+        });
+
+        modelBuilder.Entity<MenuItemEntity>(entity =>
+        {
+            entity.ToTable("MenuItems");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Url).HasMaxLength(512);
+            entity.Property(e => e.ParentId);
+            entity.Property(e => e.Order);
+            entity.Property(e => e.IsVisible);
+            entity.Property(e => e.Target).HasMaxLength(16);
+            entity.HasIndex(e => e.ParentId);
         });
 
         modelBuilder.Entity<SerilogLogEntry>(entity =>

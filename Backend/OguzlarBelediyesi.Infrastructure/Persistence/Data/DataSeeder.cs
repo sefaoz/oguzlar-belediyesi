@@ -111,6 +111,12 @@ public sealed class DataSeeder
             shouldSave = true;
         }
 
+        if (!await _context.MenuItems.AnyAsync())
+        {
+            await _context.MenuItems.AddRangeAsync(DefaultMenuItems);
+            shouldSave = true;
+        }
+
         if (shouldSave)
         {
             await _context.SaveChangesAsync();
@@ -501,6 +507,297 @@ public sealed class DataSeeder
     {
         CreateSlider("1", "Hoş Geldiniz", "Oğuzlar Belediyesi Resmi Web Sitesi", "assets/images/slider.jpg", null, 1, true),
         CreateSlider("2", "Kültür ve Sanat", "Etkinliklerimizden haberdar olun", "assets/images/slider2.jpg", null, 2, true)
+    };
+
+    private static readonly Guid MenuHomeId = Guid.Parse("0115d0e3-4a6a-4d5f-9a53-1a5f1ed8a9f1");
+    private static readonly Guid MenuBaskanimizId = Guid.Parse("fa67a6eb-6b6a-4b66-9c3a-16fcf281e9ef");
+    private static readonly Guid MenuBaskanHakkindaId = Guid.Parse("a90cbe87-5b49-4d7a-9e24-1f2c6f7ab7df");
+    private static readonly Guid MenuBaskandanMesajId = Guid.Parse("16b574d8-4f7e-4c3b-9810-8c2e6f22506b");
+    private static readonly Guid MenuBaskanaMesajId = Guid.Parse("2ca6b3f0-4ee5-4a4d-9700-1f8f7c151a45");
+    private static readonly Guid MenuMeclisId = Guid.Parse("c56a3dbe-8a63-4c2b-8ea6-fc719b7224b3");
+    private static readonly Guid MenuHaberlerId = Guid.Parse("1c2d5eab-37f7-4eb7-927c-bfe4361d8f3a");
+    private static readonly Guid MenuKurumsalId = Guid.Parse("2f1d763a-1b3c-413e-8c6b-9db0bd1c8e5a");
+    private static readonly Guid MenuBelediyeEncumenId = Guid.Parse("f716c5c9-7c2a-4f5e-8b72-d2b9c160ef6d");
+    private static readonly Guid MenuAracParkiId = Guid.Parse("b798d1b1-8c62-405c-8c7d-3a8d5bfceb4e");
+    private static readonly Guid MenuKvkkId = Guid.Parse("5d8b3a67-545d-4764-9d49-4e1df1a5f2d2");
+    private static readonly Guid MenuBirimlerId = Guid.Parse("bf25a1ee-1f68-4c1e-9e37-974be48c6c01");
+    private static readonly Guid MenuOzelKalemId = Guid.Parse("bc62c0c8-2eff-4a4d-bd1b-2223bde7c78c");
+    private static readonly Guid MenuZabitaAmirligiId = Guid.Parse("739d1da7-47d4-4de9-8590-3a2b1f6b39d5");
+    private static readonly Guid MenuMaliHizmetlerId = Guid.Parse("8ef06010-2b83-4bf7-ab0d-7a5c32a8a613");
+    private static readonly Guid MenuTahsilatEmlakId = Guid.Parse("a8e56d20-b48c-4c5e-9f9a-2a226c2aa5de");
+    private static readonly Guid MenuYaziIsleriId = Guid.Parse("e8638eb8-3ba1-45b5-9d19-bc5b1e3f6e0f");
+    private static readonly Guid MenuFenIsleriId = Guid.Parse("03df9d1a-9f82-4db3-8d56-7d1d3d8f2f02");
+    private static readonly Guid MenuOguzlariKesfetId = Guid.Parse("3a7df0f4-1f24-4a80-bfa1-d7a0a2e2bbf1");
+    private static readonly Guid MenuIlcemizinTarihiId = Guid.Parse("bbf3a4d9-9ed1-4c63-9c1f-186e2f9300a4");
+    private static readonly Guid MenuCografiYapisiId = Guid.Parse("ab2b1d67-4794-4aae-b044-7e59b78c0c2d");
+    private static readonly Guid MenuKentRehberiId = Guid.Parse("a4183d5a-1d74-4ebc-8eb3-adeb34ef1e7a");
+    private static readonly Guid MenuGezilecekYerlerId = Guid.Parse("8bf21f8f-3cea-4cb9-9622-4e69cd76763e");
+    private static readonly Guid MenuTarihveKulturId = Guid.Parse("5f8d3c4b-f21a-4dfb-91e1-2ce65f3c4189");
+    private static readonly Guid MenuFotografGalerisiId = Guid.Parse("52e8c1b8-0ca7-4f19-8a29-3b7d1f8b1c7c");
+    private static readonly Guid MenuIletisimId = Guid.Parse("1a4a6149-7976-4f17-b6d4-8967cdb29990");
+
+    private static readonly MenuItemEntity[] DefaultMenuItems = new[]
+    {
+        new MenuItemEntity
+        {
+            Id = MenuHomeId,
+            Title = "Anasayfa",
+            Url = "/",
+            ParentId = null,
+            Order = 1,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBaskanimizId,
+            Title = "Başkanımız",
+            Url = "#",
+            ParentId = null,
+            Order = 2,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBaskanHakkindaId,
+            Title = "Başkan Hakkında",
+            Url = "/baskan-hakkinda",
+            ParentId = MenuBaskanimizId,
+            Order = 1,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBaskandanMesajId,
+            Title = "Başkandan Mesaj",
+            Url = "/baskandan-mesaj",
+            ParentId = MenuBaskanimizId,
+            Order = 2,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBaskanaMesajId,
+            Title = "Başkana Mesaj Yaz",
+            Url = "/baskana-mesaj",
+            ParentId = MenuBaskanimizId,
+            Order = 3,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuMeclisId,
+            Title = "Meclis",
+            Url = "/meclis",
+            ParentId = null,
+            Order = 3,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuHaberlerId,
+            Title = "Haberler",
+            Url = "/haberler",
+            ParentId = null,
+            Order = 4,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuKurumsalId,
+            Title = "Kurumsal",
+            Url = "#",
+            ParentId = null,
+            Order = 5,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBelediyeEncumenId,
+            Title = "Belediye Encümeni",
+            Url = "#",
+            ParentId = MenuKurumsalId,
+            Order = 1,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuAracParkiId,
+            Title = "Araç Parkı",
+            Url = "/arac-parki",
+            ParentId = MenuKurumsalId,
+            Order = 2,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuKvkkId,
+            Title = "KVKK",
+            Url = "/kvkk",
+            ParentId = MenuKurumsalId,
+            Order = 3,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuBirimlerId,
+            Title = "Birimler",
+            Url = "#",
+            ParentId = null,
+            Order = 6,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuOzelKalemId,
+            Title = "Özel Kalem, Basın ve Halkla İlişkiler",
+            Url = "/birimler/ozel-kalem",
+            ParentId = MenuBirimlerId,
+            Order = 1,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuZabitaAmirligiId,
+            Title = "Zabıta Amirliği",
+            Url = "/birimler/zabita",
+            ParentId = MenuBirimlerId,
+            Order = 2,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuMaliHizmetlerId,
+            Title = "Mali Hizmetler Müdürlüğü",
+            Url = "/birimler/mali-hizmetler",
+            ParentId = MenuBirimlerId,
+            Order = 3,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuTahsilatEmlakId,
+            Title = "Tahsilat ve Emlak Birimi",
+            Url = "/birimler/tahsilat-emlak",
+            ParentId = MenuBirimlerId,
+            Order = 4,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuYaziIsleriId,
+            Title = "Yazı İşleri Müdürlüğü",
+            Url = "/birimler/yazi-isleri",
+            ParentId = MenuBirimlerId,
+            Order = 5,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuFenIsleriId,
+            Title = "Fen İşleri Müdürlüğü",
+            Url = "/birimler/fen-isleri",
+            ParentId = MenuBirimlerId,
+            Order = 6,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuOguzlariKesfetId,
+            Title = "Oğuzlar'ı Keşfet",
+            Url = "#",
+            ParentId = null,
+            Order = 7,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuIlcemizinTarihiId,
+            Title = "İlçemizin Tarihi",
+            Url = "/ilcemizin-tarihi",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 1,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuCografiYapisiId,
+            Title = "Coğrafi Yapısı",
+            Url = "/cografi-yapi",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 2,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuKentRehberiId,
+            Title = "Kent Rehberi",
+            Url = "#",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 3,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuGezilecekYerlerId,
+            Title = "Gezilecek Yerler",
+            Url = "#",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 4,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuTarihveKulturId,
+            Title = "Tarih ve Kültür",
+            Url = "#",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 5,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuFotografGalerisiId,
+            Title = "Fotoğraf Galerisi",
+            Url = "/fotograf-galerisi",
+            ParentId = MenuOguzlariKesfetId,
+            Order = 6,
+            IsVisible = true,
+            Target = "_self"
+        },
+        new MenuItemEntity
+        {
+            Id = MenuIletisimId,
+            Title = "İletişim",
+            Url = "/iletisim",
+            ParentId = null,
+            Order = 8,
+            IsVisible = true,
+            Target = "_self"
+        }
     };
 
     private static SliderEntity CreateSlider(string id, string title, string description, string imageUrl, string? link, int order, bool isActive)

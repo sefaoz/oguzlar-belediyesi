@@ -4,6 +4,7 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-baskan-mesaji',
@@ -19,15 +20,20 @@ export class BaskanMesaji implements OnInit {
     { label: 'Başkanın Mesajı', url: '/baskandan-mesaj' }
   ];
   content?: PageContentModel;
+  safeContent: SafeHtml | null = null;
 
   constructor(
     private readonly pageContentService: PageContentService,
-    private readonly seoService: SeoService
+    private readonly seoService: SeoService,
+    private readonly sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
     this.pageContentService.getPageContent('baskan-mesaji').subscribe(content => {
       this.content = content;
+      if (this.content?.paragraphs) {
+        this.safeContent = this.sanitizer.bypassSecurityTrustHtml(this.content.paragraphs.join(''));
+      }
       this.seoService.updateSeo({
         title: 'Başkanın Mesajı',
         description: 'Oğuzlar Belediye Başkanı\'nın halka mesajı ve gelecek vizyonu.',

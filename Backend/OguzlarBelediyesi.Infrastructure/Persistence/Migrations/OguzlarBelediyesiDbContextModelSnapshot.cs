@@ -321,6 +321,42 @@ namespace OguzlarBelediyesi.Infrastructure.Persistence.Migrations
                     b.ToTable("KvkkDocuments", (string)null);
                 });
 
+            modelBuilder.Entity("OguzlarBelediyesi.Infrastructure.Persistence.Entities.MenuItemEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Target")
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("varchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("MenuItems", (string)null);
+                });
+
             modelBuilder.Entity("OguzlarBelediyesi.Infrastructure.Persistence.Entities.MunicipalUnitEntity", b =>
                 {
                     b.Property<string>("Id")

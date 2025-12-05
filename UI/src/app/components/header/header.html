@@ -32,122 +32,37 @@
 
             <!-- Desktop Menu with Dropdowns -->
             <nav class="hidden lg:flex items-center space-x-1">
-                <a href="/" class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Anasayfa</a>
+                <ng-container *ngFor="let menu of menus">
+                    <!-- Single Link -->
+                    <a *ngIf="!menu.children || menu.children.length === 0" [routerLink]="menu.url"
+                        [target]="menu.target || '_self'"
+                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 cursor-pointer">
+                        {{ menu.title }}
+                    </a>
 
-                <!-- Başkan Dropdown -->
-                <div class="relative" (mouseenter)="onMouseEnter('baskan')" (mouseleave)="onMouseLeave()">
-                    <button
-                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
-                        Başkanımız
-                        <i class="fas fa-chevron-down text-xs ml-2"></i>
-                    </button>
-                    <div *ngIf="activeDropdown === 'baskan'"
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
-                        (mouseenter)="onMouseEnter('baskan')" (mouseleave)="onMouseLeave()">
-                        <a routerLink="/baskan-hakkinda"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkan
-                            Hakkında</a>
-                        <a routerLink="/baskandan-mesaj"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkandan
-                            Mesaj</a>
-                        <a routerLink="/baskana-mesaj"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Başkana Mesaj
-                            Yaz</a>
+                    <!-- Dropdown Menu -->
+                    <div *ngIf="menu.children && menu.children.length > 0" class="relative"
+                        (mouseenter)="onMouseEnter(menu.id)" (mouseleave)="onMouseLeave()">
+                        <button
+                            class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
+                            {{ menu.title }}
+                            <i class="fas fa-chevron-down text-xs ml-2"></i>
+                        </button>
+                        <div *ngIf="activeDropdown === menu.id"
+                            class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
+                            (mouseenter)="onMouseEnter(menu.id)" (mouseleave)="onMouseLeave()">
+                            <ng-container *ngFor="let child of menu.children">
+                                <a [routerLink]="child.url" [target]="child.target || '_self'"
+                                    class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent cursor-pointer">
+                                    {{ child.title }}
+                                </a>
+                            </ng-container>
+                        </div>
                     </div>
-                </div>
-
-                <a routerLink="/meclis"
-                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Meclis</a>
-
-                <a routerLink="/haberler"
-                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">Haberler</a>
-
-                <!-- Kurumsal Dropdown -->
-                <div class="relative" (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
-                    <button
-                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
-                        Kurumsal
-                        <i class="fas fa-chevron-down text-xs ml-2"></i>
-                    </button>
-                    <div *ngIf="activeDropdown === 'kurumsal'"
-                        class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
-                        (mouseenter)="onMouseEnter('kurumsal')" (mouseleave)="onMouseLeave()">
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Belediye
-                            Encümenü</a>
-                        <a routerLink="/arac-parki"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Araç
-                            Parkı</a>
-                        <a routerLink="/kvkk"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">KVKK</a>
-                    </div>
-                </div>
-
-                <!-- Birimler Dropdown -->
-                <div class="relative" (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
-                    <button
-                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
-                        Birimler
-                        <i class="fas fa-chevron-down text-xs ml-2"></i>
-                    </button>
-                    <div *ngIf="activeDropdown === 'birimler'"
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
-                        (mouseenter)="onMouseEnter('birimler')" (mouseleave)="onMouseLeave()">
-                        <a href="/birimler/ozel-kalem"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Özel Kalem,
-                            Basın ve Halkla İlişkiler</a>
-                        <a href="/birimler/zabita"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Zabıta
-                            Amirliği</a>
-                        <a href="/birimler/mali-hizmetler"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Mali Hizmetler
-                            Müdürlüğü</a>
-                        <a href="/birimler/tahsilat-emlak"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tahsilat ve
-                            Emlak Birimi</a>
-                        <a href="/birimler/yazi-isleri"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Yazı İşleri
-                            Müdürlüğü</a>
-                        <a href="/birimler/fen-isleri"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fen İşleri
-                            Müdürlüğü</a>
-                    </div>
-                </div>
-
-                <!-- Oğuzlar'ı Keşfet Dropdown -->
-                <div class="relative" (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
-                    <button
-                        class="font-semibold text-white hover:text-accent transition-colors px-3 py-2 flex items-center">
-                        Oğuzlar'ı Keşfet
-                        <i class="fas fa-chevron-down text-xs ml-2"></i>
-                    </button>
-                    <div *ngIf="activeDropdown === 'kesfet'"
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 text-gray-700 dropdown-links"
-                        (mouseenter)="onMouseEnter('kesfet')" (mouseleave)="onMouseLeave()">
-                        <a routerLink="/ilcemizin-tarihi"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">İlçemizin
-                            Tarihi</a>
-                        <a href="/cografi-yapi"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Coğrafi
-                            Yapısı</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Kent
-                            Rehberi</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Gezilecek
-                            Yerler</a>
-                        <a href="#" class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Tarih
-                            ve
-                            Kültür</a>
-                        <div class="border-t my-1"></div>
-                        <a routerLink="/fotograf-galerisi"
-                            class="block px-4 py-2 text-sm hover:bg-light-gray hover:text-accent">Fotoğraf
-                            Galerisi</a>
-                    </div>
-                </div>
-
-                <a routerLink="/iletisim"
-                    class="font-semibold text-white hover:text-accent transition-colors px-3 py-2">İletişim</a>
+                </ng-container>
 
                 <a href="#"
-                    class="bg-primary text-white font-bold py-2 px-3 rounded-lg hover:bg-accent transition-colors">E-Belediye</a>
+                    class="bg-primary text-white font-bold py-2 px-3 rounded-lg hover:bg-accent transition-colors ml-4">E-Belediye</a>
             </nav>
         </div>
     </div>

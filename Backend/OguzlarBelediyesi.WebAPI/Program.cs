@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Application.Contracts.Services;
-using OguzlarBelediyesi.Application.Filters;
 using OguzlarBelediyesi.Domain;
 using OguzlarBelediyesi.Infrastructure.Logging;
 using OguzlarBelediyesi.Infrastructure.Persistence.Data;
@@ -14,7 +13,6 @@ using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 using OguzlarBelediyesi.Infrastructure.Persistence.Repositories;
 using OguzlarBelediyesi.Infrastructure.Security;
 using OguzlarBelediyesi.WebAPI.Filters;
-using OguzlarBelediyesi.WebAPI;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Serilog;
 
@@ -36,6 +34,13 @@ builder.Host.UseSerilog((context, services, configuration) =>
 await EnsureDatabaseExistsAsync(connectionString);
 
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<ActionLogFilter>();
+builder.Services.AddSingleton<CacheResultFilter>();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.AddService<ActionLogFilter>();
+    options.Filters.AddService<CacheResultFilter>();
+});
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IPageContentRepository, PageContentRepository>();
 builder.Services.AddScoped<IGalleryRepository, GalleryRepository>();
@@ -44,12 +49,11 @@ builder.Services.AddScoped<IKvkkRepository, KvkkRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IMunicipalUnitRepository, MunicipalUnitRepository>();
 builder.Services.AddScoped<ISliderRepository, SliderRepository>();
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ITenderRepository, TenderRepository>();
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<AspectCacheFilter>();
-builder.Services.AddScoped<AspectLogFilter>();
 builder.Services.AddDbContext<OguzlarBelediyesiDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
     {
@@ -107,232 +111,13 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 app.UseCors(OguzlarCorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapPost("/api/auth/login", async (LoginRequest request, IAuthenticationService authenticationService) =>
-{
-    var token = await authenticationService.AuthenticateAsync(request.Username, request.Password);
-    return token is not null ? Results.Ok(new { token }) : Results.Unauthorized();
-})
-    .WithName("Login")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/news", async (INewsRepository repository) =>
-{
-    var news = await repository.GetAllAsync();
-    return Results.Ok(news);
-})
-    .WithName("GetNews")
-    .WithMetadata(new CacheAttribute(60))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/news/{slug}", async (string slug, INewsRepository repository) =>
-{
-    var newsItem = await repository.GetBySlugAsync(slug);
-    return newsItem is not null ? Results.Ok(newsItem) : Results.NotFound();
-})
-    .WithName("GetNewsBySlug")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/pages/{key}", async (string key, IPageContentRepository repository) =>
-{
-    var pageContent = await repository.GetByKeyAsync(key);
-    return pageContent is not null ? Results.Ok(pageContent) : Results.NotFound();
-})
-    .WithName("GetPageContent")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/meclis", async (ICouncilRepository repository) =>
-{
-    var documents = await repository.GetAllAsync();
-    return Results.Ok(documents);
-})
-    .WithName("GetCouncilDocuments")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/gallery/folders", async (IGalleryRepository repository) =>
-{
-    var folders = await repository.GetFoldersAsync();
-    return Results.Ok(folders);
-})
-    .WithName("GetGalleryFolders")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/gallery/folders/{folderId}", async (string folderId, IGalleryRepository repository) =>
-{
-    var folder = await repository.GetFolderByIdAsync(folderId);
-    return folder is not null ? Results.Ok(folder) : Results.NotFound();
-})
-    .WithName("GetGalleryFolder")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/gallery/folders/slug/{slug}", async (string slug, IGalleryRepository repository) =>
-{
-    var folder = await repository.GetFolderBySlugAsync(slug);
-    return folder is not null ? Results.Ok(folder) : Results.NotFound();
-})
-    .WithName("GetGalleryFolderBySlug")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/gallery/folders/{folderId}/images", async (string folderId, IGalleryRepository repository) =>
-{
-    var images = await repository.GetImagesByFolderAsync(folderId);
-    return Results.Ok(images);
-})
-    .WithName("GetGalleryImages")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/kvkk", async (IKvkkRepository repository) =>
-{
-    var documents = await repository.GetAllAsync();
-    return Results.Ok(documents);
-})
-    .WithName("GetKvkkDocuments")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/vehicles", async (IVehicleRepository repository) =>
-{
-    var vehicles = await repository.GetAllAsync();
-    return Results.Ok(vehicles);
-})
-    .WithName("GetVehicles")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/sliders", async (ISliderRepository repository) =>
-{
-    var sliders = await repository.GetAllAsync();
-    return Results.Ok(sliders);
-})
-    .WithName("GetSliders")
-    .WithMetadata(new CacheAttribute(60))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapPost("/api/sliders", async (SliderRequest request, ISliderRepository repository) =>
-{
-    var slider = new Slider(Guid.NewGuid().ToString(), request.Title, request.Description, request.ImageUrl, request.Link, request.Order, request.IsActive);
-    await repository.AddAsync(slider);
-    await repository.SaveChangesAsync();
-    return Results.Created($"/api/sliders/{slider.Id}", slider);
-})
-    .WithName("CreateSlider")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapPut("/api/sliders/{id}", async (string id, SliderRequest request, ISliderRepository repository) =>
-{
-    var existing = await repository.GetByIdAsync(id);
-    if (existing is null)
-    {
-        return Results.NotFound();
-    }
-
-    var updated = existing with
-    {
-        Title = request.Title,
-        Description = request.Description,
-        ImageUrl = request.ImageUrl,
-        Link = request.Link,
-        Order = request.Order,
-        IsActive = request.IsActive
-    };
-
-    await repository.UpdateAsync(updated);
-    await repository.SaveChangesAsync();
-    return Results.NoContent();
-})
-    .WithName("UpdateSlider")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapDelete("/api/sliders/{id}", async (string id, ISliderRepository repository) =>
-{
-    await repository.DeleteAsync(id);
-    await repository.SaveChangesAsync();
-    return Results.NoContent();
-})
-    .WithName("DeleteSlider")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/units", async (IMunicipalUnitRepository repository) =>
-{
-    var units = await repository.GetAllAsync();
-    return Results.Ok(units);
-})
-    .WithName("GetMunicipalUnits")
-    .WithMetadata(new CacheAttribute(120))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/announcements", async ([AsParameters] AnnouncementQuery query, IAnnouncementRepository repository) =>
-{
-    var filter = new AnnouncementFilter(query.search, query.from, query.to);
-    var announcements = await repository.GetAllAsync(filter);
-    return Results.Ok(announcements);
-})
-    .WithName("GetAnnouncements")
-    .WithMetadata(new CacheAttribute(60))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/announcements/{slug}", async (string slug, IAnnouncementRepository repository) =>
-{
-    var announcement = await repository.GetBySlugAsync(slug);
-    return announcement is not null ? Results.Ok(announcement) : Results.NotFound();
-})
-    .WithName("GetAnnouncementBySlug")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/events", async ([AsParameters] EventQuery query, IEventRepository repository) =>
-{
-    var filter = new EventFilter(query.search, query.upcomingOnly);
-    var events = await repository.GetAllAsync(filter);
-    return Results.Ok(events);
-})
-    .WithName("GetEvents")
-    .WithMetadata(new CacheAttribute(60))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/events/{slug}", async (string slug, IEventRepository repository) =>
-{
-    var eventItem = await repository.GetBySlugAsync(slug);
-    return eventItem is not null ? Results.Ok(eventItem) : Results.NotFound();
-})
-    .WithName("GetEventBySlug")
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/tenders", async ([AsParameters] TenderQuery query, ITenderRepository repository) =>
-{
-    var filter = new TenderFilter(query.search, query.status);
-    var tenders = await repository.GetAllAsync(filter);
-    return Results.Ok(tenders);
-})
-    .WithName("GetTenders")
-    .WithMetadata(new CacheAttribute(60))
-    .AddEndpointFilter<AspectCacheFilter>()
-    .AddEndpointFilter<AspectLogFilter>();
-
-app.MapGet("/api/tenders/{slug}", async (string slug, ITenderRepository repository) =>
-{
-    var tender = await repository.GetBySlugAsync(slug);
-    return tender is not null ? Results.Ok(tender) : Results.NotFound();
-})
-    .WithName("GetTenderBySlug")
-    .AddEndpointFilter<AspectLogFilter>();
+app.MapControllers();
 
 app.Run();
 

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { MobileMenu } from '../mobile-menu/mobile-menu';
+import { MenuService } from '../../services/menu.service';
+import { Menu } from '../../models/menu';
 
 @Component({
   selector: 'app-header',
@@ -17,8 +19,12 @@ export class HeaderComponent implements OnInit {
   isHomePage = true;
   activeDropdown: string | null = null;
   hoverTimer: any;
+  menus: Menu[] = [];
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private menuService: MenuService
+  ) { }
 
   ngOnInit() {
     this.checkRoute(this.router.url);
@@ -28,6 +34,48 @@ export class HeaderComponent implements OnInit {
     ).subscribe((event: NavigationEnd) => {
       this.checkRoute(event.urlAfterRedirects || event.url);
     });
+    this.loadMenus();
+  }
+
+  loadMenus() {
+    this.menuService.getAll().subscribe(data => {
+      // Filter visible menus and sort by order
+      const visibleMenus = data.filter(m => m.isVisible).sort((a, b) => a.order - b.order);
+      this.menus = this.buildTree(visibleMenus);
+    });
+  }
+
+  buildTree(menus: Menu[]): Menu[] {
+    const map = new Map<string, Menu>();
+    const roots: Menu[] = [];
+
+    // Initialize map and children array
+    menus.forEach(menu => {
+      map.set(menu.id, { ...menu, children: [] });
+    });
+
+    // Connect children to parents
+    menus.forEach(menu => {
+      const node = map.get(menu.id);
+      if (menu.parentId && map.has(menu.parentId)) {
+        map.get(menu.parentId)!.children!.push(node!);
+      } else {
+        roots.push(node!);
+      }
+    });
+
+    // Sort children
+    const sortChildren = (items: Menu[]) => {
+      items.forEach(item => {
+        if (item.children && item.children.length > 0) {
+          item.children.sort((a, b) => a.order - b.order);
+          sortChildren(item.children);
+        }
+      });
+    };
+    sortChildren(roots);
+
+    return roots;
   }
 
   checkRoute(url: string) {

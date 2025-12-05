@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Menu } from '../../models/menu';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -11,6 +12,7 @@ import { RouterModule } from '@angular/router';
 })
 export class MobileMenu {
   @Output() closeMenu = new EventEmitter<void>();
+  @Input() menus: Menu[] = [];
   mobileSubmenu: string | null = null;
 
   toggleMobileSubmenu(menuName: string) {

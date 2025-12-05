@@ -53,6 +53,7 @@ export class AppMenu {
             {
                 label: 'Sistem',
                 items: [
+                    { label: 'Menü Yönetimi', icon: 'pi pi-fw pi-list', routerLink: ['/pages/menus'] },
                     { label: 'Kullanıcılar', icon: 'pi pi-fw pi-users', routerLink: ['/users'] },
                     { label: 'Site Ayarları', icon: 'pi pi-fw pi-cog', routerLink: ['/site-settings'] }
                 ]

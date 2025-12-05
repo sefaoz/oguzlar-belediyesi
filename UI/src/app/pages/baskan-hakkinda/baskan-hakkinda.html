@@ -7,15 +7,15 @@
                     class="w-full h-full object-cover absolute inset-0">
             </div>
 
-                <!-- Content Section -->
-                <div class="md:w-2/3 lg:w-3/4 p-8 md:p-12 flex flex-col justify-center">
-                    <h2 class="text-3xl font-bold text-primary mb-2">{{ content?.title }}</h2>
-                    <h3 class="text-xl text-accent font-semibold mb-6">{{ content?.subtitle }}</h3>
+            <!-- Content Section -->
+            <div class="md:w-2/3 lg:w-3/4 p-8 md:p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-primary mb-2">{{ content?.title }}</h2>
+                <h3 class="text-xl text-accent font-semibold mb-6">{{ content?.subtitle }}</h3>
 
-                    <div class="space-y-4 text-gray-700 leading-relaxed">
-                        <p *ngFor="let paragraph of content?.paragraphs">{{ paragraph }}</p>
-                    </div>
+                <div class="space-y-4 text-gray-700 leading-relaxed prose max-w-none">
+                    <div [innerHTML]="safeContent"></div>
                 </div>
+            </div>
         </div>
     </div>
 </app-page-container>

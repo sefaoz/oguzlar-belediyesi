@@ -20,6 +20,7 @@ import { Meclis } from './pages/meclis/meclis';
 import { Kvkk } from './pages/kvkk/kvkk';
 import { AracParki } from './pages/arac-parki/arac-parki';
 import { BirimlerComponent } from './pages/birimler/birimler';
+import { DynamicPageComponent } from './pages/dynamic-page/dynamic-page.component';
 
 export const routes: Routes = [
   {
@@ -47,7 +48,8 @@ export const routes: Routes = [
       { path: 'kvkk', component: Kvkk },
       { path: 'arac-parki', component: AracParki },
       { path: 'birimler', redirectTo: 'birimler/ozel-kalem', pathMatch: 'full' },
-      { path: 'birimler/:unit', component: BirimlerComponent }
+      { path: 'birimler/:unit', component: BirimlerComponent },
+      { path: ':slug', component: DynamicPageComponent }
     ]
   }
 ];
