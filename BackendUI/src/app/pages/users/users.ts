@@ -34,7 +34,7 @@ import { SelectModule } from 'primeng/select';
         PasswordModule,
         SelectModule
     ],
-    providers: [ConfirmationService, DatePipe, MessageService],
+    providers: [DatePipe],
     templateUrl: './users.html',
     styleUrl: './users.scss',
 })

@@ -10,6 +10,7 @@ public sealed class Event : BaseEntity
     public string Location { get; set; } = string.Empty;
 
     public DateTime EventDate { get; set; } = DateTime.UtcNow;
+    public string EventTime { get; set; } = string.Empty;
     public string? Image { get; set; }
     public string Slug { get; set; } = string.Empty;
 }

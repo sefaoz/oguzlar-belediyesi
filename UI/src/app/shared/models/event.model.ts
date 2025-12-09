@@ -1,6 +1,7 @@
 export interface EventItem {
   title: string;
-  date: string;
+  eventDate: string;
+  eventTime: string;
   location: string;
   image?: string;
   slug: string;

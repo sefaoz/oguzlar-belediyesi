@@ -23,6 +23,7 @@ public sealed class KvkkRepository : IKvkkRepository
     {
         var entities = await _context.KvkkDocuments
             .AsNoTracking()
+            .Where(d => !d.IsDeleted)
             .OrderBy(d => d.Title)
             .ToListAsync();
 
@@ -37,7 +38,7 @@ public sealed class KvkkRepository : IKvkkRepository
 
     public async Task<KvkkDocument?> GetByIdAsync(Guid id)
     {
-        var entity = await _context.KvkkDocuments.FindAsync(id);
+        var entity = await _context.KvkkDocuments.FirstOrDefaultAsync(d => d.Id == id && !d.IsDeleted);
         if (entity == null) return null;
 
         return new KvkkDocument
@@ -78,7 +79,8 @@ public sealed class KvkkRepository : IKvkkRepository
         var entity = await _context.KvkkDocuments.FindAsync(id);
         if (entity != null)
         {
-            _context.KvkkDocuments.Remove(entity);
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
         }
     }
 

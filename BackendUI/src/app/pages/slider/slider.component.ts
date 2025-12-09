@@ -47,7 +47,7 @@ import { environment } from '../../../environments/environment';
         ToggleSwitchModule,
         InputNumberModule
     ],
-    providers: [ConfirmationService],
+    providers: [],
     templateUrl: './slider.html',
     styleUrl: './slider.scss',
 })

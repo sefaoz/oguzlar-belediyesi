@@ -33,7 +33,7 @@ import { environment } from '../../../environments/environment';
         FileUploadModule,
         BlockUIModule
     ],
-    providers: [ConfirmationService, DatePipe, MessageService],
+    providers: [DatePipe],
     templateUrl: './kvkk-documents.component.html',
     styleUrl: './kvkk-documents.component.scss'
 })

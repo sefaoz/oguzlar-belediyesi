@@ -13,6 +13,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { MessageService, ConfirmationService, TreeNode } from 'primeng/api';
 import { MenuService } from '../../services/menu.service';
 import { Menu } from '../../models/menu';
+import { BlockUIModule } from 'primeng/blockui';
 
 @Component({
     selector: 'app-menu-management',
@@ -26,12 +27,11 @@ import { Menu } from '../../models/menu';
         InputTextModule,
         InputNumberModule,
         CheckboxModule,
-        ToastModule,
-        ConfirmDialogModule,
-        ToolbarModule
+        ToolbarModule,
+        BlockUIModule
     ],
     templateUrl: './menu-management.component.html',
-    providers: [MessageService, ConfirmationService]
+    providers: []
 })
 export class MenuManagementComponent implements OnInit {
     menus: TreeNode[] = [];
@@ -40,6 +40,7 @@ export class MenuManagementComponent implements OnInit {
     menu: Menu = this.createEmptyMenu();
     submitted: boolean = false;
     parentOptions: any[] = [];
+    isLoading: boolean = false;
 
     targetOptions = [
         { label: 'Aynı Sekme (_self)', value: '_self' },
@@ -143,6 +144,11 @@ export class MenuManagementComponent implements OnInit {
         this.submitted = true;
 
         if (this.menu.title?.trim()) {
+            this.isLoading = true;
+            const finalize = () => {
+                this.isLoading = false;
+            };
+
             if (this.menu.id) {
                 this.menuService.update(this.menu.id, this.menu).subscribe({
                     next: () => {
@@ -151,7 +157,8 @@ export class MenuManagementComponent implements OnInit {
                         this.menuDialog = false;
                         this.menu = this.createEmptyMenu();
                     },
-                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız.' })
+                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız.' }),
+                    complete: finalize
                 });
             } else {
                 this.menuService.create(this.menu).subscribe({
@@ -161,7 +168,8 @@ export class MenuManagementComponent implements OnInit {
                         this.menuDialog = false;
                         this.menu = this.createEmptyMenu();
                     },
-                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Oluşturma başarısız.' })
+                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Oluşturma başarısız.' }),
+                    complete: finalize
                 });
             }
         }

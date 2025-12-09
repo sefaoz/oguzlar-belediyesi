@@ -1,12 +1,17 @@
-export type TenderStatus = 'active' | 'passive' | 'completed';
-
 export interface Tender {
+  id: string;
   title: string;
-  date: string;
-  status: TenderStatus;
+  tenderDate: string;
+  status: string;
   registrationNumber: string;
   slug: string;
   description?: string;
   estimatedValue?: number;
-  publishedAt?: string;
+  documentsJson?: string;
+  createdDate?: string;
+}
+
+export interface TenderDocument {
+  Title: string;
+  Url: string;
 }

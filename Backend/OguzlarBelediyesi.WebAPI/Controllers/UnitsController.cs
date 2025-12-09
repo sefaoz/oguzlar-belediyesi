@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
@@ -37,6 +38,7 @@ public sealed class UnitsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [CacheInvalidate("Units")]
     public async Task<IActionResult> Create([FromForm] UnitUpsertRequest request)
     {
@@ -91,6 +93,7 @@ public sealed class UnitsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize]
     [CacheInvalidate("Units")]
     public async Task<IActionResult> Update(Guid id, [FromForm] UnitUpsertRequest request)
     {
@@ -135,6 +138,7 @@ public sealed class UnitsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
     [CacheInvalidate("Units")]
     public async Task<IActionResult> Delete(Guid id)
     {

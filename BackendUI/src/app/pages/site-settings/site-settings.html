@@ -1,0 +1,248 @@
+<div class="card mb-4">
+    <div class="flex items-center">
+        <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+        <span class="text-gray-500 mr-2">&gt;</span>
+        <span class="font-medium text-gray-900 dark:text-gray-100">Site Ayarları</span>
+    </div>
+</div>
+
+<p-tabs value="0" styleClass="card">
+    <p-tablist>
+        <p-tab value="0">Üst Bar (Topbar)</p-tab>
+        <p-tab value="1">Alt Bar (Footer)</p-tab>
+        <p-tab value="2">E-Belediye (Anasayfa)</p-tab>
+        <p-tab value="3">SEO Ayarları</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+        <!-- TOPBAR TAB -->
+        <p-tabpanel value="0">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-semibold">Üst Bar Linkleri</h5>
+                <button pButton label="Yeni Link Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNewTopbarLink()"></button>
+            </div>
+            <p-table [value]="topbarLinks" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Başlık</th>
+                        <th>URL</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-link let-i="rowIndex">
+                    <tr>
+                        <td>{{link.title}}</td>
+                        <td>{{link.url}}</td>
+                        <td>
+                            <button pButton icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="openEdit(link, 'topbar', i)"></button>
+                            <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteTopbarLink(i)"></button>
+                            <!-- Note: logic in TS was fuzzy on delete, I should fix keys -->
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabpanel>
+
+        <!-- FOOTER TAB -->
+        <p-tabpanel value="1">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Logo Content -->
+                <div>
+                    <h6 class="text-lg font-semibold mb-4 border-b pb-2">Logo Altı İçerik</h6>
+                    <div class="field">
+                        <label class="block mb-2 font-medium">İçerik Metni</label>
+                        <textarea pInputTextarea [(ngModel)]="footerLogoContent" rows="5" class="w-full"></textarea>
+                        <button pButton label="Kaydet" icon="pi pi-check" class="mt-2"
+                            (click)="saveFooterLogo()"></button>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div>
+                    <h6 class="text-lg font-semibold mb-4 border-b pb-2">Sosyal Medya Linkleri</h6>
+                    <div class="field mb-3">
+                        <label class="block mb-1">Facebook</label>
+                        <input pInputText [(ngModel)]="socialMedia.facebook" class="w-full"
+                            placeholder="https://facebook.com/..." />
+                    </div>
+                    <div class="field mb-3">
+                        <label class="block mb-1">Twitter (X)</label>
+                        <input pInputText [(ngModel)]="socialMedia.twitter" class="w-full"
+                            placeholder="https://twitter.com/..." />
+                    </div>
+                    <div class="field mb-3">
+                        <label class="block mb-1">Instagram</label>
+                        <input pInputText [(ngModel)]="socialMedia.instagram" class="w-full"
+                            placeholder="https://instagram.com/..." />
+                    </div>
+                    <div class="field mb-3">
+                        <label class="block mb-1">YouTube</label>
+                        <input pInputText [(ngModel)]="socialMedia.youtube" class="w-full"
+                            placeholder="https://youtube.com/..." />
+                    </div>
+                    <button pButton label="Kaydet" icon="pi pi-check" (click)="saveSocialMedia()"></button>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h6 class="text-lg font-semibold">Hızlı Linkler</h6>
+                    <button pButton label="Yeni Link Ekle" icon="pi pi-plus" class="p-button-success"
+                        (click)="openNewFooterLink()"></button>
+                </div>
+                <p-table [value]="footerQuickLinks" [tableStyle]="{'min-width': '50rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Başlık</th>
+                            <th>URL</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-link let-i="rowIndex">
+                        <tr>
+                            <td>{{link.title}}</td>
+                            <td>{{link.url}}</td>
+                            <td>
+                                <button pButton icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                    (click)="openEdit(link, 'footer', i)"></button>
+                                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"
+                                    (click)="deleteFooterLink(i)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </p-tabpanel>
+
+        <!-- E-MUNICIPALITY TAB -->
+        <p-tabpanel value="2">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-semibold">Kısayollar</h5>
+                <button pButton label="Yeni Kısayol Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNewEMunLink()"></button>
+            </div>
+            <p-table [value]="eMunicipalityLinks" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>İkon (FontAwesome)</th>
+                        <th>Başlık</th>
+                        <th>URL</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-link let-i="rowIndex">
+                    <tr>
+                        <td><i [class]="link.icon" class="text-xl"></i> ({{link.icon}})</td>
+                        <td>{{link.title}}</td>
+                        <td>{{link.url}}</td>
+                        <td>
+                            <button pButton icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="openEdit(link, 'emun', i)"></button>
+                            <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteEMunLink(i)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabpanel>
+
+        <!-- SEO TAB -->
+        <p-tabpanel value="3">
+            <h6 class="text-lg font-semibold mb-4 border-b pb-2">Genel SEO Bilgileri</h6>
+            <div class="field mb-4">
+                <label class="block mb-2 font-medium">Site Başlığı (Meta Title)</label>
+                <input pInputText [(ngModel)]="seoSettings.metaTitle" class="w-full" />
+            </div>
+            <div class="field mb-4">
+                <label class="block mb-2 font-medium">Site Açıklaması (Meta Description)</label>
+                <textarea pInputTextarea [(ngModel)]="seoSettings.metaDescription" rows="3" class="w-full"></textarea>
+            </div>
+            <div class="field mb-4">
+                <label class="block mb-2 font-medium">Anahtar Kelimeler (Meta Keywords)</label>
+                <textarea pInputTextarea [(ngModel)]="seoSettings.metaKeywords" rows="2" class="w-full"
+                    placeholder="Virgül ile ayırınız..."></textarea>
+            </div>
+            <button pButton label="Kaydet" icon="pi pi-check" (click)="saveSeo()"></button>
+        </p-tabpanel>
+    </p-tabpanels>
+</p-tabs>
+
+<!-- DIALOGS -->
+<!-- Topbar Dialog -->
+<p-dialog [(visible)]="topbarDialog" [header]="isNewTopbarLink ? 'Yeni Link' : 'Link Düzenle'" [modal]="true"
+    [style]="{width: '450px'}">
+    <div class="flex flex-col gap-4 mt-2">
+        <div class="field">
+            <label for="tbTitle">Başlık</label>
+            <input pInputText id="tbTitle" [(ngModel)]="selectedTopbarLink.title" class="w-full" autofocus />
+        </div>
+        <div class="field">
+            <label for="tbUrl">URL</label>
+            <input pInputText id="tbUrl" [(ngModel)]="selectedTopbarLink.url" class="w-full" />
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton label="İptal" icon="pi pi-times" class="p-button-text" (click)="topbarDialog=false"></button>
+        <button pButton label="Kaydet" icon="pi pi-check" (click)="confirmSave('topbar')"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Footer Dialog -->
+<p-dialog [(visible)]="footerDialog" [header]="isNewFooterLink ? 'Yeni Link' : 'Link Düzenle'" [modal]="true"
+    [style]="{width: '450px'}">
+    <div class="flex flex-col gap-4 mt-2">
+        <div class="field">
+            <label for="fbTitle">Başlık</label>
+            <input pInputText id="fbTitle" [(ngModel)]="selectedFooterLink.title" class="w-full" autofocus />
+        </div>
+        <div class="field">
+            <label for="fbUrl">URL</label>
+            <input pInputText id="fbUrl" [(ngModel)]="selectedFooterLink.url" class="w-full" />
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton label="İptal" icon="pi pi-times" class="p-button-text" (click)="footerDialog=false"></button>
+        <button pButton label="Kaydet" icon="pi pi-check" (click)="confirmSave('footer')"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- E-Municipality Dialog -->
+<p-dialog [(visible)]="eMunicipalityDialog" [header]="isNewEMunicipalityLink ? 'Yeni Kısayol' : 'Kısayol Düzenle'"
+    [modal]="true" [style]="{width: '450px'}">
+    <div class="flex flex-col gap-4 mt-2">
+        <div class="field">
+            <label for="emTitle">Başlık</label>
+            <input pInputText id="emTitle" [(ngModel)]="selectedEMunicipalityLink.title" class="w-full" autofocus />
+        </div>
+        <div class="field">
+            <label for="emUrl">URL</label>
+            <input pInputText id="emUrl" [(ngModel)]="selectedEMunicipalityLink.url" class="w-full" />
+        </div>
+        <div class="field">
+            <label for="emIcon">İkon (FontAwesome Class)</label>
+            <input pInputText id="emIcon" [(ngModel)]="selectedEMunicipalityLink.icon" class="w-full"
+                placeholder="Örn: fas fa-file" />
+            <small class="block mt-1">FontAwesome ikon sınıfını giriniz (örn: fas fa-wallet)</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton label="İptal" icon="pi pi-times" class="p-button-text"
+            (click)="eMunicipalityDialog=false"></button>
+        <button pButton label="Kaydet" icon="pi pi-check" (click)="confirmSave('emun')"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog header="Onay" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<p-blockUI [blocked]="isLoading">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>
+
+<p-toast></p-toast>

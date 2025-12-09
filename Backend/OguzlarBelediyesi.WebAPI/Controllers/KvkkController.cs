@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
@@ -28,6 +29,7 @@ public sealed class KvkkController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [CacheInvalidate("Kvkk")]
     public async Task<IActionResult> Create([FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file)
     {
@@ -51,6 +53,7 @@ public sealed class KvkkController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize]
     [CacheInvalidate("Kvkk")]
     public async Task<IActionResult> Update(Guid id, [FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file)
     {
@@ -71,6 +74,7 @@ public sealed class KvkkController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
     [CacheInvalidate("Kvkk")]
     public async Task<IActionResult> Delete(Guid id)
     {

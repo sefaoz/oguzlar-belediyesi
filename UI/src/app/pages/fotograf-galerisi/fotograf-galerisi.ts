@@ -6,10 +6,12 @@ import { GalleryService } from '../../shared/services/gallery.service';
 import { GalleryFolder, GalleryImage } from '../../shared/models/gallery.model';
 import { SeoService } from '../../shared/services/seo.service';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-fotograf-galerisi',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './fotograf-galerisi.html',
   styleUrls: ['./fotograf-galerisi.css']
 })

@@ -8,7 +8,7 @@
 
             <!-- Folder Cover -->
             <div class="relative h-56 overflow-hidden">
-                <img [src]="folder.coverImage" [alt]="folder.title"
+                <img [src]="folder.coverImage | imageUrl" [alt]="folder.title"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
 
@@ -46,7 +46,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div *ngFor="let image of images" (click)="openPreview(image)"
                 class="group relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-all">
-                <img [src]="image.thumbnailUrl" [alt]="image.title"
+                <img [src]="image.thumbnailUrl | imageUrl" [alt]="image.title"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 <div
                     class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -85,7 +85,7 @@
     <div class="relative z-10 max-w-7xl w-full max-h-full flex flex-col items-center justify-center pointer-events-none"
         (click)="$event.stopPropagation()">
         <!-- Image -->
-        <img [src]="selectedImage.url" [alt]="selectedImage.title"
+        <img [src]="selectedImage.url | imageUrl" [alt]="selectedImage.title"
             class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl animate-scale-in select-none pointer-events-auto">
 
         <!-- Caption -->

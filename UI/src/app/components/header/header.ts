@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { MobileMenu } from '../mobile-menu/mobile-menu';
 import { MenuService } from '../../services/menu.service';
 import { Menu } from '../../models/menu';
+import { SiteSettingsService } from '../../services/site-settings.service';
 
 @Component({
   selector: 'app-header',
@@ -20,13 +21,18 @@ export class HeaderComponent implements OnInit {
   activeDropdown: string | null = null;
   hoverTimer: any;
   menus: Menu[] = [];
+  topbarLinks: any[] = [];
 
   constructor(
     private router: Router,
-    private menuService: MenuService
+    private menuService: MenuService,
+    private siteSettingsService: SiteSettingsService
   ) { }
 
   ngOnInit() {
+    this.siteSettingsService.settings$.subscribe(() => {
+      this.topbarLinks = this.siteSettingsService.getJsonSetting<any[]>('Topbar', 'Links') || [];
+    });
     this.checkRoute(this.router.url);
 
     this.router.events.pipe(

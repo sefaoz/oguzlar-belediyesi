@@ -41,7 +41,7 @@ import { environment } from '../../../environments/environment';
     BlockUIModule,
     ProgressBarModule
   ],
-  providers: [ConfirmationService, DatePipe],
+  providers: [DatePipe],
   templateUrl: './news.html',
   styleUrl: './news.scss',
 })

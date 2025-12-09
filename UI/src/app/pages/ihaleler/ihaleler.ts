@@ -20,7 +20,13 @@ export class IhalelerComponent {
     { label: 'İhaleler', url: '/ihaleler' }
   ];
 
+  allTenders: Tender[] = [];
   tenders: Tender[] = [];
+
+  currentPage: number = 1;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
   constructor(
     private readonly tenderService: TenderService,
@@ -29,7 +35,9 @@ export class IhalelerComponent {
 
   ngOnInit() {
     this.tenderService.getTenders().subscribe(items => {
-      this.tenders = items;
+      this.allTenders = items.sort((a, b) => new Date(b.tenderDate).getTime() - new Date(a.tenderDate).getTime());
+      this.calculatePagination();
+      this.updatePage();
     });
 
     this.seoService.updateSeo({
@@ -37,5 +45,38 @@ export class IhalelerComponent {
       description: 'Oğuzlar Belediyesi güncel ihaleler, sonuçlanan ihaleler ve şartnameler.',
       slug: 'ihaleler'
     });
+  }
+
+  calculatePagination() {
+    this.totalPages = Math.ceil(this.allTenders.length / this.pageSize);
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  updatePage() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.tenders = this.allTenders.slice(startIndex, endIndex);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.updatePage();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePage();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePage();
+    }
   }
 }

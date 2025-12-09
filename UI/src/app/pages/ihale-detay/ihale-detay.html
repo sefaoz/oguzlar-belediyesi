@@ -12,8 +12,8 @@
                                 İhaleler
                             </span>
                             <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="{
-                                'bg-green-100 text-green-700': tender.status === 'active',
-                                'bg-red-100 text-red-700': tender.status !== 'active'
+                                'bg-green-100 text-green-700': getStatusLabel(tender.status) === 'Yayında',
+                                'bg-red-100 text-red-700': getStatusLabel(tender.status) !== 'Yayında'
                               }">
                                 {{ getStatusLabel(tender.status) }}
                             </span>
@@ -23,7 +23,7 @@
                         </h1>
                         <div class="flex items-center text-gray-500 text-sm">
                             <i class="far fa-calendar-alt mr-2"></i>
-                            <span>{{ tender.date }}</span>
+                            <span>{{ tender.tenderDate | date:'dd.MM.yyyy' }}</span>
                             <span class="mx-3">•</span>
                             <span class="font-mono">Kayıt No: {{ tender.registrationNumber }}</span>
                         </div>
@@ -35,80 +35,35 @@
                             {{ tender.title }} ihalesi ile ilgili detaylar aşağıda yer almaktadır.
                         </p>
 
-                        <!-- Dummy Body Content -->
-                        <div class="space-y-6">
-                            <h3 class="text-xl font-bold text-gray-900">İhale Hakkında</h3>
-                            <p>
-                                Belediyemiz Fen İşleri Müdürlüğü tarafından yürütülen {{ tender.title }} işi için ihale
-                                süreci başlamıştır.
-                                İhaleye katılmak isteyen isteklilerin aşağıda belirtilen şartları sağlaması
-                                gerekmektedir.
-                            </p>
+                        <!-- Dynamic Body Content -->
+                        <div class="space-y-6" [innerHTML]="tender.description"></div>
 
-                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-gray-900 mb-4">İhale Detay Tablosu</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div class="flex justify-between border-b border-gray-200 pb-2">
-                                        <span class="text-gray-500">İhale Kayıt Numarası:</span>
-                                        <span class="font-semibold">{{ tender.registrationNumber }}</span>
-                                    </div>
-                                    <div class="flex justify-between border-b border-gray-200 pb-2">
-                                        <span class="text-gray-500">İhale Tarihi:</span>
-                                        <span class="font-semibold">{{ tender.date }}</span>
-                                    </div>
-                                    <div class="flex justify-between border-b border-gray-200 pb-2">
-                                        <span class="text-gray-500">İhale Usulü:</span>
-                                        <span class="font-semibold">Açık İhale Usulü</span>
-                                    </div>
-                                    <div class="flex justify-between border-b border-gray-200 pb-2">
-                                        <span class="text-gray-500">İhale Türü:</span>
-                                        <span class="font-semibold">Hizmet Alımı</span>
-                                    </div>
-                                </div>
+                        <!-- Additional Info if needed, but description has most of it. Usually Editor content covers all text. -->
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-6"
+                            *ngIf="tender.estimatedValue">
+                            <h4 class="font-bold text-gray-900 mb-4">Ek Bilgiler</h4>
+                            <div class="flex justify-between border-b border-gray-200 pb-2">
+                                <span class="text-gray-500">Tahmini Bedel:</span>
+                                <span class="font-semibold">{{ tender.estimatedValue |
+                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
-
-                            <p>
-                                İhale dokümanı, idarenin adresinde görülebilir ve 500 TRY karşılığında aynı adresten
-                                satın alınabilir.
-                                İhaleye teklif verecek olanların ihale dokümanını satın almaları zorunludur.
-                            </p>
-
-                            <h3 class="text-xl font-bold text-gray-900 mt-6">Katılım Şartları</h3>
-                            <ul class="list-disc pl-5 space-y-2">
-                                <li>Mevzuatı gereği kayıtlı olduğu Ticaret ve/veya Sanayi Odası ya da ilgili Esnaf ve
-                                    Sanatkarlar Odası belgesi.</li>
-                                <li>Teklif vermeye yetkili olduğunu gösteren imza beyannamesi veya imza sirküleri.</li>
-                                <li>Şekli ve içeriği İdari Şartnamede belirlenen teklif mektubu.</li>
-                                <li>Şekli ve içeriği İdari Şartnamede belirlenen geçici teminat.</li>
-                            </ul>
                         </div>
                     </article>
 
                     <!-- Download Documents -->
-                    <div class="mt-10 pt-8 border-t border-gray-100">
+                    <div class="mt-10 pt-8 border-t border-gray-100" *ngIf="documents.length > 0">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">İhale Dokümanları</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <a href="#"
+                            <a *ngFor="let doc of documents" [href]="getFileUrl(doc.Url)" target="_blank"
                                 class="flex items-center p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-red-100 text-red-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                    <i class="far fa-file-pdf text-xl"></i>
+                                    [class]="getFileColorClass(doc.Title) + ' w-10 h-10 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform'">
+                                    <i [class]="getFileIcon(doc.Title) + ' text-xl'"></i>
                                 </div>
-                                <div>
-                                    <p class="font-semibold text-gray-900 group-hover:text-primary">İdari Şartname</p>
-                                    <p class="text-xs text-gray-500">PDF, 2.4 MB</p>
-                                </div>
-                                <i class="fas fa-download ml-auto text-gray-400 group-hover:text-primary"></i>
-                            </a>
-                            <a href="#"
-                                class="flex items-center p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                    <i class="far fa-file-word text-xl"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-900 group-hover:text-primary">Teknik Şartname</p>
-                                    <p class="text-xs text-gray-500">DOCX, 1.1 MB</p>
+                                <div class="overflow-hidden">
+                                    <p class="font-semibold text-gray-900 group-hover:text-primary truncate"
+                                        title="{{doc.Title}}">{{ doc.Title }}</p>
+                                    <p class="text-xs text-gray-500">Dosyayı İndir</p>
                                 </div>
                                 <i class="fas fa-download ml-auto text-gray-400 group-hover:text-primary"></i>
                             </a>
@@ -131,7 +86,7 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 font-medium">İhale Tarihi</p>
-                                    <p class="font-semibold">{{ tender.date }}</p>
+                                    <p class="font-semibold">{{ tender.tenderDate | date:'dd.MM.yyyy' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center text-gray-700">
@@ -152,8 +107,8 @@
                                 <div>
                                     <p class="text-xs text-gray-500 font-medium">Durum</p>
                                     <p class="font-semibold" [ngClass]="{
-                                        'text-green-600': tender.status === 'active',
-                                        'text-red-600': tender.status !== 'active'
+                                        'text-green-600': getStatusLabel(tender.status) === 'Yayında',
+                                        'text-red-600': getStatusLabel(tender.status) !== 'Yayında'
                                     }">{{ getStatusLabel(tender.status) }}</p>
                                 </div>
                             </div>
@@ -164,15 +119,15 @@
                     <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">Paylaş</h3>
                         <div class="flex flex-col gap-3">
-                            <button
+                            <button (click)="share('facebook')"
                                 class="flex items-center justify-center gap-3 w-full bg-[#1877F2] text-white py-2.5 rounded-lg hover:bg-[#1877F2]/90 transition-colors font-medium">
                                 <i class="fab fa-facebook-f"></i> Facebook
                             </button>
-                            <button
-                                class="flex items-center justify-center gap-3 w-full bg-[#1DA1F2] text-white py-2.5 rounded-lg hover:bg-[#1DA1F2]/90 transition-colors font-medium">
-                                <i class="fab fa-twitter"></i> Twitter
+                            <button (click)="share('twitter')"
+                                class="flex items-center justify-center gap-3 w-full bg-black text-white py-2.5 rounded-lg hover:bg-black/90 transition-colors font-medium">
+                                <i class="fa-brands fa-x-twitter"></i> Twitter
                             </button>
-                            <button
+                            <button (click)="share('whatsapp')"
                                 class="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-2.5 rounded-lg hover:bg-[#25D366]/90 transition-colors font-medium">
                                 <i class="fab fa-whatsapp"></i> WhatsApp
                             </button>

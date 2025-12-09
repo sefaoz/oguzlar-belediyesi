@@ -15,6 +15,7 @@ import { PageContentService } from '../../services/page-content.service';
 import { PageContent, ContactDetail } from '../../models/page-content';
 import { EditorModule } from 'primeng/editor';
 import { ImageModule } from 'primeng/image';
+import { BlockUIModule } from 'primeng/blockui';
 
 @Component({
     selector: 'app-page-content',
@@ -27,15 +28,14 @@ import { ImageModule } from 'primeng/image';
         DialogModule,
         InputTextModule,
         TextareaModule,
-        ToastModule,
         ToolbarModule,
-        ConfirmDialogModule,
         RouterModule,
         ImageModule,
-        EditorModule
+        EditorModule,
+        BlockUIModule
     ],
     templateUrl: './page-content.component.html',
-    providers: [MessageService, ConfirmationService]
+    providers: []
 })
 export class PageContentComponent implements OnInit {
     pageContents: PageContent[] = [];
@@ -44,6 +44,7 @@ export class PageContentComponent implements OnInit {
     submitted: boolean = false;
     paragraphsText: string = '';
     originalImageUrl: string | null = null;
+    isLoading: boolean = false;
 
     selectedImagePreview: string | null = null;
     selectedFile: File | null = null;
@@ -89,8 +90,7 @@ export class PageContentComponent implements OnInit {
 
     editPageContent(pageContent: PageContent) {
         this.pageContent = { ...pageContent };
-        // Join paragraphs with empty string if it's HTML content, or newline if it was text. 
-        // For now, join with nothing to keep HTML intact if it's split, or just take the first element if it's a single HTML block.
+        // Join paragraphs with empty string if it's HTML content
         this.paragraphsText = this.pageContent.paragraphs ? this.pageContent.paragraphs.join('') : '';
         this.originalImageUrl = pageContent.imageUrl || null;
         this.selectedImagePreview = null;
@@ -128,8 +128,13 @@ export class PageContentComponent implements OnInit {
         this.submitted = true;
 
         if (this.pageContent.title?.trim() && this.pageContent.key?.trim()) {
+            this.isLoading = true;
             // Save as single element array containing the HTML from editor
             this.pageContent.paragraphs = [this.paragraphsText];
+
+            const finalize = () => {
+                this.isLoading = false;
+            };
 
             if (this.pageContent.id) {
                 this.pageContentService.update(this.pageContent.id, this.pageContent, this.selectedFile || undefined).subscribe({
@@ -139,7 +144,8 @@ export class PageContentComponent implements OnInit {
                         this.pageContentDialog = false;
                         this.pageContent = this.createEmptyPageContent();
                     },
-                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız.' })
+                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız.' }),
+                    complete: finalize
                 });
             } else {
                 this.pageContentService.create(this.pageContent, this.selectedFile || undefined).subscribe({
@@ -149,7 +155,8 @@ export class PageContentComponent implements OnInit {
                         this.pageContentDialog = false;
                         this.pageContent = this.createEmptyPageContent();
                     },
-                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Oluşturma başarısız.' })
+                    error: () => this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Oluşturma başarısız.' }),
+                    complete: finalize
                 });
             }
         }

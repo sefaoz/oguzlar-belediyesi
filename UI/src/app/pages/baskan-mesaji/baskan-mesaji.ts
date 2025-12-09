@@ -6,10 +6,12 @@ import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-baskan-mesaji',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './baskan-mesaji.html',
   styleUrl: './baskan-mesaji.css',
 })

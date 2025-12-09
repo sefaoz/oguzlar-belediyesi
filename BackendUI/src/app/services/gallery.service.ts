@@ -20,11 +20,11 @@ export class GalleryService {
         return this.http.get<GalleryFolder>(`${this.apiUrl}/folders/${id}`);
     }
 
-    createFolder(data: { title: string, date: string, isFeatured: boolean, isActive: boolean }): Observable<GalleryFolder> {
+    createFolder(data: FormData): Observable<GalleryFolder> {
         return this.http.post<GalleryFolder>(`${this.apiUrl}/folders`, data);
     }
 
-    updateFolder(id: string, data: { title: string, date: string, isFeatured: boolean, isActive: boolean }): Observable<void> {
+    updateFolder(id: string, data: FormData): Observable<void> {
         return this.http.put<void>(`${this.apiUrl}/folders/${id}`, data);
     }
 

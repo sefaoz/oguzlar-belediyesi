@@ -23,6 +23,7 @@ public sealed class SliderRepository : ISliderRepository
     {
         var entities = await _context.Sliders
             .AsNoTracking()
+            .Where(s => !s.IsDeleted)
             .OrderBy(s => s.Order)
             .ToListAsync();
 
@@ -33,7 +34,7 @@ public sealed class SliderRepository : ISliderRepository
     {
         var entity = await _context.Sliders
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id);
+            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
         return entity is null ? null : Map(entity);
     }
 
@@ -53,7 +54,8 @@ public sealed class SliderRepository : ISliderRepository
         var entity = await _context.Sliders.FindAsync(id);
         if (entity is not null)
         {
-            _context.Sliders.Remove(entity);
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
         }
     }
 

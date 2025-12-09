@@ -37,7 +37,7 @@ import { environment } from '../../../environments/environment';
         EditorModule,
         BlockUIModule
     ],
-    providers: [ConfirmationService, DatePipe, MessageService],
+    providers: [DatePipe],
     templateUrl: './council-decisions.html',
     styleUrl: './council-decisions.scss',
 })

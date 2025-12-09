@@ -1,11 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, tap } from 'rxjs';
 import { ApiConfigService } from './api-config.service';
 
 interface LoginResponse {
     token: string;
+    refreshToken: string;
 }
 
 @Injectable({
@@ -15,6 +16,7 @@ export class AuthService {
     private readonly authTokenKey = 'auth_token';
     private readonly userInfoKey = 'user_info';
     private readonly expiresAtKey = 'expires_at';
+    private readonly refreshTokenKey = 'refresh_token';
 
     private readonly _isAuthenticated = signal<boolean>(false);
 
@@ -55,6 +57,7 @@ export class AuthService {
                     }
 
                     localStorage.setItem(this.authTokenKey, response.token);
+                    localStorage.setItem(this.refreshTokenKey, response.refreshToken);
                     localStorage.setItem(this.userInfoKey, JSON.stringify({ username: email.trim() }));
 
                     const expiresAt = this.getTokenExpiration(response.token);
@@ -74,11 +77,24 @@ export class AuthService {
         });
     }
 
+    refreshToken(): Observable<LoginResponse> {
+        const token = localStorage.getItem(this.authTokenKey);
+        const refreshToken = localStorage.getItem(this.refreshTokenKey);
+        const url = this.apiConfig.buildEndpoint('auth/refresh-token');
+
+        return this.http.post<LoginResponse>(url, { token, refreshToken }).pipe(
+            tap(response => {
+                localStorage.setItem(this.authTokenKey, response.token);
+                localStorage.setItem(this.refreshTokenKey, response.refreshToken);
+            })
+        );
+    }
+
     logout(): void {
         localStorage.removeItem(this.authTokenKey);
         localStorage.removeItem(this.userInfoKey);
         localStorage.removeItem(this.expiresAtKey);
-        localStorage.removeItem('refresh_token');
+        localStorage.removeItem(this.refreshTokenKey);
         this._isAuthenticated.set(false);
         this.router.navigate(['/auth/login']);
     }

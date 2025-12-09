@@ -5,6 +5,8 @@ export interface GalleryFolder {
     imageCount: number;
     date: string;
     slug: string;
+    isFeatured: boolean;
+    isActive: boolean;
 }
 
 export interface GalleryImage {

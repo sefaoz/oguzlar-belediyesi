@@ -45,7 +45,7 @@ import { environment } from '../../../environments/environment';
         TagModule,
         SelectModule
     ],
-    providers: [ConfirmationService, DatePipe],
+    providers: [DatePipe],
     templateUrl: './tenders.html',
     styleUrl: './tenders.scss',
 })

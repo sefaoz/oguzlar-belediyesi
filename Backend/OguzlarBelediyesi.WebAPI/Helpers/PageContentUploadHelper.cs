@@ -50,18 +50,17 @@ public static class PageContentUploadHelper
         }
 
         var sanitizedKey = SanitizePathSegment(pageKey);
-        var targetDirectory = Path.Combine(webRootPath, "uploads", "pages", sanitizedKey);
-        Directory.CreateDirectory(targetDirectory);
+        var folderPath = Path.Combine("uploads", "pages", sanitizedKey);
 
-        var extension = Path.GetExtension(file.FileName);
-        var fileName = $"{Guid.NewGuid()}{extension}";
-        var targetPath = Path.Combine(targetDirectory, fileName);
+        var relativeUrl = await ImageHelper.SaveImageAsWebPAsync(file, folderPath, webRootPath);
 
-        await using var stream = File.Create(targetPath);
-        await file.CopyToAsync(stream);
+        if (string.IsNullOrEmpty(relativeUrl))
+        {
+            return null;
+        }
 
         var trimmedBaseUri = baseUri.TrimEnd('/');
-        return $"{trimmedBaseUri}/uploads/pages/{sanitizedKey}/{fileName}";
+        return $"{trimmedBaseUri}{relativeUrl}";
     }
 
     public static void DeleteStoredImageIfLocal(string? imageUrl, string baseUri, string webRootPath)

@@ -32,7 +32,8 @@ export class AppMenu {
                     { label: 'Etkinlikler', icon: 'pi pi-fw pi-calendar', routerLink: ['/pages/events'] },
                     { label: 'İhaleler', icon: 'pi pi-fw pi-briefcase', routerLink: ['/pages/tenders'] },
                     { label: 'Slider', icon: 'pi pi-fw pi-images', routerLink: ['/pages/slider'] },
-                    { label: 'Sayfa İçerikleri', icon: 'pi pi-fw pi-file-edit', routerLink: ['/pages'] }
+                    { label: 'Sayfa İçerikleri', icon: 'pi pi-fw pi-file-edit', routerLink: ['/pages'] },
+                    { label: 'Mesajlar', icon: 'pi pi-fw pi-envelope', routerLink: ['/pages/contact-messages'] }
                 ]
             },
             {

@@ -173,16 +173,16 @@
 
     <ng-template pTemplate="footer">
         <button pButton label="Vazgeç" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveUnit()"></button>
+        <button pButton label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveUnit()"
+            [loading]="isLoading"></button>
     </ng-template>
 </p-dialog>
 
 <p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
     <div class="flex flex-col items-center justify-center gap-3"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; z-index: 100000;">
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
         <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
-        <div class="font-bold text-xl">İşlem yapılıyor...</div>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
     </div>
 </p-blockUI>
-
-<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

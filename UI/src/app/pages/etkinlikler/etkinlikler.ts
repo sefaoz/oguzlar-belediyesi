@@ -20,7 +20,14 @@ export class EtkinliklerComponent {
     { label: 'Etkinlikler', url: '/etkinlikler' }
   ];
 
+  allEvents: EventItem[] = [];
   events: EventItem[] = [];
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 9;
+  totalPages = 0;
+  pages: number[] = [];
 
   constructor(
     private readonly eventService: EventService,
@@ -28,8 +35,9 @@ export class EtkinliklerComponent {
   ) { }
 
   ngOnInit() {
-    this.eventService.getEvents({ upcomingOnly: true }).subscribe(items => {
-      this.events = items;
+    this.eventService.getEvents().subscribe(items => {
+      this.allEvents = items;
+      this.updatePagination();
     });
 
     this.seoService.updateSeo({
@@ -37,5 +45,30 @@ export class EtkinliklerComponent {
       description: 'Oğuzlar Belediyesi etkinlik takvimi, festivaller ve kültürel organizasyonlar.',
       slug: 'etkinlikler'
     });
+  }
+
+  updatePagination() {
+    this.totalPages = Math.ceil(this.allEvents.length / this.pageSize);
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.events = this.allEvents.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  prevPage() {
+    this.changePage(this.currentPage - 1);
+  }
+
+  nextPage() {
+    this.changePage(this.currentPage + 1);
   }
 }

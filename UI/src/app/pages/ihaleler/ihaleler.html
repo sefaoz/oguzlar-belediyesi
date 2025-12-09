@@ -23,19 +23,26 @@
                 </div>
             </ng-template>
 
-            <!-- Pagination (Dummy) -->
-            <div class="mt-12 flex justify-center" *ngIf="tenders.length > 0">
+            <!-- Pagination -->
+            <div class="mt-12 flex justify-center" *ngIf="totalPages > 1">
                 <nav class="flex items-center space-x-2">
-                    <button
-                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
+                    <button (click)="prevPage()" [disabled]="currentPage === 1"
+                        [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === 1, 'hover:bg-gray-50': currentPage !== 1}"
+                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button
-                        class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-medium">1</button>
-                    <button
-                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">2</button>
-                    <button
-                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
+
+                    <button *ngFor="let page of pages" (click)="goToPage(page)" [ngClass]="{
+                            'bg-primary text-white border-primary': currentPage === page,
+                            'border-gray-200 text-gray-700 hover:bg-gray-50': currentPage !== page
+                        }"
+                        class="w-10 h-10 flex items-center justify-center rounded-lg border font-medium transition-colors">
+                        {{ page }}
+                    </button>
+
+                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                        [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === totalPages, 'hover:bg-gray-50': currentPage !== totalPages}"
+                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </nav>

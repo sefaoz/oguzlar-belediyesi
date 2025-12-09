@@ -56,6 +56,7 @@ public sealed class EventsController : ControllerBase
             Id = Guid.NewGuid(),
             Image = image,
             EventDate = request.EventDate,
+            EventTime = request.EventTime,
             Title = request.Title,
             Description = request.Description,
             Location = request.Location,
@@ -99,6 +100,7 @@ public sealed class EventsController : ControllerBase
         existing.Description = request.Description;
         existing.Location = request.Location;
         existing.EventDate = request.EventDate;
+        existing.EventTime = request.EventTime;
         existing.Image = image;
         existing.Slug = slug;
 

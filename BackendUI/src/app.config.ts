@@ -9,7 +9,7 @@ import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { definePreset } from '@primeuix/themes';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 registerLocaleData(localeTr);
 
@@ -87,6 +87,7 @@ export const appConfig: ApplicationConfig = {
                 clear: 'Temizle'
             }
         }),
-        MessageService
+        MessageService,
+        ConfirmationService
     ]
 };

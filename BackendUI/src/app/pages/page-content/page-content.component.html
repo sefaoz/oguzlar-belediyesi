@@ -204,9 +204,16 @@
             <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
                 (click)="hideDialog()"></button>
             <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary"
-                (click)="savePageContent()"></button>
+                (click)="savePageContent()" [loading]="isLoading"></button>
         </div>
     </ng-template>
 </p-dialog>
 
-<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>

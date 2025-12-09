@@ -26,6 +26,7 @@ public sealed class MunicipalUnitRepository : IMunicipalUnitRepository
     {
         var entities = await _context.MunicipalUnits
             .AsNoTracking()
+            .Where(u => !u.IsDeleted)
             .OrderBy(u => u.Title)
             .ToListAsync();
 

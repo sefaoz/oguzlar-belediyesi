@@ -41,7 +41,7 @@ import { environment } from '../../../environments/environment';
         BlockUIModule,
         ProgressBarModule
     ],
-    providers: [ConfirmationService, DatePipe],
+    providers: [DatePipe],
     templateUrl: './events.html',
     styleUrl: './events.scss',
 })
@@ -83,6 +83,7 @@ export class EventsComponent implements OnInit {
         const today = new Date();
         // input type="date" formatı: yyyy-MM-dd
         this.eventItem.eventDate = this.datePipe.transform(today, 'yyyy-MM-dd') || '';
+        this.eventItem.eventTime = this.datePipe.transform(today, 'HH:mm') || '';
 
         this.submitted = false;
         this.eventDialog = true;
@@ -150,7 +151,7 @@ export class EventsComponent implements OnInit {
     saveEvent() {
         this.submitted = true;
 
-        if (this.eventItem.title?.trim() && this.eventItem.location?.trim() && this.eventItem.eventDate) {
+        if (this.eventItem.title?.trim() && this.eventItem.location?.trim() && this.eventItem.eventDate && this.eventItem.eventTime) {
             this.isLoading = true;
             this.progressValue = 0;
             this.startTimer();

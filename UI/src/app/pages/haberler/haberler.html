@@ -1,18 +1,19 @@
 <app-page-container title="Haberler" [breadcrumbSteps]="breadcrumbSteps">
     <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div class="flex gap-4 w-full md:w-auto items-center">
-            <select [(ngModel)]="selectedMonth"
+            <select [(ngModel)]="selectedMonth" (ngModelChange)="onFilterChange()"
                 class="w-full md:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-white">
                 <option *ngFor="let month of months" [ngValue]="month.value">{{ month.label }}</option>
             </select>
-            <select [(ngModel)]="selectedYear"
+            <select [(ngModel)]="selectedYear" (ngModelChange)="onFilterChange()"
                 class="w-full md:w-32 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-white">
                 <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
             </select>
         </div>
 
         <div class="relative w-full md:w-64">
-            <input type="text" [(ngModel)]="searchTerm" placeholder="Haberlerde ara..."
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()"
+                placeholder="Haberlerde ara..."
                 class="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i class="fas fa-search text-gray-400"></i>
@@ -21,8 +22,8 @@
     </div>
 
     <!-- News Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" *ngIf="filteredNews.length > 0; else noNews">
-        <app-news-card *ngFor="let news of filteredNews" [news]="news"></app-news-card>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" *ngIf="paginatedNews.length > 0; else noNews">
+        <app-news-card *ngFor="let news of paginatedNews" [news]="news"></app-news-card>
     </div>
 
     <!-- No News Template -->
@@ -39,21 +40,22 @@
         </div>
     </ng-template>
 
-    <!-- Pagination (Static for now) -->
-    <div class="flex justify-center my-12" *ngIf="filteredNews.length > 0">
+    <!-- Pagination -->
+    <div class="flex justify-center my-12" *ngIf="totalPages > 1">
         <nav class="flex items-center space-x-2">
-            <button
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+            <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <button
-                class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-medium">1</button>
-            <button
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">2</button>
-            <button
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">3</button>
-            <button
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50">
+
+            <button *ngFor="let page of pages" (click)="changePage(page)"
+                class="w-10 h-10 flex items-center justify-center rounded-lg font-medium transition-colors"
+                [ngClass]="{'bg-primary text-white': currentPage === page, 'border border-gray-200 text-gray-700 hover:bg-gray-50': currentPage !== page}">
+                {{ page }}
+            </button>
+
+            <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-chevron-right"></i>
             </button>
         </nav>

@@ -5,10 +5,12 @@ import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-tarihimiz',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './tarihimiz.html',
   styleUrl: './tarihimiz.css',
 })

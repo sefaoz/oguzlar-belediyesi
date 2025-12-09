@@ -1,6 +1,8 @@
 using System;
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
@@ -11,7 +13,6 @@ using OguzlarBelediyesi.Infrastructure.Logging;
 using OguzlarBelediyesi.Infrastructure.Persistence.Data;
 using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 using OguzlarBelediyesi.Infrastructure.Persistence.Repositories;
-using OguzlarBelediyesi.Infrastructure.Security;
 using OguzlarBelediyesi.Infrastructure.Security;
 using OguzlarBelediyesi.WebAPI.Filters;
 using OguzlarBelediyesi.WebAPI.Services;
@@ -70,6 +71,8 @@ builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ITenderRepository, TenderRepository>();
+builder.Services.AddScoped<ISiteSettingsRepository, SiteSettingsRepository>();
+builder.Services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
 builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<OguzlarBelediyesiDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
@@ -114,6 +117,41 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Rate Limiting yapılandırması - Brute-force saldırılarına karşı koruma
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    
+    // Genel API limiti: IP başına dakikada 100 istek
+    options.AddFixedWindowLimiter("fixed", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 100;
+        limiterOptions.Window = TimeSpan.FromMinutes(1);
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 5;
+    });
+    
+    // Login endpoint için özel sıkı limit: IP başına dakikada 5 deneme
+    options.AddFixedWindowLimiter("auth", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 5;
+        limiterOptions.Window = TimeSpan.FromMinutes(1);
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 0;
+    });
+    
+    // Global fallback policy
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 200,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -131,6 +169,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(OguzlarCorsPolicy);
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

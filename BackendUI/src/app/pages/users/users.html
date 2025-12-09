@@ -96,8 +96,8 @@
         <div class="flex justify-end gap-2 pt-2">
             <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
                 (click)="hideDialog()"></button>
-            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary"
-                (click)="saveUser()"></button>
+            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveUser()"
+                [loading]="isLoading"></button>
         </div>
     </ng-template>
 </p-dialog>
@@ -110,5 +110,3 @@
         <div class="text-sm">Lütfen bekleyiniz.</div>
     </div>
 </p-blockUI>
-
-<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

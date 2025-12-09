@@ -6,6 +6,7 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
 import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
+import { ContactMessageService } from '../../shared/services/contact-message.service';
 
 @Component({
   selector: 'app-iletisim',
@@ -27,7 +28,8 @@ export class IletisimComponent implements OnInit {
     private fb: FormBuilder,
     private readonly pageContentService: PageContentService,
     private sanitizer: DomSanitizer,
-    private readonly seoService: SeoService
+    private readonly seoService: SeoService,
+    private readonly contactMessageService: ContactMessageService
   ) {
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
@@ -37,7 +39,7 @@ export class IletisimComponent implements OnInit {
       kvkk: [false, Validators.requiredTrue]
     });
 
-    // Set default safe URL initially
+    // Varsayılan harita URL'si
     this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       'https://maps.google.com/maps?q=Oğuzlar+Belediyesi+Çorum&t=&z=15&ie=UTF8&iwloc=&output=embed'
     );
@@ -45,12 +47,17 @@ export class IletisimComponent implements OnInit {
 
   isLoading = false;
   content?: PageContentModel;
+  submitSuccess = false;
+  submitError = '';
 
   ngOnInit(): void {
     this.pageContentService.getPageContent('iletisim').subscribe(content => {
       this.content = content;
       if (content?.mapEmbedUrl) {
-        this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(content.mapEmbedUrl);
+        // URL güvenlik kontrolü
+        if (content.mapEmbedUrl.startsWith('https://www.google.com/maps') || content.mapEmbedUrl.startsWith('https://maps.google.com')) {
+          this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(content.mapEmbedUrl);
+        }
       }
       this.seoService.updateSeo({
         title: 'İletişim',
@@ -63,16 +70,35 @@ export class IletisimComponent implements OnInit {
   onSubmit() {
     if (this.contactForm.valid) {
       this.isLoading = true;
-      console.log('Form submitted:', this.contactForm.value);
+      this.submitError = '';
+      this.submitSuccess = false;
 
-      // Simulate API call
-      setTimeout(() => {
-        this.isLoading = false;
-        alert('Mesajınız başarıyla iletildi. Teşekkür ederiz.');
-        this.contactForm.reset();
-      }, 2000);
+      const formValue = this.contactForm.value;
+      const request = {
+        name: formValue.name,
+        email: formValue.email,
+        phone: formValue.phone,
+        message: formValue.message,
+        kvkkAccepted: formValue.kvkk
+      };
+
+      this.contactMessageService.sendContactMessage(request).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.submitSuccess = true;
+          alert(response.message || 'Mesajınız başarıyla iletildi. Teşekkür ederiz.');
+          this.contactForm.reset();
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.submitError = 'Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
+          console.error('Form gönderme hatası:', error);
+          alert(this.submitError);
+        }
+      });
     } else {
       this.contactForm.markAllAsTouched();
     }
   }
 }
+

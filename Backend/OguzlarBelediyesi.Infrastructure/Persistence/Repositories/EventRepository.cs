@@ -21,7 +21,7 @@ public sealed class EventRepository : IEventRepository
 
     public async Task<IEnumerable<Event>> GetAllAsync(EventFilter? filter = null)
     {
-        IQueryable<Event> query = _context.Events.AsNoTracking();
+        IQueryable<Event> query = _context.Events.AsNoTracking().Where(e => !e.IsDeleted);
 
         if (filter?.UpcomingOnly ?? false)
         {
@@ -47,18 +47,18 @@ public sealed class EventRepository : IEventRepository
     {
         var normalized = slug.Trim().ToLowerInvariant();
         return _context.Events.AsNoTracking()
-            .FirstOrDefaultAsync(e => e.Slug.ToLower() == normalized);
+            .FirstOrDefaultAsync(e => e.Slug.ToLower() == normalized && !e.IsDeleted);
     }
 
 
     public Task<Event?> GetByIdAsync(Guid id)
     {
-        return _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+        return _context.Events.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
     }
 
     public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null)
     {
-        var query = _context.Events.AsNoTracking().Where(e => e.Slug == slug);
+        var query = _context.Events.AsNoTracking().Where(e => e.Slug == slug && !e.IsDeleted);
         if (excludeId.HasValue)
         {
             query = query.Where(e => e.Id != excludeId.Value);
@@ -82,7 +82,8 @@ public sealed class EventRepository : IEventRepository
         var eventItem = await _context.Events.FindAsync(id);
         if (eventItem != null)
         {
-            _context.Events.Remove(eventItem);
+            eventItem.IsDeleted = true;
+            eventItem.UpdateDate = DateTime.UtcNow;
         }
     }
 

@@ -23,6 +23,7 @@ public sealed class GalleryRepository : IGalleryRepository
     {
         var folders = await _context.GalleryFolders
             .AsNoTracking()
+            .Where(g => !g.IsDeleted)
             .OrderBy(g => g.Title)
             .ToListAsync();
 
@@ -33,7 +34,7 @@ public sealed class GalleryRepository : IGalleryRepository
     {
         var entity = await _context.GalleryFolders
             .AsNoTracking()
-            .FirstOrDefaultAsync(g => g.Id == folderId);
+            .FirstOrDefaultAsync(g => g.Id == folderId && !g.IsDeleted);
 
         return entity is null ? null : MapFolder(entity);
     }
@@ -42,7 +43,7 @@ public sealed class GalleryRepository : IGalleryRepository
     {
         var entity = await _context.GalleryFolders
             .AsNoTracking()
-            .FirstOrDefaultAsync(g => g.Slug == slug);
+            .FirstOrDefaultAsync(g => g.Slug == slug && !g.IsDeleted);
 
         return entity is null ? null : MapFolder(entity);
     }
@@ -51,7 +52,7 @@ public sealed class GalleryRepository : IGalleryRepository
     {
         var images = await _context.GalleryImages
             .AsNoTracking()
-            .Where(img => img.FolderId == folderId)
+            .Where(img => img.FolderId == folderId && !img.IsDeleted)
             .OrderBy(img => img.Id)
             .ToListAsync();
 
@@ -65,11 +66,16 @@ public sealed class GalleryRepository : IGalleryRepository
         var entity = await _context.GalleryFolders.FindAsync(folderId);
         if (entity != null)
         {
-            _context.GalleryFolders.Remove(entity);
-            // Optionally delete images? Usually cascading delete handles this in database or we do it manually.
-            // Assuming EF cascade or manual cleanup. Let's just remove folder for now.
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
+
+            // Soft delete images logic
              var images = await _context.GalleryImages.Where(i => i.FolderId == folderId).ToListAsync();
-             _context.GalleryImages.RemoveRange(images);
+             foreach (var img in images)
+             {
+                 img.IsDeleted = true;
+                 img.UpdateDate = DateTime.UtcNow;
+             }
 
             await _context.SaveChangesAsync();
         }
@@ -107,7 +113,8 @@ public sealed class GalleryRepository : IGalleryRepository
         var entity = await _context.GalleryImages.FindAsync(imageId);
         if (entity != null)
         {
-            _context.GalleryImages.Remove(entity);
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
             
              // Update folder image count
             var folder = await _context.GalleryFolders.FindAsync(entity.FolderId);

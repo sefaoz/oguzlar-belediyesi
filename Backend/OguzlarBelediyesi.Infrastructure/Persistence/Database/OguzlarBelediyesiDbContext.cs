@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.Domain.Entities.Configuration;
+using OguzlarBelediyesi.Domain.Entities.Messages;
 using OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Database;
@@ -27,6 +29,9 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
     public DbSet<MenuItemEntity> MenuItems => Set<MenuItemEntity>();
     public DbSet<SerilogLogEntry> SerilogLogs => Set<SerilogLogEntry>();
 
+    public DbSet<SiteSetting> SiteSettings => Set<SiteSetting>();
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -41,6 +46,17 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
             entity.HasIndex(u => u.Username).IsUnique();
         });
 
+        modelBuilder.Entity<SiteSetting>(entity =>
+        {
+            entity.ToTable("SiteSettings");
+            entity.HasKey(s => s.Id);
+            entity.Property(s => s.Key).IsRequired().HasMaxLength(100);
+            entity.Property(s => s.Value).IsRequired(); // LongText by default in MySQL for string if no length
+            entity.Property(s => s.GroupKey).IsRequired().HasMaxLength(50);
+            entity.Property(s => s.Description).HasMaxLength(500);
+            entity.HasIndex(s => new { s.GroupKey, s.Key }).IsUnique();
+        });
+
         modelBuilder.Entity<Announcement>(entity =>
         {
             entity.ToTable("Announcements");
@@ -53,6 +69,7 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
             entity.Property(a => a.Slug).IsRequired().HasMaxLength(256);
             entity.HasIndex(a => a.Slug).IsUnique();
         });
+
 
         modelBuilder.Entity<Event>(entity =>
         {
@@ -217,6 +234,21 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
             entity.Property(e => e.Username).HasMaxLength(256);
             entity.HasIndex(e => e.Timestamp);
             entity.HasIndex(e => e.Level);
+        });
+
+        modelBuilder.Entity<ContactMessage>(entity =>
+        {
+            entity.ToTable("ContactMessages");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+            entity.Property(e => e.Message).IsRequired().HasColumnType("longtext");
+            entity.Property(e => e.MessageType).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.IpAddress).HasMaxLength(50);
+            entity.HasIndex(e => e.MessageType);
+            entity.HasIndex(e => e.CreatedAt);
+            entity.HasIndex(e => e.IsRead);
         });
     }
 }

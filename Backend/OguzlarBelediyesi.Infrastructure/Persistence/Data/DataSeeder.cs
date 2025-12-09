@@ -6,6 +6,7 @@ using OguzlarBelediyesi.Domain;
 using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 using OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 using OguzlarBelediyesi.Infrastructure.Security;
+using OguzlarBelediyesi.Domain.Entities.Configuration;
 
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Data;
 
@@ -117,11 +118,105 @@ public sealed class DataSeeder
             shouldSave = true;
         }
 
+        foreach (var setting in DefaultSiteSettings)
+        {
+            if (!await _context.SiteSettings.AnyAsync(s => s.GroupKey == setting.GroupKey && s.Key == setting.Key))
+            {
+                await _context.SiteSettings.AddAsync(setting);
+                shouldSave = true;
+            }
+        }
+
         if (shouldSave)
         {
             await _context.SaveChangesAsync();
         }
     }
+
+    private static readonly SiteSetting[] DefaultSiteSettings = new[]
+    {
+        // Topbar
+        new SiteSetting
+        {
+            GroupKey = "Topbar",
+            Key = "Links",
+            Value = JsonSerializer.Serialize(new[]
+            {
+                new { title = "E-Devlet / CİMER", url = "https://www.turkiye.gov.tr", target = "_blank", icon = "fas fa-landmark" },
+                new { title = "Çözüm Merkezi", url = "#", target = "_self", icon = "fas fa-headset" },
+                new { title = "Online Borç Ödeme", url = "#", target = "_self", icon = "fas fa-wallet" },
+                new { title = "Arama", url = "#", target = "_self", icon = "fas fa-search" }
+            }, JsonOptions),
+            Description = "Left side topbar links"
+        },
+        
+        // Footer
+        new SiteSetting
+        {
+            GroupKey = "Footer",
+            Key = "LogoContent",
+            Value = "Halkımıza daha iyi hizmet sunmak için var gücümüzle çalışıyoruz. Modern, şeffaf ve katılımcı belediyecilik anlayışıyla Oğuzlar'ı geleceğe taşıyoruz.",
+            Description = "Text content below the footer logo"
+        },
+        new SiteSetting
+        {
+            GroupKey = "Footer",
+            Key = "QuickLinks",
+            Value = JsonSerializer.Serialize(new[]
+            {
+                new { title = "Anasayfa", url = "/" },
+                new { title = "Başkan", url = "/baskan-hakkinda" },
+                new { title = "Kurumsal", url = "/kurumsal" },
+                new { title = "E-Belediye", url = "/e-belediye" },
+                new { title = "İletişim", url = "/iletisim" }
+            }, JsonOptions),
+            Description = "Quick links list in footer"
+        },
+        new SiteSetting
+        {
+            GroupKey = "Footer",
+            Key = "SocialMedia",
+            Value = JsonSerializer.Serialize(new
+            {
+                facebook = "https://facebook.com",
+                twitter = "https://twitter.com",
+                instagram = "https://instagram.com",
+                youtube = "https://youtube.com"
+            }, JsonOptions),
+            Description = "Social media links"
+        },
+
+        // E-Municipality
+        new SiteSetting
+        {
+            GroupKey = "EMunicipality",
+            Key = "Links",
+            Value = JsonSerializer.Serialize(new[]
+            {
+                new { title = "Borç Ödeme", url = "#", icon = "fas fa-wallet" },
+                new { title = "İlk E-Başvuru", url = "#", icon = "fas fa-pen-to-square" },
+                new { title = "E-Posta Doğrulama", url = "#", icon = "fas fa-paper-plane" },
+                new { title = "Güvenlik Bilgisi", url = "#", icon = "fas fa-right-from-bracket" },
+                new { title = "E-Bordo", url = "#", icon = "fas fa-calendar-check" },
+                new { title = "Sicil Beyanları", url = "#", icon = "fas fa-file-code" }
+            }, JsonOptions),
+            Description = "Homepage E-Municipality shortcut links"
+        },
+
+        // SEO
+        new SiteSetting
+        {
+            GroupKey = "SEO",
+            Key = "Global",
+            Value = JsonSerializer.Serialize(new
+            {
+                metaTitle = "Oğuzlar Belediyesi - Resmi Web Sitesi",
+                metaDescription = "Oğuzlar Belediyesi resmi web sitesi. Haberler, duyurular, ihaleler ve e-belediye hizmetleri.",
+                metaKeywords = "oğuzlar, belediye, çorum, oğuzlar belediyesi, haberler, ihaleler"
+            }, JsonOptions),
+            Description = "Global SEO settings"
+        }
+    };
 
     private static readonly Announcement[] DefaultAnnouncements = new[]
     {

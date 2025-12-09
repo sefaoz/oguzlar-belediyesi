@@ -5,12 +5,13 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
 import { NewsItem } from '../../shared/models/news.model';
 import { NewsService } from '../../shared/services/news.service';
 import { SeoService } from '../../shared/services/seo.service';
-import { environment } from '../../../environments/environment';
+
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
 
 @Component({
   selector: 'app-haber-detay',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent, RouterModule],
+  imports: [CommonModule, PageContainerComponent, RouterModule, ImageUrlPipe],
   templateUrl: './haber-detay.html',
   styleUrl: './haber-detay.css',
 })
@@ -75,6 +76,7 @@ export class HaberDetayComponent implements OnInit {
   isLightboxOpen = false;
   currentLightboxImageIndex = 0;
 
+
   openLightbox(index: number) {
     this.currentLightboxImageIndex = index;
     this.isLightboxOpen = true;
@@ -100,15 +102,26 @@ export class HaberDetayComponent implements OnInit {
     }
   }
 
-  // Helper to get current image URL safely
-  get currentLightboxImage(): string {
-    const url = this.newsItem?.photos?.[this.currentLightboxImageIndex] || '';
-    return this.getImageUrl(url);
-  }
+  share(platform: 'facebook' | 'twitter' | 'whatsapp') {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(this.newsItem?.title || document.title);
 
-  getImageUrl(url: string): string {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    return `${environment.imageBaseUrl}${url}`;
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+        break;
+    }
+
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    }
   }
 }

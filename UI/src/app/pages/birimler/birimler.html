@@ -34,7 +34,7 @@
                             <!-- Image -->
                             <div class="w-full md:w-64 flex-shrink-0">
                                 <div class="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                                    <img [src]="person.imageUrl || 'assets/images/placeholder-person.jpg'"
+                                    <img [src]="(person.imageUrl | imageUrl) || 'assets/images/placeholder-person.jpg'"
                                         [alt]="person.name" class="w-full h-full object-cover">
                                 </div>
                             </div>

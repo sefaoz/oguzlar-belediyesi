@@ -30,6 +30,9 @@ export class DuyuruDetay implements OnInit {
         this.announcementService.getAnnouncementBySlug(slug).subscribe({
           next: item => {
             this.announcement = item;
+            if (this.announcement && this.announcement.content) {
+              this.announcement.content = this.decodeHtml(this.announcement.content);
+            }
             this.updateBreadcrumbs();
             if (item) {
               this.seoService.updateSeo({
@@ -49,11 +52,39 @@ export class DuyuruDetay implements OnInit {
     });
   }
 
+  private decodeHtml(html: string): string {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.documentElement.textContent || '';
+  }
+
   updateBreadcrumbs() {
     this.breadcrumbSteps = [
       { label: 'Anasayfa', url: '/' },
       { label: 'Duyurular', url: '/duyurular' },
       { label: this.announcement?.title || 'Duyuru Detayı', url: `/duyurular/${this.announcement?.slug}` }
     ];
+  }
+
+  share(platform: 'facebook' | 'twitter' | 'whatsapp') {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(this.announcement?.title || document.title);
+
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+        break;
+    }
+
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    }
   }
 }

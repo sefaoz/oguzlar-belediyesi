@@ -6,10 +6,12 @@ import { MunicipalUnit } from '../../shared/models/unit.model';
 import { UnitService } from '../../shared/services/unit.service';
 import { SeoService } from '../../shared/services/seo.service';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-birimler',
   standalone: true,
-  imports: [CommonModule, RouterModule, PageContainerComponent],
+  imports: [CommonModule, RouterModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './birimler.html',
   styleUrls: ['./birimler.css']
 })

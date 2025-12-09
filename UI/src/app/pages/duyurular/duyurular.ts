@@ -20,7 +20,14 @@ export class DuyurularComponent {
     { label: 'Duyurular', url: '/duyurular' }
   ];
 
+  allAnnouncements: Announcement[] = [];
   announcements: Announcement[] = [];
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 6;
+  totalPages = 0;
+  pages: number[] = [];
 
   constructor(
     private readonly announcementService: AnnouncementService,
@@ -29,7 +36,8 @@ export class DuyurularComponent {
 
   ngOnInit() {
     this.announcementService.getAnnouncements().subscribe(items => {
-      this.announcements = items;
+      this.allAnnouncements = items;
+      this.updatePagination();
     });
 
     this.seoService.updateSeo({
@@ -37,5 +45,30 @@ export class DuyurularComponent {
       description: 'Oğuzlar Belediyesi resmi duyuruları, ilanlar ve bildirimler.',
       slug: 'duyurular'
     });
+  }
+
+  updatePagination() {
+    this.totalPages = Math.ceil(this.allAnnouncements.length / this.pageSize);
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.announcements = this.allAnnouncements.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  prevPage() {
+    this.changePage(this.currentPage - 1);
+  }
+
+  nextPage() {
+    this.changePage(this.currentPage + 1);
   }
 }

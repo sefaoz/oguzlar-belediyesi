@@ -7,29 +7,22 @@
                 <div class="flex items-center mb-4">
                     <img src="assets/images/logo.png" alt="Logo" class="h-10 mr-3" />
                 </div>
-                <p class="text-sm">
-                    Halkımıza daha iyi hizmet sunmak için var gücümüzle çalışıyoruz.
-                    Modern, şeffaf ve katılımcı belediyecilik anlayışıyla Oğuzlar'ı
-                    geleceğe taşıyoruz.
+                <p class="text-sm" *ngIf="logoContent; else defaultLogoContent">
+                    {{ logoContent }}
                 </p>
+                <ng-template #defaultLogoContent>
+                    <p class="text-sm">
+                        Halkımıza daha iyi hizmet sunmak için var gücümüzle çalışıyoruz.
+                        Modern, şeffaf ve katılımcı belediyecilik anlayışıyla Oğuzlar'ı
+                        geleceğe taşıyoruz.
+                    </p>
+                </ng-template>
             </div>
             <div>
                 <h5 class="text-white text-lg font-semibold mb-4">Hızlı Linkler</h5>
                 <ul class="space-y-2">
-                    <li>
-                        <a href="#" class="hover:text-accent transition-colors">Anasayfa</a>
-                    </li>
-                    <li>
-                        <a href="#" class="hover:text-accent transition-colors">Başkan</a>
-                    </li>
-                    <li>
-                        <a href="#" class="hover:text-accent transition-colors">Kurumsal</a>
-                    </li>
-                    <li>
-                        <a href="#" class="hover:text-accent transition-colors">E-Belediye</a>
-                    </li>
-                    <li>
-                        <a href="#" class="hover:text-accent transition-colors">İletişim</a>
+                    <li *ngFor="let link of quickLinks">
+                        <a [href]="link.url" class="hover:text-accent transition-colors">{{ link.title }}</a>
                     </li>
                 </ul>
             </div>
@@ -55,11 +48,18 @@
                     Bizi Takip Edin
                 </h5>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-2xl hover:text-accent transition-colors"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-2xl hover:text-accent transition-colors"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-2xl hover:text-accent transition-colors"><i
+                    <a *ngIf="socialMedia.facebook" [href]="socialMedia.facebook"
+                        class="text-2xl hover:text-accent transition-colors" target="_blank"><i
+                            class="fab fa-facebook"></i></a>
+                    <a *ngIf="socialMedia.twitter" [href]="socialMedia.twitter"
+                        class="text-2xl hover:text-accent transition-colors" target="_blank"><i
+                            class="fab fa-twitter"></i></a>
+                    <a *ngIf="socialMedia.instagram" [href]="socialMedia.instagram"
+                        class="text-2xl hover:text-accent transition-colors" target="_blank"><i
                             class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-2xl hover:text-accent transition-colors"><i class="fab fa-youtube"></i></a>
+                    <a *ngIf="socialMedia.youtube" [href]="socialMedia.youtube"
+                        class="text-2xl hover:text-accent transition-colors" target="_blank"><i
+                            class="fab fa-youtube"></i></a>
                 </div>
             </div>
         </div>

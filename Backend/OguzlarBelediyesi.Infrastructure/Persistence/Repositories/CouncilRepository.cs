@@ -22,6 +22,7 @@ public sealed class CouncilRepository : ICouncilRepository
     {
         var entities = await _context.CouncilDocuments
             .AsNoTracking()
+            .Where(d => !d.IsDeleted)
             .OrderByDescending(d => d.Date)
             .ToListAsync();
 
@@ -71,7 +72,8 @@ public sealed class CouncilRepository : ICouncilRepository
         var entity = await _context.CouncilDocuments.FirstOrDefaultAsync(x => x.Id == id);
         if (entity != null)
         {
-            _context.CouncilDocuments.Remove(entity);
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
         }
     }
 

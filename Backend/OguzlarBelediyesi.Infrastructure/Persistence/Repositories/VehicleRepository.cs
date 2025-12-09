@@ -22,6 +22,7 @@ public sealed class VehicleRepository : IVehicleRepository
     {
         var vehicles = await _context.Vehicles
             .AsNoTracking()
+            .Where(v => !v.IsDeleted)
             .OrderBy(v => v.Name)
             .ToListAsync();
 
@@ -37,7 +38,7 @@ public sealed class VehicleRepository : IVehicleRepository
     }
     public async Task<Vehicle?> GetByIdAsync(Guid id)
     {
-        var entity = await _context.Vehicles.FindAsync(id);
+        var entity = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
         if (entity == null) return null;
 
         return new Vehicle
@@ -86,7 +87,8 @@ public sealed class VehicleRepository : IVehicleRepository
         var entity = await _context.Vehicles.FindAsync(id);
         if (entity != null)
         {
-            _context.Vehicles.Remove(entity);
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
         }
     }
 

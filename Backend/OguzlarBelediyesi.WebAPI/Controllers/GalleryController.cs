@@ -43,7 +43,7 @@ public sealed class GalleryController : ControllerBase
 
     [HttpPost("folders")]
     [Authorize]
-    public async Task<IActionResult> CreateFolder([FromBody] GalleryFolderRequest request)
+    public async Task<IActionResult> CreateFolder([FromForm] GalleryFolderFormRequest request)
     {
         if (request.IsFeatured)
         {
@@ -55,6 +55,12 @@ public sealed class GalleryController : ControllerBase
         }
 
         var slug = await GenerateUniqueSlugAsync(request.Title);
+        string coverImageUrl = "";
+
+        if (request.CoverImage != null)
+        {
+            coverImageUrl = await OguzlarBelediyesi.WebAPI.Helpers.ImageHelper.SaveImageAsWebPAsync(request.CoverImage, "uploads/gallery", _env.WebRootPath);
+        }
 
         var folder = new GalleryFolder
         {
@@ -63,7 +69,7 @@ public sealed class GalleryController : ControllerBase
             Slug = slug,
             Date = request.Date,
             ImageCount = 0,
-            CoverImage = "", // Will be set when images are added
+            CoverImage = coverImageUrl,
             IsFeatured = request.IsFeatured,
             IsActive = request.IsActive
         };
@@ -74,7 +80,7 @@ public sealed class GalleryController : ControllerBase
 
     [HttpPut("folders/{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateFolder(Guid id, [FromBody] GalleryFolderRequest request)
+    public async Task<IActionResult> UpdateFolder(Guid id, [FromForm] GalleryFolderFormRequest request)
     {
         var existing = await _repository.GetFolderByIdAsync(id);
         if (existing is null) return NotFound();
@@ -92,6 +98,11 @@ public sealed class GalleryController : ControllerBase
         if (existing.Title != request.Title)
         {
             slug = await GenerateUniqueSlugAsync(request.Title, id);
+        }
+
+        if (request.CoverImage != null)
+        {
+            existing.CoverImage = await OguzlarBelediyesi.WebAPI.Helpers.ImageHelper.SaveImageAsWebPAsync(request.CoverImage, "uploads/gallery", _env.WebRootPath);
         }
 
         existing.Title = request.Title;

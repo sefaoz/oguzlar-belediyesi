@@ -17,5 +17,7 @@ export default [
     { path: 'kvkk', loadComponent: () => import('./kvkk-documents/kvkk-documents.component').then(m => m.KvkkDocumentsComponent) },
     { path: 'gallery', loadComponent: () => import('./gallery/gallery').then(m => m.GalleryComponent) },
     { path: 'users', loadComponent: () => import('./users/users').then(m => m.UsersComponent) },
+    { path: 'site-settings', loadComponent: () => import('./site-settings/site-settings').then(m => m.SiteSettingsComponent) },
+    { path: 'contact-messages', loadComponent: () => import('./contact-messages/contact-messages').then(m => m.ContactMessagesComponent) },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

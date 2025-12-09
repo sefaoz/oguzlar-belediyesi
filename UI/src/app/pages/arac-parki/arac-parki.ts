@@ -5,10 +5,12 @@ import { Vehicle } from '../../shared/models/vehicle.model';
 import { VehicleService } from '../../shared/services/vehicle.service';
 import { SeoService } from '../../shared/services/seo.service';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-arac-parki',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './arac-parki.html',
   styleUrl: './arac-parki.css'
 })

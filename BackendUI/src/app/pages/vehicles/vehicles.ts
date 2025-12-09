@@ -39,7 +39,7 @@ import { environment } from '../../../environments/environment';
         BlockUIModule,
         ProgressBarModule
     ],
-    providers: [ConfirmationService],
+    providers: [],
     templateUrl: './vehicles.html',
     styleUrl: './vehicles.scss',
 })

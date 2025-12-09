@@ -5,10 +5,12 @@ import { PageContentModel } from '../../shared/models/page-content.model';
 import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-cografi-yapi',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './cografi-yapi.html',
   styleUrl: './cografi-yapi.css',
 })

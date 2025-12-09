@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { BlockUIModule } from 'primeng/blockui';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { GalleryService } from '../../services/gallery.service';
 import { GalleryFolder, GalleryImage } from '../../models/gallery';
@@ -23,9 +24,9 @@ import { environment } from '../../../environments/environment';
     imports: [
         CommonModule, FormsModule, TableModule, DialogModule, ButtonModule, RippleModule,
         ToastModule, ToolbarModule, ConfirmDialogModule, InputTextModule,
-        FileUploadModule, ImageModule, ToggleSwitchModule
+        FileUploadModule, ImageModule, ToggleSwitchModule, BlockUIModule
     ],
-    providers: [MessageService, ConfirmationService],
+    providers: [], // Remove local providers to use global ones
     templateUrl: './gallery.html'
 })
 export class GalleryComponent implements OnInit {
@@ -38,6 +39,9 @@ export class GalleryComponent implements OnInit {
     imagesDialog: boolean = false;
     currentFolderId: string | null = null;
     folderImages: GalleryImage[] = [];
+    isLoading: boolean = false;
+    selectedFile: File | null = null;
+    selectedImagePreview: string | null = null;
 
     constructor(
         private galleryService: GalleryService,
@@ -55,12 +59,16 @@ export class GalleryComponent implements OnInit {
 
     openNewFolder() {
         this.folder = { isFeatured: false, isActive: true } as GalleryFolder;
+        this.selectedFile = null;
+        this.selectedImagePreview = null;
         this.submitted = false;
         this.folderDialog = true;
     }
 
     editFolder(folder: GalleryFolder) {
         this.folder = { ...folder };
+        this.selectedFile = null;
+        this.selectedImagePreview = null;
         this.folderDialog = true;
     }
 
@@ -91,29 +99,90 @@ export class GalleryComponent implements OnInit {
         }
 
         if (this.folder.title?.trim()) {
+            this.isLoading = true;
+            const finalize = () => this.isLoading = false;
+
+            const formData = new FormData();
+            formData.append('Title', this.folder.title);
+            formData.append('Date', this.folder.date || '');
+            formData.append('IsFeatured', String(this.folder.isFeatured));
+            formData.append('IsActive', String(this.folder.isActive));
+
+            if (this.selectedFile) {
+                formData.append('CoverImage', this.selectedFile);
+            }
+
             if (this.folder.id) {
-                this.galleryService.updateFolder(this.folder.id, this.folder).subscribe({
+                this.galleryService.updateFolder(this.folder.id, formData).subscribe({
                     next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Klasör güncellendi' });
                         this.folderDialog = false;
                         this.getFolders();
+                        finalize();
                     },
                     error: (err) => {
-                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: err.error || 'Klasör güncellenemedi' });
+                        console.error('Update Error:', err);
+                        let detail = 'Klasör güncellenemedi';
+                        if (err.error) {
+                            if (typeof err.error === 'string') {
+                                detail = err.error;
+                            } else if (err.error.errors) {
+                                // Validation errors
+                                detail = Object.values(err.error.errors).join(', ');
+                            } else if (err.error.title) {
+                                detail = err.error.title;
+                            }
+                        }
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: detail });
+                        finalize();
                     }
                 });
             } else {
-                this.galleryService.createFolder(this.folder).subscribe({
+                this.galleryService.createFolder(formData).subscribe({
                     next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Klasör oluşturuldu' });
                         this.folderDialog = false;
                         this.getFolders();
+                        finalize();
                     },
                     error: (err) => {
-                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: err.error || 'Klasör oluşturulamadı' });
+                        console.error('Create Error:', err);
+                        let detail = 'Klasör oluşturulamadı';
+                        if (err.error) {
+                            if (typeof err.error === 'string') {
+                                detail = err.error;
+                            } else if (err.error.errors) {
+                                detail = Object.values(err.error.errors).join(', ');
+                            } else if (err.error.title) {
+                                detail = err.error.title;
+                            }
+                        }
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: detail });
+                        finalize();
                     }
                 });
             }
+        }
+    }
+
+    onFileSelected(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                this.selectedImagePreview = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    removeSelection() {
+        this.selectedFile = null;
+        this.selectedImagePreview = null;
+        const fileInput = document.getElementById('coverImage') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
         }
     }
 

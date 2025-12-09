@@ -24,7 +24,7 @@
 
                     <!-- Image Section -->
                     <div *ngIf="pageContent.imageUrl" class="mb-8 rounded-lg overflow-hidden shadow-md">
-                        <img [src]="pageContent.imageUrl" [alt]="pageContent.title"
+                        <img [src]="pageContent.imageUrl | imageUrl" [alt]="pageContent.title"
                             class="w-full h-auto object-cover max-h-[500px]">
                     </div>
 
@@ -50,9 +50,10 @@
                     </div>
 
                     <!-- Map Embed (if any) -->
-                    <div *ngIf="pageContent.mapEmbedUrl" class="mt-10 rounded-lg overflow-hidden shadow-lg h-[400px]">
-                        <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(pageContent.mapEmbedUrl)" width="100%"
-                            height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                    <div *ngIf="pageContent.mapEmbedUrl && getSafeMapUrl(pageContent.mapEmbedUrl)"
+                        class="mt-10 rounded-lg overflow-hidden shadow-lg h-[400px]">
+                        <iframe [src]="getSafeMapUrl(pageContent.mapEmbedUrl)" width="100%" height="100%"
+                            style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
 

@@ -3,15 +3,10 @@
         <div *ngFor="let vehicle of vehicles"
             class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div class="relative h-48 overflow-hidden">
-                <img [src]="vehicle.imageUrl" [alt]="vehicle.name"
+                <img [src]="vehicle.imageUrl | imageUrl" [alt]="vehicle.name"
                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                 <div class="absolute top-0 right-0 m-3">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full shadow-sm" [ngClass]="{
-                            'bg-yellow-100 text-yellow-800': vehicle.type === 'İş Makinesi',
-                            'bg-blue-100 text-blue-800': vehicle.type === 'Hizmet Aracı',
-                            'bg-green-100 text-green-800': vehicle.type === 'Toplu Taşıma',
-                            'bg-gray-100 text-gray-800': vehicle.type === 'Diğer'
-                        }">
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full shadow-sm bg-blue-100 text-blue-800">
                         {{ vehicle.type }}
                     </span>
                 </div>

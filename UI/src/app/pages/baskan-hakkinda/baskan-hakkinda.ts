@@ -6,10 +6,12 @@ import { PageContentService } from '../../shared/services/page-content.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
+
 @Component({
   selector: 'app-baskan-hakkinda',
   standalone: true,
-  imports: [CommonModule, PageContainerComponent],
+  imports: [CommonModule, PageContainerComponent, ImageUrlPipe],
   templateUrl: './baskan-hakkinda.html',
   styleUrls: ['./baskan-hakkinda.css']
 })
@@ -32,7 +34,8 @@ export class BaskanHakkindaComponent implements OnInit {
     this.pageContentService.getPageContent('baskan-hakkinda').subscribe(content => {
       this.content = content;
       if (this.content?.paragraphs) {
-        this.safeContent = this.sanitizer.bypassSecurityTrustHtml(this.content.paragraphs.join(''));
+        const decodedParagraphs = this.content.paragraphs.map(p => this.decodeHtml(p));
+        this.safeContent = this.sanitizer.bypassSecurityTrustHtml(decodedParagraphs.join(''));
       }
       this.seoService.updateSeo({
         title: 'Başkan Hakkında',
@@ -40,5 +43,10 @@ export class BaskanHakkindaComponent implements OnInit {
         slug: 'baskan-hakkinda'
       });
     });
+  }
+
+  private decodeHtml(html: string): string {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.documentElement.textContent || '';
   }
 }

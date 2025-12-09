@@ -37,7 +37,7 @@ import { environment } from '../../../environments/environment';
         ImageModule,
         FileUploadModule
     ],
-    providers: [ConfirmationService],
+    providers: [],
     templateUrl: './units.html',
 })
 export class UnitsComponent implements OnInit {

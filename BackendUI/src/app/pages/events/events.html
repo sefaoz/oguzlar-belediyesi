@@ -41,9 +41,11 @@
                         </th>
                         <th pSortableColumn="location" style="width:20%">Konum <p-sortIcon
                                 field="location"></p-sortIcon></th>
-                        <th pSortableColumn="eventDate" style="width:20%">Tarih <p-sortIcon
+                        <th pSortableColumn="eventDate" style="width:15%">Tarih <p-sortIcon
                                 field="eventDate"></p-sortIcon></th>
-                        <th class="text-right" style="width: 20%">İşlemler</th>
+                        <th pSortableColumn="eventTime" style="width:10%">Saat <p-sortIcon
+                                field="eventTime"></p-sortIcon></th>
+                        <th class="text-right" style="width: 15%">İşlemler</th>
                     </tr>
                 </ng-template>
 
@@ -62,6 +64,7 @@
                         <td class="font-medium">{{item.title}}</td>
                         <td>{{item.location}}</td>
                         <td>{{formatDate(item.eventDate)}}</td>
+                        <td>{{item.eventTime}}</td>
 
                         <td class="text-right">
                             <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
@@ -100,6 +103,15 @@
                     </div>
 
                     <div class="field">
+                        <label for="location"
+                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Konum</label>
+                        <input type="text" pInputText id="location" [(ngModel)]="eventItem.location" required
+                            class="w-full" />
+                        <small class="p-error block mt-1" *ngIf="submitted && !eventItem.location">Konum
+                            gereklidir.</small>
+                    </div>
+
+                    <div class="field">
                         <label for="eventDate"
                             class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Tarih</label>
                         <input type="date" pInputText id="eventDate" [(ngModel)]="eventItem.eventDate" class="w-full" />
@@ -107,12 +119,11 @@
                             gereklidir.</small>
                     </div>
 
-                    <div class="field col-span-1 md:col-span-2">
-                        <label for="location"
-                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Konum</label>
-                        <input type="text" pInputText id="location" [(ngModel)]="eventItem.location" required
-                            class="w-full" />
-                        <small class="p-error block mt-1" *ngIf="submitted && !eventItem.location">Konum
+                    <div class="field">
+                        <label for="eventTime"
+                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Saat</label>
+                        <input type="time" pInputText id="eventTime" [(ngModel)]="eventItem.eventTime" class="w-full" />
+                        <small class="p-error block mt-1" *ngIf="submitted && !eventItem.eventTime">Saat
                             gereklidir.</small>
                     </div>
                 </div>
@@ -199,5 +210,3 @@
         <div class="text-sm">Lütfen bekleyiniz.</div>
     </div>
 </p-blockUI>
-
-<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

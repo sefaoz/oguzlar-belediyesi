@@ -4,20 +4,20 @@ import { RouterModule } from '@angular/router';
 import { Tender } from '../../models/tender.model';
 
 @Component({
-    selector: 'app-tender-card',
-    standalone: true,
-    imports: [CommonModule, RouterModule],
-    template: `
+  selector: 'app-tender-card',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  template: `
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100 flex flex-col h-full relative overflow-hidden">
       <div class="absolute top-0 right-0 w-2 h-full" [ngClass]="{
-        'bg-green-500': tender.status === 'active',
-        'bg-red-500': tender.status === 'passive' || tender.status === 'completed'
+        'bg-green-500': getStatusLabel(tender.status) === 'Yayında',
+        'bg-red-500': getStatusLabel(tender.status) !== 'Yayında'
       }"></div>
       
       <div class="flex justify-between items-start mb-4 pr-4">
         <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="{
-          'bg-green-100 text-green-700': tender.status === 'active',
-          'bg-red-100 text-red-700': tender.status !== 'active'
+          'bg-green-100 text-green-700': getStatusLabel(tender.status) === 'Yayında',
+          'bg-red-100 text-red-700': getStatusLabel(tender.status) !== 'Yayında'
         }">
           {{ getStatusLabel(tender.status) }}
         </span>
@@ -30,7 +30,7 @@ import { Tender } from '../../models/tender.model';
 
       <div class="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between text-sm">
         <div class="text-gray-500">
-          <i class="far fa-calendar-alt mr-1.5"></i> {{ tender.date }}
+          <i class="far fa-calendar-alt mr-1.5"></i> {{ tender.tenderDate | date:'dd.MM.yyyy' }}
         </div>
         <a [routerLink]="['/ihaleler', tender.slug]" class="text-primary font-medium hover:text-accent transition-colors">
           İncele
@@ -40,14 +40,13 @@ import { Tender } from '../../models/tender.model';
   `
 })
 export class TenderCardComponent {
-    @Input() tender!: Tender;
+  @Input() tender!: Tender;
 
-    getStatusLabel(status: string): string {
-        switch (status) {
-            case 'active': return 'Yayında';
-            case 'passive': return 'Pasif';
-            case 'completed': return 'Sonuçlandı';
-            default: return 'Bilinmiyor';
-        }
-    }
+  getStatusLabel(status: string): string {
+    const s = status?.toLowerCase();
+    if (s === 'open' || s === 'active' || s === 'yayında') return 'Yayında';
+    if (s === 'closed' || s === 'passive' || s === 'pasif') return 'Pasif';
+    if (s === 'completed' || s === 'sonuçlandı') return 'Sonuçlandı';
+    return s || 'Bilinmiyor';
+  }
 }
