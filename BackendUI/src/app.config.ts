@@ -1,16 +1,22 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { jwtInterceptor } from './app/core/interceptors/jwt.interceptor';
 import { ApplicationConfig, LOCALE_ID } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { registerLocaleData } from '@angular/common';
+import localeTr from '@angular/common/locales/tr';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { definePreset } from '@primeuix/themes';
+import { MessageService } from 'primeng/api';
+
+registerLocaleData(localeTr);
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withFetch()),
+        provideHttpClient(withInterceptors([jwtInterceptor])),
         provideAnimationsAsync(),
         { provide: LOCALE_ID, useValue: 'tr' },
         providePrimeNG({
@@ -80,6 +86,7 @@ export const appConfig: ApplicationConfig = {
                 today: 'Bugün',
                 clear: 'Temizle'
             }
-        })
+        }),
+        MessageService
     ]
 };

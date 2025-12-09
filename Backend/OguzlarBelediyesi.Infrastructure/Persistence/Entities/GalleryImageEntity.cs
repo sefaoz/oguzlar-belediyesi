@@ -1,14 +1,12 @@
+using System;
+using OguzlarBelediyesi.Domain.Entities.Common;
+
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 
-public sealed class GalleryImageEntity
+public sealed class GalleryImageEntity : BaseEntity
 {
-    public string Id { get; set; } = string.Empty;
-
-    public string FolderId { get; set; } = string.Empty;
-
+    public Guid FolderId { get; set; } 
     public string Url { get; set; } = string.Empty;
-
     public string ThumbnailUrl { get; set; } = string.Empty;
-
     public string? Title { get; set; }
 }

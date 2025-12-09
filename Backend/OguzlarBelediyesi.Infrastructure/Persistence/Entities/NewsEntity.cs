@@ -1,10 +1,13 @@
 using System;
 
+using System;
+using OguzlarBelediyesi.Domain.Entities.Common;
+
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 
-public sealed class NewsEntity
+public sealed class NewsEntity : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+
 
     public string Title { get; set; } = string.Empty;
 
@@ -14,7 +17,11 @@ public sealed class NewsEntity
 
     public string Image { get; set; } = string.Empty;
 
-    public string Date { get; set; } = string.Empty;
+    public DateTime Date { get; set; }
 
     public string PhotosJson { get; set; } = string.Empty;
+
+    public int ViewCount { get; set; } = 0;
+
+    public string TagsJson { get; set; } = string.Empty;
 }

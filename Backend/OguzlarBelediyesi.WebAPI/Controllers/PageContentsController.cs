@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
@@ -20,7 +21,7 @@ public sealed class PageContentsController : ControllerBase
     }
 
     [HttpGet]
-    [Cache(60)]
+    [Cache(60, "PageContents")]
     public async Task<ActionResult<IEnumerable<PageContent>>> GetAll()
     {
         var pages = await _repository.GetAllAsync();
@@ -28,7 +29,7 @@ public sealed class PageContentsController : ControllerBase
     }
 
     [HttpGet("{key}")]
-    [Cache(120)]
+    [Cache(120, "PageContents")]
     public async Task<ActionResult<PageContent>> GetByKey(string key)
     {
         var pageContent = await _repository.GetByKeyAsync(key);
@@ -36,6 +37,8 @@ public sealed class PageContentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [CacheInvalidate("PageContents")]
     public async Task<IActionResult> Create()
     {
         var form = await Request.ReadFormAsync();
@@ -51,12 +54,25 @@ public sealed class PageContentsController : ControllerBase
         var savedImageUrl = await PageContentUploadHelper.SavePageContentImageAsync(file, formData.Key, baseUri, webRootPath);
         var imageUrl = savedImageUrl ?? formData.ImageUrl;
 
-        var pageContent = new PageContent(Guid.NewGuid(), formData.Key, formData.Title, formData.Subtitle, formData.Paragraphs, imageUrl, formData.MapEmbedUrl, formData.ContactDetails);
+        var pageContent = new PageContent
+        {
+            Id = Guid.NewGuid(),
+            Key = formData.Key,
+            Title = formData.Title,
+            Subtitle = formData.Subtitle,
+            Paragraphs = formData.Paragraphs?.ToList() ?? new List<string>(),
+            ImageUrl = imageUrl,
+            MapEmbedUrl = formData.MapEmbedUrl,
+            ContactDetails = formData.ContactDetails?.ToList()
+        };
+
         await _repository.AddAsync(pageContent);
         return CreatedAtAction(nameof(GetByKey), new { key = pageContent.Key }, pageContent);
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize]
+    [CacheInvalidate("PageContents")]
     public async Task<IActionResult> Update(Guid id)
     {
         var existing = await _repository.GetByIdAsync(id);
@@ -82,22 +98,22 @@ public sealed class PageContentsController : ControllerBase
         }
 
         var updatedImageUrl = savedImageUrl ?? existing.ImageUrl ?? formData.ImageUrl;
-        var updated = existing with
-        {
-            Key = formData.Key,
-            Title = formData.Title,
-            Subtitle = formData.Subtitle,
-            Paragraphs = formData.Paragraphs,
-            ImageUrl = updatedImageUrl,
-            MapEmbedUrl = formData.MapEmbedUrl,
-            ContactDetails = formData.ContactDetails
-        };
+        
+        existing.Key = formData.Key;
+        existing.Title = formData.Title;
+        existing.Subtitle = formData.Subtitle;
+        existing.Paragraphs = formData.Paragraphs?.ToList() ?? new List<string>();
+        existing.ImageUrl = updatedImageUrl;
+        existing.MapEmbedUrl = formData.MapEmbedUrl;
+        existing.ContactDetails = formData.ContactDetails?.ToList();
 
-        await _repository.UpdateAsync(updated);
+        await _repository.UpdateAsync(existing);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
+    [CacheInvalidate("PageContents")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _repository.DeleteAsync(id);

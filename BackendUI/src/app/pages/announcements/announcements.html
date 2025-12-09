@@ -1,0 +1,155 @@
+<p-toast></p-toast>
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card mb-4">
+            <div class="flex items-center">
+                <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+                <span class="text-gray-500 mr-2">&gt;</span>
+                <span class="font-medium text-gray-900 dark:text-gray-100">Duyuru Yönetimi</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="m-0 text-lg font-semibold">Duyurular</h5>
+                <button pButton pRipple label="Yeni Duyuru Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNew()"></button>
+            </div>
+
+            <p-table #dt [value]="announcementsList" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['title']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+                currentPageReportTemplate="Toplam {totalRecords} kayıttan {first} ile {last} arası gösteriliyor"
+                [showCurrentPageReport]="true" styleClass="p-datatable-striped">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-end">
+                        <div class="relative w-full md:w-auto">
+                            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Ara..."
+                                class="!pl-10 w-full md:w-64" />
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="title" style="width:25%">Başlık <p-sortIcon field="title"></p-sortIcon>
+                        </th>
+                        <th style="width:30%">Özet</th>
+                        <th pSortableColumn="category" style="width:15%">Kategori <p-sortIcon
+                                field="category"></p-sortIcon></th>
+                        <th pSortableColumn="date" style="width:15%">Tarih <p-sortIcon field="date"></p-sortIcon></th>
+                        <th class="text-right" style="width: 15%">İşlemler</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-announcementItem>
+                    <tr>
+                        <td class="font-medium">{{announcementItem.title}}</td>
+                        <td class="text-gray-600 dark:text-gray-400">{{announcementItem.summary |
+                            slice:0:100}}{{announcementItem.summary?.length > 100 ? '...' : ''}}</td>
+                        <td>
+                            <span *ngIf="announcementItem.category"
+                                class="px-2 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-sm">
+                                {{announcementItem.category}}
+                            </span>
+                        </td>
+                        <td>{{formatDate(announcementItem.date)}}</td>
+
+                        <td class="text-right">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="editAnnouncement(announcementItem)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteAnnouncement(announcementItem)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="summary">
+                    <div class="flex items-center justify-between">
+                        Toplam {{announcementsList ? announcementsList.length : 0}} duyuru var.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="announcementDialog" [style]="{width: '70%'}" header="Duyuru Detayları" [modal]="true"
+    styleClass="p-fluid" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+        <div class="flex flex-col gap-6 p-1">
+            <!-- Temel Bilgiler Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Temel Bilgiler</h6>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="field">
+                        <label for="title"
+                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Başlık</label>
+                        <input type="text" pInputText id="title" [(ngModel)]="announcement.title" required autofocus
+                            class="w-full" />
+                        <small class="p-error block mt-1" *ngIf="submitted && !announcement.title">Başlık
+                            gereklidir.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="date" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Tarih</label>
+                        <input type="date" pInputText id="date" [(ngModel)]="announcement.date" class="w-full" />
+                    </div>
+                    <div class="field col-span-1 md:col-span-2">
+                        <label for="category"
+                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Kategori</label>
+                        <input type="text" pInputText id="category" [(ngModel)]="announcement.category"
+                            placeholder="Örn: Etkinlik, Toplantı, Genel" class="w-full" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özet Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Özet</h6>
+                <div class="field">
+                    <label for="summary" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Duyuru
+                        Özeti</label>
+                    <textarea pInputTextarea id="summary" [(ngModel)]="announcement.summary" rows="3" class="w-full"
+                        placeholder="Duyuru özetini buraya giriniz..."></textarea>
+                </div>
+            </div>
+
+            <!-- İçerik Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">İçerik Detayı
+                </h6>
+                <div class="field">
+                    <label for="content" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Duyuru
+                        Metni</label>
+                    <p-editor [(ngModel)]="announcement.content" [style]="{'height':'320px'}"
+                        placeholder="Duyuru içeriğini buraya giriniz..."></p-editor>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 pt-2">
+            <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary"
+                (click)="saveAnnouncement()" [loading]="isLoading"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

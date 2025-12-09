@@ -27,19 +27,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\PC\\.nuget\\packages\\": {}
+    "/home/sefa/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj",
+      "projectUniqueName": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj",
       "projectName": "OguzlarBelediyesi.Application",
-      "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj",
-      "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-      "outputPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\obj\\",
+      "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj",
+      "packagesPath": "/home/sefa/.nuget/packages/",
+      "outputPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/sefa/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -51,8 +51,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj": {
-              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj"
+            "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj": {
+              "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj"
             }
           }
         }
@@ -88,7 +88,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/sefa/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

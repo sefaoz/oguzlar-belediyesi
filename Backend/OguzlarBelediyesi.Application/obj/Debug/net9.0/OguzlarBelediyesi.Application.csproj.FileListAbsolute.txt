@@ -1,16 +1,32 @@
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\bin\Debug\net9.0\OguzlarBelediyesi.Application.deps.json
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\bin\Debug\net9.0\OguzlarBelediyesi.Application.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\bin\Debug\net9.0\OguzlarBelediyesi.Application.pdb
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\bin\Debug\net9.0\OguzlarBelediyesi.Domain.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\bin\Debug\net9.0\OguzlarBelediyesi.Domain.pdb
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.csproj.AssemblyReference.cache
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.GeneratedMSBuildEditorConfig.editorconfig
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.AssemblyInfoInputs.cache
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.AssemblyInfo.cs
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.csproj.CoreCompileInputs.cache
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.sourcelink.json
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarB.5020C8D3.Up2Date
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\refint\OguzlarBelediyesi.Application.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\OguzlarBelediyesi.Application.pdb
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Application\obj\Debug\net9.0\ref\OguzlarBelediyesi.Application.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.deps.json
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.pdb
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.csproj.AssemblyReference.cache
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.GeneratedMSBuildEditorConfig.editorconfig
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.AssemblyInfoInputs.cache
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.AssemblyInfo.cs
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.csproj.CoreCompileInputs.cache
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.sourcelink.json
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarB.5020C8D3.Up2Date
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/refint/OguzlarBelediyesi.Application.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.pdb
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/ref/OguzlarBelediyesi.Application.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.deps.json
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Application.pdb
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/bin/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.csproj.AssemblyReference.cache
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.AssemblyInfoInputs.cache
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.AssemblyInfo.cs
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.csproj.CoreCompileInputs.cache
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.sourcelink.json
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarB.5020C8D3.Up2Date
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/refint/OguzlarBelediyesi.Application.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/OguzlarBelediyesi.Application.pdb
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/obj/Debug/net9.0/ref/OguzlarBelediyesi.Application.dll

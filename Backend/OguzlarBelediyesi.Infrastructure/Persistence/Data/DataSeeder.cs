@@ -131,8 +131,7 @@ public sealed class DataSeeder
             Summary = "Yeni düzenlenen yeşil alan, yürüyüş yolları ve oyun gruplarıyla 27 Kasım tarihinde açıldı.",
             Content = "Oğuzlar Belediyesi olarak doğayı koruyarak vatandaşlar için modern bir park alanı oluşturduk. Yeni yürüyüş yolları, dinlenme alanları ve çocuk oyun grupları bölge sakinlerini bekliyor.",
             Category = "Genel Duyuru",
-            Date = "27 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 27),
+            Date = new DateTime(2025, 11, 27),
             Slug = "oguzlar-sehir-parki-halkin-hizmetinde"
         },
         new Announcement
@@ -141,8 +140,7 @@ public sealed class DataSeeder
             Summary = "Ana arterlerdeki kanalizasyon ve içme suyu hatlarının yenilenmesine ilişkin çalışmalar hızlandı.",
             Content = "Fen işleri ekiplerimiz, 2025 sezonu boyunca kritik hatlarda yenileme gerçekleştirdi. Bu sayede su baskını riski azaltıldı ve altyapı dayanıklılığı artırıldı.",
             Category = "Altyapı",
-            Date = "22 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 22),
+            Date = new DateTime(2025, 11, 22),
             Slug = "altyapi-yenileme-calismalari-tamamlaniyor"
         },
         new Announcement
@@ -151,8 +149,7 @@ public sealed class DataSeeder
             Summary = "Sosyal hizmet birimi, kış ayları öncesi ihtiyaç sahibi ailelere gıda ve kıyafet desteği sağladı.",
             Content = "Belediyemiz sosyal yardım hattına yapılan başvurular doğrultusunda kış yardımı paketleri dağıtıldı. Ailelere bireysel destek programları hazırlanmaya devam ediyor.",
             Category = "Sosyal Hizmet",
-            Date = "18 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 18),
+            Date = new DateTime(2025, 11, 18),
             Slug = "sosyal-yardim-destegi-2025"
         },
         new Announcement
@@ -161,8 +158,7 @@ public sealed class DataSeeder
             Summary = "Kültür merkezindeki kütüphanenin koleksiyonu genişletilerek vatandaşların hizmetine alındı.",
             Content = "Kitap bağışları ve mobil kütüphane projeleriyle desteklenen yeni kütüphanemiz, gençler için atölye ve okuma saatleri organize ediyor.",
             Category = "Kültür Etkinliği",
-            Date = "15 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 15),
+            Date = new DateTime(2025, 11, 15),
             Slug = "yeni-kutuphane-gonullu-okuyucu"
         }
     };
@@ -174,7 +170,7 @@ public sealed class DataSeeder
             Title = "Geleneksel Ceviz Festivali",
             Description = "Geleneksel lezzetler, konserler ve sergilerle dolu festivalimizde tüm halkımızı bekliyoruz.",
             Location = "Oğuzlar Meydanı",
-            Date = "25 Kasım 2025",
+
             EventDate = new DateTime(2025, 11, 25, 14, 0, 0),
             Image = "https://picsum.photos/800/600?random=101",
             Slug = "geleneksel-ceviz-festivali"
@@ -184,7 +180,7 @@ public sealed class DataSeeder
             Title = "Gençlik Konseri",
             Description = "Genç müzisyenlerimizin sahne alacağı konser, kültür merkezinde düzenlenecek.",
             Location = "Kültür Merkezi",
-            Date = "15 Aralık 2025",
+
             EventDate = new DateTime(2025, 12, 15, 19, 0, 0),
             Image = "https://picsum.photos/800/600?random=102",
             Slug = "genclik-konseri"
@@ -194,7 +190,7 @@ public sealed class DataSeeder
             Title = "Doğa Yürüyüşü",
             Description = "Obruk Barajı çevresinde rehber eşliğinde doğa yürüyüşü ve fotoğrafçılık etkinliği.",
             Location = "Obruk Barajı Çevresi",
-            Date = "20 Aralık 2025",
+
             EventDate = new DateTime(2025, 12, 20, 10, 30, 0),
             Image = "https://picsum.photos/800/600?random=103",
             Slug = "doga-yuruyusu"
@@ -204,7 +200,7 @@ public sealed class DataSeeder
             Title = "Tiyatro Gösterisi: Bir Anadolu Masalı",
             Description = "Yerel sanatçılar tarafından sahnelenecek tiyatro gösterisi kültür merkezimizde izleyici ile buluşuyor.",
             Location = "Belediye Konferans Salonu",
-            Date = "05 Ocak 2026",
+
             EventDate = new DateTime(2026, 1, 5, 18, 0, 0),
             Image = "https://picsum.photos/800/600?random=104",
             Slug = "tiyatro-gosterisi-bir-anadolu-masali"
@@ -217,53 +213,53 @@ public sealed class DataSeeder
         {
             Title = "Belediye Hizmet Binası Tadilat İşi",
             Description = "Hizmet binamızın bodrum katındaki tesisat ve cephe tadilat işleri ihale edilecektir.",
-            Date = "10 Aralık 2025",
-            PublishedAt = new DateTime(2025, 11, 10),
+            TenderDate = new DateTime(2025, 11, 10),
             RegistrationNumber = "2025/123456",
-            Status = "active",
+            Status = "Open",
             EstimatedValue = 150000m,
-            Slug = "hizmet-binasi-tadilat"
+            Slug = "hizmet-binasi-tadilat",
+            DocumentsJson = "[]"
         },
         new Tender
         {
             Title = "Araç Kiralama Hizmet Alımı",
             Description = "Personel ve hizmet araçları için 12 aylık kiralama hizmeti ihalesi yapılacaktır.",
-            Date = "05 Aralık 2025",
-            PublishedAt = new DateTime(2025, 11, 5),
+            TenderDate = new DateTime(2025, 11, 5),
             RegistrationNumber = "2025/123457",
-            Status = "active",
+            Status = "Open",
             EstimatedValue = 250000m,
-            Slug = "arac-kiralama-hizmeti-alimi"
+            Slug = "arac-kiralama-hizmeti-alimi",
+            DocumentsJson = "[]"
         },
         new Tender
         {
             Title = "Park ve Bahçeler İçin Fidan Alımı",
             Description = "Yeni düzenlenecek peyzaj alanlarında kullanılmak üzere ceviz, gül ve sedir fidanlarının alımı yapılacaktır.",
-            Date = "20 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 20),
+            TenderDate = new DateTime(2025, 11, 20),
             RegistrationNumber = "2025/123450",
-            Status = "completed",
+            Status = "Concluded",
             EstimatedValue = 80000m,
-            Slug = "fidan-alimi-2025"
+            Slug = "fidan-alimi-2025",
+            DocumentsJson = "[]"
         },
         new Tender
         {
             Title = "Kırtasiye Malzemesi Alımı",
             Description = "Eğitim desteği kapsamında ihtiyaç sahibi öğrencilerimiz için kırtasiye malzemesi alımı.",
-            Date = "15 Kasım 2025",
-            PublishedAt = new DateTime(2025, 11, 15),
+            TenderDate = new DateTime(2025, 11, 15),
             RegistrationNumber = "2025/123449",
-            Status = "passive",
+            Status = "Cancelled",
             EstimatedValue = 45000m,
-            Slug = "kirtasiye-malzemesi-alimi"
-            }
-        };
+            Slug = "kirtasiye-malzemesi-alimi",
+            DocumentsJson = "[]"
+        }
+    };
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     private static readonly NewsEntity[] DefaultNews = new[]
     {
-        CreateNews("yeni-hizmet-binasi", "25 Kasım 2025", "Oğuzlar Belediyesi Yeni Hizmet Binası Açıldı",
+        CreateNews("yeni-hizmet-binasi", new DateTime(2025, 11, 25), "Oğuzlar Belediyesi Yeni Hizmet Binası Açıldı",
             "Modern kütüphane, zabıta birimi ve halkla ilişkiler noktasında hizmet kalitemizi artırıyoruz.",
             "https://picsum.photos/800/600?random=1",
             new[]
@@ -272,7 +268,7 @@ public sealed class DataSeeder
                 "https://picsum.photos/1200/800?random=2",
                 "https://picsum.photos/1200/800?random=3"
             }),
-        CreateNews("ceviz-festivali-hazirliklari", "20 Kasım 2025", "Ceviz Festivali Hazırlıkları Başladı",
+        CreateNews("ceviz-festivali-hazirliklari", new DateTime(2025, 11, 20), "Ceviz Festivali Hazırlıkları Başladı",
             "Yerli ve yabancı misafirlerimizin buluşacağı festival alanı için sahne kurulumu tamamlanmak üzere.",
             "https://picsum.photos/800/600?random=4",
             new[]
@@ -280,7 +276,7 @@ public sealed class DataSeeder
                 "https://picsum.photos/1200/800?random=4",
                 "https://picsum.photos/1200/800?random=5"
             }),
-        CreateNews("obruk-baraji-duzenleniyor", "15 Kasım 2025", "Obruk Barajı Çevresi Düzenleniyor",
+        CreateNews("obruk-baraji-duzenleniyor", new DateTime(2025, 11, 15), "Obruk Barajı Çevresi Düzenleniyor",
             "Çevre düzenlemeleri, yürüyüş yolları ve peyzaj çalışmaları halkımızın kullanımına hazırlanıyor.",
             "https://picsum.photos/800/600?random=6",
             new[]
@@ -289,13 +285,13 @@ public sealed class DataSeeder
                 "https://picsum.photos/1200/800?random=7",
                 "https://picsum.photos/1200/800?random=8"
             }),
-        CreateNews("kis-spor-okullari", "10 Kasım 2025", "Köy Spor Okulları Kayıtları Açıldı",
+        CreateNews("kis-spor-okullari", new DateTime(2025, 11, 10), "Köy Spor Okulları Kayıtları Açıldı",
             "Gençlerimizin sporla buluşması için kayak, masa tenisi ve yüzme kurs kayıtları başladı.",
             "https://picsum.photos/800/600?random=9"),
-        CreateNews("yol-bakim-onarimlari", "05 Kasım 2025", "Yol Bakım Onarım Çalışmaları Sürüyor",
+        CreateNews("yol-bakim-onarimlari", new DateTime(2025, 11, 5), "Yol Bakım Onarım Çalışmaları Sürüyor",
             "Fen işleri ekiplerimiz ilçe merkezinde ve kırsal mahallelerde yol bakım seferberliğini sürdürüyor.",
             "https://picsum.photos/800/600?random=10"),
-        CreateNews("cumhuriyet-bayrami", "29 Ekim 2025", "29 Ekim Cumhuriyet Bayramı Coşkuyla Kutlandı",
+        CreateNews("cumhuriyet-bayrami", new DateTime(2025, 10, 29), "29 Ekim Cumhuriyet Bayramı Coşkuyla Kutlandı",
             "Cumhuriyetimizin 102. yılı tüm birimlerin ortak kutlamasıyla gerçekleştirildi.",
             "https://picsum.photos/800/600?random=11")
     };
@@ -360,12 +356,12 @@ public sealed class DataSeeder
 
     private static readonly GalleryFolderEntity[] DefaultGalleryFolders = new[]
     {
-        CreateFolder("1", "Oguzlar Ceviz Festivali 2024", "oguzlar-ceviz-festivali-2024", "https://picsum.photos/id/10/800/600", 12, "15.10.2024"),
-        CreateFolder("2", "Altinkoz Tesisleri Açılışı", "altinkoz-tesisleri-acilisi", "https://picsum.photos/id/20/800/600", 8, "20.09.2024"),
-        CreateFolder("3", "Doğa Yürüyüşü Etkinliği", "doga-yuruyusu-etkinligi", "https://picsum.photos/id/28/800/600", 25, "05.09.2024"),
-        CreateFolder("4", "Obruk Barajı Manzaraları", "obruk-baraji-manzaralari", "https://picsum.photos/id/40/800/600", 15, "01.08.2024"),
-        CreateFolder("5", "Belediye Çalışmaları", "belediye-calismalari", "https://picsum.photos/id/50/800/600", 42, "12.07.2024"),
-        CreateFolder("6", "Köy Manzaraları", "koy-manzaralari", "https://picsum.photos/id/60/800/600", 10, "10.01.2024")
+        CreateFolder("Oguzlar Ceviz Festivali 2024", "oguzlar-ceviz-festivali-2024", "https://picsum.photos/id/10/800/600", 12, "15.10.2024"),
+        CreateFolder("Altinkoz Tesisleri Açılışı", "altinkoz-tesisleri-acilisi", "https://picsum.photos/id/20/800/600", 8, "20.09.2024"),
+        CreateFolder("Doğa Yürüyüşü Etkinliği", "doga-yuruyusu-etkinligi", "https://picsum.photos/id/28/800/600", 25, "05.09.2024"),
+        CreateFolder("Obruk Barajı Manzaraları", "obruk-baraji-manzaralari", "https://picsum.photos/id/40/800/600", 15, "01.08.2024"),
+        CreateFolder("Belediye Çalışmaları", "belediye-calismalari", "https://picsum.photos/id/50/800/600", 42, "12.07.2024"),
+        CreateFolder("Köy Manzaraları", "koy-manzaralari", "https://picsum.photos/id/60/800/600", 10, "10.01.2024")
     };
 
     private static readonly GalleryImageEntity[] DefaultGalleryImages = BuildGalleryImages(DefaultGalleryFolders);
@@ -374,7 +370,6 @@ public sealed class DataSeeder
     {
         new CouncilDocumentEntity
         {
-            Id = 1,
             Title = "2023 Mali Yıllık Faaliyet Raporu",
             Type = "Rapor",
             Date = new DateTime(2024, 1, 15),
@@ -383,7 +378,6 @@ public sealed class DataSeeder
         },
         new CouncilDocumentEntity
         {
-            Id = 2,
             Title = "2022 Faaliyet Raporu",
             Type = "Rapor",
             Date = new DateTime(2023, 1, 20),
@@ -391,7 +385,6 @@ public sealed class DataSeeder
         },
         new CouncilDocumentEntity
         {
-            Id = 3,
             Title = "Meclis Üyeleri ve Görev Dağılımı",
             Type = "Liste",
             Date = new DateTime(2024, 4, 1),
@@ -402,13 +395,13 @@ public sealed class DataSeeder
 
     private static readonly KvkkDocumentEntity[] DefaultKvkkDocuments = new[]
     {
-        CreateKvkk(1, "Oğuzlar Belediyesi KVKK Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/oguzlar-belediyesi-kvkk-politikasi_17.pdf"),
-        CreateKvkk(2, "Oğuzlar Belediyesi KVKK Başvuru Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/kvkk-basvuru-formu_03.pdf"),
-        CreateKvkk(3, "Oğuzlar Belediye Sosyal Medya Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/sosyal-medya-aydinlatma-metni_21.pdf"),
-        CreateKvkk(4, "Oğuzlar Belediyesi Kişisel Veri Saklama ve İmha Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/kisisel-veri-saklama-ve-imha-politikasi_01.pdf"),
-        CreateKvkk(5, "Oğuzlar Belediyesi Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/aydinlatma-metni_52.pdf"),
-        CreateKvkk(6, "Oğuzlar Belediyesi Çerez Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/cerez-politikasi_55.pdf"),
-        CreateKvkk(7, "Oğuzlar Belediyesi İzin Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/izin-formu_58.pdf")
+        CreateKvkk("Oğuzlar Belediyesi KVKK Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/oguzlar-belediyesi-kvkk-politikasi_17.pdf"),
+        CreateKvkk("Oğuzlar Belediyesi KVKK Başvuru Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/kvkk-basvuru-formu_03.pdf"),
+        CreateKvkk("Oğuzlar Belediye Sosyal Medya Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/sosyal-medya-aydinlatma-metni_21.pdf"),
+        CreateKvkk("Oğuzlar Belediyesi Kişisel Veri Saklama ve İmha Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/kisisel-veri-saklama-ve-imha-politikasi_01.pdf"),
+        CreateKvkk("Oğuzlar Belediyesi Aydınlatma Metni", "Aydınlatma Metni", "http://www.oguzlar.bel.tr/Upload/files/aydinlatma-metni_52.pdf"),
+        CreateKvkk("Oğuzlar Belediyesi Çerez Politikası", "Politika", "http://www.oguzlar.bel.tr/Upload/files/cerez-politikasi_55.pdf"),
+        CreateKvkk("Oğuzlar Belediyesi İzin Formu", "Form", "http://www.oguzlar.bel.tr/Upload/files/izin-formu_58.pdf")
     };
 
     private static readonly MunicipalUnitEntity[] DefaultMunicipalUnits = new[]
@@ -449,7 +442,6 @@ public sealed class DataSeeder
     {
         new VehicleEntity
         {
-            Id = 1,
             Name = "JCB Kazıcı Yükleyici",
             Type = "İş Makinesi",
             Plate = "19 AA 001",
@@ -458,7 +450,6 @@ public sealed class DataSeeder
         },
         new VehicleEntity
         {
-            Id = 2,
             Name = "Ford Cargo Süpürge Kamyonu",
             Type = "Hizmet Aracı",
             Plate = "19 AA 002",
@@ -467,7 +458,6 @@ public sealed class DataSeeder
         },
         new VehicleEntity
         {
-            Id = 3,
             Name = "Mercedes-Benz İtfaiye Aracı",
             Type = "Hizmet Aracı",
             Plate = "19 AA 003",
@@ -476,7 +466,6 @@ public sealed class DataSeeder
         },
         new VehicleEntity
         {
-            Id = 4,
             Name = "Otokar Sultan Otobüs",
             Type = "Toplu Taşıma",
             Plate = "19 AA 004",
@@ -485,7 +474,6 @@ public sealed class DataSeeder
         },
         new VehicleEntity
         {
-            Id = 5,
             Name = "Caterpillar Greyder",
             Type = "İş Makinesi",
             Plate = "19 AA 005",
@@ -494,7 +482,6 @@ public sealed class DataSeeder
         },
         new VehicleEntity
         {
-            Id = 6,
             Name = "Ford Transit Cenaze Aracı",
             Type = "Hizmet Aracı",
             Plate = "19 AA 006",
@@ -505,8 +492,8 @@ public sealed class DataSeeder
 
     private static readonly SliderEntity[] DefaultSliders = new[]
     {
-        CreateSlider("1", "Hoş Geldiniz", "Oğuzlar Belediyesi Resmi Web Sitesi", "assets/images/slider.jpg", null, 1, true),
-        CreateSlider("2", "Kültür ve Sanat", "Etkinliklerimizden haberdar olun", "assets/images/slider2.jpg", null, 2, true)
+        CreateSlider("Hoş Geldiniz", "Oğuzlar Belediyesi Resmi Web Sitesi", "assets/images/slider.jpg", null, 1, true),
+        CreateSlider("Kültür ve Sanat", "Etkinliklerimizden haberdar olun", "assets/images/slider2.jpg", null, 2, true)
     };
 
     private static readonly Guid MenuHomeId = Guid.Parse("0115d0e3-4a6a-4d5f-9a53-1a5f1ed8a9f1");
@@ -800,11 +787,10 @@ public sealed class DataSeeder
         }
     };
 
-    private static SliderEntity CreateSlider(string id, string title, string description, string imageUrl, string? link, int order, bool isActive)
+    private static SliderEntity CreateSlider(string title, string description, string imageUrl, string? link, int order, bool isActive)
     {
         return new SliderEntity
         {
-            Id = id,
             Title = title,
             Description = description,
             ImageUrl = imageUrl,
@@ -814,7 +800,7 @@ public sealed class DataSeeder
         };
     }
 
-    private static NewsEntity CreateNews(string slug, string date, string title, string description, string image, IEnumerable<string>? photos = null)
+    private static NewsEntity CreateNews(string slug, DateTime date, string title, string description, string image, IEnumerable<string>? photos = null)
     {
         return new NewsEntity
         {
@@ -841,11 +827,10 @@ public sealed class DataSeeder
         };
     }
 
-    private static GalleryFolderEntity CreateFolder(string id, string title, string slug, string coverImage, int count, string date)
+    private static GalleryFolderEntity CreateFolder(string title, string slug, string coverImage, int count, string date)
     {
         return new GalleryFolderEntity
         {
-            Id = id,
             Title = title,
             Slug = slug,
             CoverImage = coverImage,
@@ -858,41 +843,41 @@ public sealed class DataSeeder
     {
         var list = new List<GalleryImageEntity>();
 
+        int folderIndex = 1;
         foreach (var folder in folders)
         {
             for (var i = 0; i < folder.ImageCount; i++)
             {
-                var imageId = int.Parse(folder.Id) * 10 + i;
+                var imageId = folderIndex * 10 + i;
                 list.Add(new GalleryImageEntity
                 {
-                    Id = $"{folder.Id}-{i}",
                     FolderId = folder.Id,
                     Url = $"https://picsum.photos/id/{imageId}/1200/800",
                     ThumbnailUrl = $"https://picsum.photos/id/{imageId}/400/300",
                     Title = $"{folder.Title} - {i + 1}"
                 });
             }
+            folderIndex++;
         }
 
         return list.ToArray();
     }
 
-    private static KvkkDocumentEntity CreateKvkk(int id, string title, string type, string url)
+    private static KvkkDocumentEntity CreateKvkk(string title, string type, string url)
     {
         return new KvkkDocumentEntity
         {
-            Id = id,
             Title = title,
             Type = type,
             FileUrl = url
         };
     }
 
-    private static MunicipalUnitEntity CreateMunicipalUnit(string id, string title, string? content, string icon, IEnumerable<UnitStaff> staff)
+    private static MunicipalUnitEntity CreateMunicipalUnit(string slug, string title, string? content, string icon, IEnumerable<UnitStaff> staff)
     {
         return new MunicipalUnitEntity
         {
-            Id = id,
+            Slug = slug,
             Title = title,
             Content = content,
             Icon = icon,

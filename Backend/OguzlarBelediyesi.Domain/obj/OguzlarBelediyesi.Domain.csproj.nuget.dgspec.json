@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj": {}
+    "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj": {}
   },
   "projects": {
-    "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj": {
+    "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj",
+        "projectUniqueName": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj",
         "projectName": "OguzlarBelediyesi.Domain",
-        "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\OguzlarBelediyesi.Domain.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Domain\\obj\\",
+        "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/OguzlarBelediyesi.Domain.csproj",
+        "packagesPath": "/home/sefa/.nuget/packages/",
+        "outputPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/sefa/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/sefa/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

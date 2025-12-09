@@ -1,0 +1,138 @@
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card mb-4">
+            <div class="flex items-center">
+                <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+                <span class="text-gray-500 mr-2">&gt;</span>
+                <span class="font-medium text-gray-900 dark:text-gray-100">Galeri Yönetimi</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="m-0 text-lg font-semibold">Galeri Klasörleri</h5>
+                <button pButton pRipple label="Yeni Klasör Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNewFolder()"></button>
+            </div>
+
+            <p-table [value]="folders" [rows]="10" [paginator]="true" [rowHover]="true"
+                styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 20%">Kapak Görseli</th>
+                        <th pSortableColumn="title" style="width:30%">Başlık <p-sortIcon field="title"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="imageCount" style="width:15%">Resim Sayısı <p-sortIcon
+                                field="imageCount"></p-sortIcon></th>
+                        <th pSortableColumn="date" style="width:15%">Tarih <p-sortIcon field="date"></p-sortIcon></th>
+                        <th class="text-right" style="width: 20%">İşlemler</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-folder>
+                    <tr>
+                        <td>
+                            <div
+                                class="w-32 h-20 rounded overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                                <p-image *ngIf="folder.coverImage" [src]="getImageUrl(folder.coverImage)"
+                                    [preview]="true" alt="{{folder.title}}" imageClass="w-full h-full object-cover">
+                                </p-image>
+                                <span *ngIf="!folder.coverImage" class="text-gray-400 text-xs text-center p-2">Görsel
+                                    Yok</span>
+                            </div>
+                        </td>
+                        <td class="font-medium">{{folder.title}}</td>
+                        <td>{{folder.imageCount}}</td>
+                        <td>{{folder.date}}</td>
+                        <td class="text-right">
+                            <button pButton pRipple icon="pi pi-images" class="p-button-text p-button-warning mr-2"
+                                (click)="openImages(folder)" pTooltip="Resimleri Yönet"></button>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="editFolder(folder)" pTooltip="Düzenle"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteFolder(folder)" pTooltip="Sil"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="folderDialog" [style]="{width: '500px'}" header="Klasör Detayları" [modal]="true"
+    class="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="flex flex-col gap-4">
+            <div class="field">
+                <label for="title" class="font-medium">Başlık</label>
+                <input type="text" pInputText id="title" [(ngModel)]="folder.title" required autofocus
+                    class="w-full mt-1" [ngClass]="{'ng-invalid ng-dirty': submitted && !folder.title}" />
+                <small class="p-error block mt-1" *ngIf="submitted && !folder.title">Başlık gereklidir.</small>
+            </div>
+
+            <div class="field">
+                <label for="date" class="font-medium">Tarih</label>
+                <input type="text" pInputText id="date" [(ngModel)]="folder.date" placeholder="Örn: 2024"
+                    class="w-full mt-1" />
+            </div>
+
+            <div
+                class="field flex items-center justify-between border rounded-lg p-3 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col">
+                    <label for="isFeatured" class="font-medium mb-1">Anasayfada Göster</label>
+                    <small class="text-gray-500">Bu galeriyi anasayfada öne çıkarın (En fazla 2 adet).</small>
+                </div>
+                <p-toggleswitch [(ngModel)]="folder.isFeatured" inputId="isFeatured"></p-toggleswitch>
+            </div>
+
+            <div
+                class="field flex items-center justify-between border rounded-lg p-3 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col">
+                    <label for="isActive" class="font-medium mb-1">Durum ({{folder.isActive ? 'Aktif' :
+                        'Pasif'}})</label>
+                    <small class="text-gray-500">Bu galerinin sitede görünürlüğünü ayarlayın.</small>
+                </div>
+                <p-toggleswitch [(ngModel)]="folder.isActive" inputId="isActive"></p-toggleswitch>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text"
+            (click)="folderDialog = false"></button>
+        <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary"
+            (click)="saveFolder()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="imagesDialog" [style]="{width: '80%'}" header="Resim Yönetimi" [modal]="true"
+    [maximizable]="true">
+    <div class="card">
+        <p-fileUpload name="demo[]" customUpload="true" (uploadHandler)="uploadHandler($event)" [multiple]="true"
+            accept="image/*" maxFileSize="5000000" chooseLabel="Resim Seç" uploadLabel="Yükle" cancelLabel="İptal">
+        </p-fileUpload>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
+            <div *ngFor="let img of folderImages"
+                class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-800">
+                <div class="absolute inset-0 w-full h-full">
+                    <p-image [src]="getImageUrl(img.url)" [preview]="true"
+                        imageClass="!w-full !h-full !object-cover !block" styleClass="!w-full !h-full !flex"
+                        class="w-full h-full block">
+                    </p-image>
+                </div>
+
+                <div
+                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-start justify-end p-2 pointer-events-none">
+                    <button pButton icon="pi pi-trash"
+                        class="p-button-danger p-button-rounded p-button-sm shadow-lg transform scale-90 group-hover:scale-100 transition-transform pointer-events-auto"
+                        (click)="deleteImage(img)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<p-toast></p-toast>

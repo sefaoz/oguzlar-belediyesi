@@ -1050,6 +1050,22 @@
           }
         }
       },
+      "SixLabors.ImageSharp/3.1.12": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/SixLabors.ImageSharp.props": {}
+        }
+      },
       "System.CodeDom/6.0.0": {
         "type": "package",
         "compile": {
@@ -3297,6 +3313,22 @@
         "serilog.sinks.file.nuspec"
       ]
     },
+    "SixLabors.ImageSharp/3.1.12": {
+      "sha512": "iAg6zifihXEFS/t7fiHhZBGAdCp3FavsF4i2ZIDp0JfeYeDVzvmlbY1CNhhIKimaIzrzSi5M/NBFcWvZT2rB/A==",
+      "type": "package",
+      "path": "sixlabors.imagesharp/3.1.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "build/SixLabors.ImageSharp.props",
+        "lib/net6.0/SixLabors.ImageSharp.dll",
+        "lib/net6.0/SixLabors.ImageSharp.xml",
+        "sixlabors.imagesharp.128.png",
+        "sixlabors.imagesharp.3.1.12.nupkg.sha512",
+        "sixlabors.imagesharp.nuspec"
+      ]
+    },
     "System.CodeDom/6.0.0": {
       "sha512": "CPc6tWO1LAer3IzfZufDBRL+UZQcj5uS207NHALQzP84Vp/z6wF0Aa0YZImOQY8iStY0A2zI/e3ihKNPfUm8XA==",
       "type": "package",
@@ -3733,23 +3765,24 @@
       "OguzlarBelediyesi.Infrastructure >= 1.0.0",
       "Pomelo.EntityFrameworkCore.MySql >= 9.0.0",
       "Serilog.AspNetCore >= 7.0.0",
-      "Serilog.Sinks.Console >= 5.0.0"
+      "Serilog.Sinks.Console >= 5.0.0",
+      "SixLabors.ImageSharp >= 3.1.12"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\PC\\.nuget\\packages\\": {}
+    "/home/sefa/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.WebAPI\\OguzlarBelediyesi.WebAPI.csproj",
+      "projectUniqueName": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.WebAPI/OguzlarBelediyesi.WebAPI.csproj",
       "projectName": "OguzlarBelediyesi.WebAPI",
-      "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.WebAPI\\OguzlarBelediyesi.WebAPI.csproj",
-      "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-      "outputPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.WebAPI\\obj\\",
+      "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.WebAPI/OguzlarBelediyesi.WebAPI.csproj",
+      "packagesPath": "/home/sefa/.nuget/packages/",
+      "outputPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.WebAPI/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/sefa/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -3761,11 +3794,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj": {
-              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Application\\OguzlarBelediyesi.Application.csproj"
+            "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj": {
+              "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Application/OguzlarBelediyesi.Application.csproj"
             },
-            "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Infrastructure\\OguzlarBelediyesi.Infrastructure.csproj": {
-              "projectPath": "E:\\Oğuzlar Belediyesi\\Backend\\OguzlarBelediyesi.Infrastructure\\OguzlarBelediyesi.Infrastructure.csproj"
+            "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Infrastructure/OguzlarBelediyesi.Infrastructure.csproj": {
+              "projectPath": "/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Infrastructure/OguzlarBelediyesi.Infrastructure.csproj"
             }
           }
         }
@@ -3811,6 +3844,10 @@
           "Serilog.Sinks.Console": {
             "target": "Package",
             "version": "[5.0.0, )"
+          },
+          "SixLabors.ImageSharp": {
+            "target": "Package",
+            "version": "[3.1.12, )"
           }
         },
         "imports": [
@@ -3832,7 +3869,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/sefa/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

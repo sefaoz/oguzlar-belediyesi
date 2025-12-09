@@ -1,0 +1,129 @@
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card mb-4">
+            <div class="flex items-center">
+                <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+                <span class="text-gray-500 mr-2">&gt;</span>
+                <span class="font-medium text-gray-900 dark:text-gray-100">KVKK Belgeleri</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="m-0 text-lg font-semibold">KVKK Belgeleri</h5>
+                <button pButton pRipple label="Yeni Belge Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNew()"></button>
+            </div>
+
+            <p-table #dt [value]="kvkkList" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['title', 'type']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
+                dataKey="id"
+                currentPageReportTemplate="Toplam {totalRecords} kayıttan {first} ile {last} arası gösteriliyor"
+                [showCurrentPageReport]="true" styleClass="p-datatable-striped">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-end">
+                        <div class="relative w-full md:w-auto">
+                            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Ara..."
+                                class="!pl-10 w-full md:w-64" />
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="title" style="width:30%">Başlık <p-sortIcon field="title"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="type" style="width:20%">Tip <p-sortIcon field="type"></p-sortIcon></th>
+                        <th style="width:25%">Dosya</th>
+                        <th class="text-right" style="width: 25%">İşlemler</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-kvkkItem>
+                    <tr>
+                        <td class="font-medium">{{kvkkItem.title}}</td>
+                        <td>{{kvkkItem.type}}</td>
+                        <td>
+                            <a *ngIf="kvkkItem.fileUrl" [href]="getFileUrl(kvkkItem.fileUrl)" target="_blank"
+                                class="text-blue-500 hover:underline flex items-center gap-2">
+                                <i class="pi pi-file-pdf"></i> Dosyayı Görüntüle
+                            </a>
+                            <span *ngIf="!kvkkItem.fileUrl" class="text-gray-400">Dosya Yok</span>
+                        </td>
+
+                        <td class="text-right">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="editKvkk(kvkkItem)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteKvkk(kvkkItem)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="summary">
+                    <div class="flex items-center justify-between">
+                        Toplam {{kvkkList ? kvkkList.length : 0}} belge var.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="kvkkDialog" [style]="{width: '500px'}" header="KVKK Belge Detayları" [modal]="true"
+    styleClass="p-fluid" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+        <div class="flex flex-col gap-6 p-1">
+            <div class="field">
+                <label for="title" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Başlık</label>
+                <input type="text" pInputText id="title" [(ngModel)]="kvkk.title" required autofocus class="w-full" />
+                <small class="p-error block mt-1" *ngIf="submitted && !kvkk.title">Başlık gereklidir.</small>
+            </div>
+
+            <div class="field">
+                <label for="type" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Tip</label>
+                <input type="text" pInputText id="type" [(ngModel)]="kvkk.type" required class="w-full"
+                    placeholder="Örn: Aydınlatma Metni" />
+                <small class="p-error block mt-1" *ngIf="submitted && !kvkk.type">Tip gereklidir.</small>
+            </div>
+
+            <div class="field">
+                <label for="fileUpload" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">
+                    {{ kvkk.fileUrl ? 'Dosyayı Güncelle (boş bırakırsanız değişmez)' : 'Dosya Yükle' }}
+                </label>
+                <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx"
+                    class="w-full p-inputtext p-component" />
+            </div>
+
+            <div *ngIf="kvkk.fileUrl" class="field">
+                <small class="text-gray-500">Mevcut dosya: <a [href]="getFileUrl(kvkk.fileUrl)" target="_blank"
+                        class="text-blue-500 hover:underline">Görüntüle</a></small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 pt-2">
+            <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveKvkk()"
+                [loading]="isLoading"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

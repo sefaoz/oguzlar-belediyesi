@@ -1,0 +1,194 @@
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card mb-4">
+            <div class="flex items-center">
+                <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+                <span class="text-gray-500 mr-2">&gt;</span>
+                <span class="font-medium text-gray-900 dark:text-gray-100">Araç Parkı Yönetimi</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="m-0 text-lg font-semibold">Araçlar</h5>
+                <button pButton pRipple label="Yeni Araç Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNew()"></button>
+            </div>
+
+            <p-table #dt [value]="vehicles" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['name', 'plate', 'type']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
+                dataKey="id"
+                currentPageReportTemplate="Toplam {totalRecords} kayıttan {first} ile {last} arası gösteriliyor"
+                [showCurrentPageReport]="true" styleClass="p-datatable-striped">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-end">
+                        <div class="relative w-full md:w-auto">
+                            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Ara..."
+                                class="!pl-10 w-full md:w-64" />
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 15%">Görsel</th>
+                        <th pSortableColumn="name" style="width:25%">Araç Adı <p-sortIcon field="name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="plate" style="width:15%">Plaka <p-sortIcon field="plate"></p-sortIcon></th>
+                        <th pSortableColumn="type" style="width:20%">Tip <p-sortIcon field="type"></p-sortIcon></th>
+                        <th class="text-right" style="width: 25%">İşlemler</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-vehicle>
+                    <tr>
+                        <td>
+                            <div
+                                class="w-32 h-20 rounded overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                                <p-image *ngIf="vehicle.imageUrl" [src]="getImageUrl(vehicle.imageUrl)" [preview]="true"
+                                    alt="{{vehicle.name}}" imageClass="w-full h-full object-cover">
+                                </p-image>
+                                <span *ngIf="!vehicle.imageUrl" class="text-gray-400 text-xs text-center p-2">Görsel
+                                    Yok</span>
+                            </div>
+                        </td>
+                        <td class="font-medium">{{vehicle.name}}</td>
+                        <td>{{vehicle.plate}}</td>
+                        <td>{{vehicle.type}}</td>
+
+                        <td class="text-right">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="editVehicle(vehicle)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteVehicle(vehicle)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="summary">
+                    <div class="flex items-center justify-between">
+                        Toplam {{vehicles ? vehicles.length : 0}} araç var.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="vehicleDialog" [style]="{width: '50%'}" header="Araç Detayları" [modal]="true"
+    styleClass="p-fluid" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+        <div class="flex flex-col gap-6 p-1">
+            <!-- Temel Bilgiler Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Temel Bilgiler</h6>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="field">
+                        <label for="name" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Araç
+                            Adı</label>
+                        <input type="text" pInputText id="name" [(ngModel)]="vehicle.name" required autofocus
+                            class="w-full" />
+                        <small class="p-error block mt-1" *ngIf="submitted && !vehicle.name">Araç adı
+                            gereklidir.</small>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="field">
+                            <label for="plate"
+                                class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Plaka</label>
+                            <input type="text" pInputText id="plate" [(ngModel)]="vehicle.plate" class="w-full" />
+                        </div>
+                        <div class="field">
+                            <label for="type" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Araç
+                                Tipi</label>
+                            <input type="text" pInputText id="type" [(ngModel)]="vehicle.type" class="w-full" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medya Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Araç Görseli</h6>
+
+                <div class="field mb-4">
+                    <label for="fileUpload" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Yeni Görsel
+                        Seç</label>
+                    <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept="image/*"
+                        class="w-full p-inputtext p-component" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <!-- Mevcut Görsel -->
+                    <div *ngIf="originalImageUrl" class="border rounded-lg p-3 bg-gray-50 dark:bg-gray-800">
+                        <span class="text-sm font-semibold text-gray-500 mb-2 block">Mevcut Görsel</span>
+                        <div
+                            class="relative h-48 flex items-center justify-center overflow-hidden rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                            <p-image [src]="getImageUrl(originalImageUrl)" [preview]="true" alt="Mevcut Görsel"
+                                imageClass="max-w-full max-h-full object-contain"
+                                class="w-full h-full flex items-center justify-center"></p-image>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Görsel Önizleme -->
+                    <div class="border rounded-lg p-3 bg-gray-50 dark:bg-gray-800"
+                        [ngClass]="{'md:col-span-2': !originalImageUrl}">
+                        <span class="text-sm font-semibold text-gray-500 mb-2 block">
+                            {{ originalImageUrl ? 'Yeni Görsel Önizleme' : 'Görsel Önizleme' }}
+                        </span>
+                        <div
+                            class="relative h-48 flex items-center justify-center overflow-hidden rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-dashed">
+                            <ng-container *ngIf="selectedImagePreview; else noImage">
+                                <p-image [src]="selectedImagePreview" [preview]="true" alt="Önizleme"
+                                    imageClass="max-w-full max-h-full object-contain"
+                                    class="w-full h-full flex items-center justify-center"></p-image>
+                            </ng-container>
+                            <ng-template #noImage>
+                                <div class="text-center text-gray-400">
+                                    <i class="pi pi-image text-3xl mb-2"></i>
+                                    <p class="text-xs">Görsel seçiniz</p>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Açıklama Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Açıklama</h6>
+                <div class="field">
+                    <label for="description"
+                        class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Açıklama</label>
+                    <textarea pInputTextarea id="description" [(ngModel)]="vehicle.description" rows="5"
+                        class="w-full"></textarea>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 pt-2">
+            <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
+                (click)="hideDialog()"></button>
+            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveVehicle()"
+                [loading]="isLoading"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

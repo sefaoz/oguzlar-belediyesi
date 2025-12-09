@@ -92,6 +92,11 @@ export class HaberlerComponent implements OnInit {
     // Month Filter
     if (this.selectedMonth) {
       filtered = filtered.filter(news => {
+        const d = new Date(news.date);
+        if (!isNaN(d.getTime())) {
+          return (d.getMonth() + 1) === +this.selectedMonth!;
+        }
+
         // Try DD.MM.YYYY
         let parts = news.date.split('.');
         if (parts.length === 3) {
@@ -111,6 +116,11 @@ export class HaberlerComponent implements OnInit {
     // Year Filter
     if (this.selectedYear) {
       filtered = filtered.filter(news => {
+        const d = new Date(news.date);
+        if (!isNaN(d.getTime())) {
+          return d.getFullYear() === +this.selectedYear!;
+        }
+
         // Try DD.MM.YYYY
         let parts = news.date.split('.');
         if (parts.length === 3) {

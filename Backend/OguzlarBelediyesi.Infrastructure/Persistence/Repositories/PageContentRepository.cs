@@ -101,15 +101,17 @@ public sealed class PageContentRepository : IPageContentRepository
     {
         var paragraphs = ParseTextList(entity.ParagraphsJson);
         var contacts = ParseContactDetails(entity.ContactDetailsJson);
-        return new PageContent(
-            Id: entity.Id,
-            Key: entity.Key,
-            Title: entity.Title,
-            Subtitle: entity.Subtitle,
-            Paragraphs: paragraphs,
-            ImageUrl: entity.ImageUrl,
-            MapEmbedUrl: entity.MapEmbedUrl,
-            ContactDetails: contacts.Count == 0 ? null : contacts);
+        return new PageContent
+        {
+            Id = entity.Id,
+            Key = entity.Key,
+            Title = entity.Title,
+            Subtitle = entity.Subtitle,
+            Paragraphs = paragraphs.ToList(),
+            ImageUrl = entity.ImageUrl,
+            MapEmbedUrl = entity.MapEmbedUrl,
+            ContactDetails = contacts.Count == 0 ? null : contacts.ToList()
+        };
     }
 
     private static IReadOnlyList<string> ParseTextList(string? json)

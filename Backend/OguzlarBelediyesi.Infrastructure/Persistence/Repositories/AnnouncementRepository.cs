@@ -21,7 +21,7 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
 
     public async Task<IEnumerable<Announcement>> GetAllAsync(AnnouncementFilter? filter = null)
     {
-        IQueryable<Announcement> query = _context.Announcements.AsNoTracking();
+        IQueryable<Announcement> query = _context.Announcements.AsNoTracking().Where(a => !a.IsDeleted);
 
         if (filter is not null)
         {
@@ -33,22 +33,63 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
 
             if (filter.From.HasValue)
             {
-                query = query.Where(a => a.PublishedAt >= filter.From.Value);
+                query = query.Where(a => a.Date >= filter.From.Value);
             }
 
             if (filter.To.HasValue)
             {
-                query = query.Where(a => a.PublishedAt <= filter.To.Value);
+                query = query.Where(a => a.Date <= filter.To.Value);
             }
         }
 
-        return await query.OrderByDescending(a => a.PublishedAt).ToListAsync();
+        return await query.OrderByDescending(a => a.CreatedDate).ToListAsync();
     }
 
     public Task<Announcement?> GetBySlugAsync(string slug)
     {
         var normalized = slug.Trim().ToLowerInvariant();
         return _context.Announcements.AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Slug.ToLower() == normalized);
+            .FirstOrDefaultAsync(a => a.Slug.ToLower() == normalized && !a.IsDeleted);
+    }
+
+    public Task<Announcement?> GetByIdAsync(Guid id)
+    {
+        return _context.Announcements.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+    }
+
+    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null)
+    {
+        var query = _context.Announcements.AsNoTracking().Where(a => a.Slug == slug && !a.IsDeleted);
+        if (excludeId.HasValue)
+        {
+            query = query.Where(a => a.Id != excludeId.Value);
+        }
+        return await query.AnyAsync();
+    }
+
+    public async Task AddAsync(Announcement announcement)
+    {
+        await _context.Announcements.AddAsync(announcement);
+    }
+
+    public Task UpdateAsync(Announcement announcement)
+    {
+        _context.Announcements.Update(announcement);
+        return Task.CompletedTask;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _context.Announcements.FindAsync(id);
+        if (entity != null)
+        {
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
+        }
+    }
+
+    public Task SaveChangesAsync()
+    {
+        return _context.SaveChangesAsync();
     }
 }

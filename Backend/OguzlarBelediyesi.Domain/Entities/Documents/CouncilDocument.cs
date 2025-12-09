@@ -1,9 +1,13 @@
+using System;
+using OguzlarBelediyesi.Domain.Entities.Common;
+
 namespace OguzlarBelediyesi.Domain;
 
-public sealed record CouncilDocument(
-    int Id,
-    string Title,
-    string Type,
-    DateTime Date,
-    string? Description = null,
-    string? FileUrl = null);
+public sealed class CouncilDocument : BaseEntity
+{
+    public string Title { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public DateTime Date { get; set; }
+    public string? Description { get; set; }
+    public string? FileUrl { get; set; }
+}

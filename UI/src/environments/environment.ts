@@ -1,6 +1,7 @@
 export interface EnvironmentConfig {
   production: boolean;
   apiBaseUrl: string;
+  imageBaseUrl: string;
   newsApiUrl: string;
   pageContentUrl: string;
   galleryApiUrl: string;
@@ -16,10 +17,12 @@ export interface EnvironmentConfig {
 }
 
 const apiBaseUrl = 'http://localhost:5002/api';
+const imageBaseUrl = 'http://localhost:5002';
 
 export const environment: EnvironmentConfig = {
   production: false,
   apiBaseUrl,
+  imageBaseUrl,
   newsApiUrl: `${apiBaseUrl}/news`,
   pageContentUrl: `${apiBaseUrl}/pages`,
   galleryApiUrl: `${apiBaseUrl}/gallery`,

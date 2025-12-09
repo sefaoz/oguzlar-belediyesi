@@ -27,35 +27,35 @@ export class AppMenu {
             {
                 label: 'İçerik Yönetimi',
                 items: [
-                    { label: 'Haberler', icon: 'pi pi-fw pi-megaphone', routerLink: ['/news'] },
-                    { label: 'Duyurular', icon: 'pi pi-fw pi-bell', routerLink: ['/announcements'] },
-                    { label: 'Etkinlikler', icon: 'pi pi-fw pi-calendar', routerLink: ['/events'] },
-                    { label: 'İhaleler', icon: 'pi pi-fw pi-briefcase', routerLink: ['/tenders'] },
-                    { label: 'Slider', icon: 'pi pi-fw pi-images', routerLink: ['/slider'] },
+                    { label: 'Haberler', icon: 'pi pi-fw pi-megaphone', routerLink: ['/pages/news'] },
+                    { label: 'Duyurular', icon: 'pi pi-fw pi-bell', routerLink: ['/pages/announcements'] },
+                    { label: 'Etkinlikler', icon: 'pi pi-fw pi-calendar', routerLink: ['/pages/events'] },
+                    { label: 'İhaleler', icon: 'pi pi-fw pi-briefcase', routerLink: ['/pages/tenders'] },
+                    { label: 'Slider', icon: 'pi pi-fw pi-images', routerLink: ['/pages/slider'] },
                     { label: 'Sayfa İçerikleri', icon: 'pi pi-fw pi-file-edit', routerLink: ['/pages'] }
                 ]
             },
             {
                 label: 'Kurumsal',
                 items: [
-                    { label: 'Birimler', icon: 'pi pi-fw pi-building', routerLink: ['/units'] },
-                    { label: 'Araç Parkı', icon: 'pi pi-fw pi-car', routerLink: ['/vehicles'] },
-                    { label: 'Meclis Kararları', icon: 'pi pi-fw pi-book', routerLink: ['/council-decisions'] },
-                    { label: 'KVKK Belgeleri', icon: 'pi pi-fw pi-lock', routerLink: ['/kvkk'] }
+                    { label: 'Birimler', icon: 'pi pi-fw pi-building', routerLink: ['/pages/units'] },
+                    { label: 'Araç Parkı', icon: 'pi pi-fw pi-car', routerLink: ['/pages/vehicles'] },
+                    { label: 'Meclis Kararları', icon: 'pi pi-fw pi-book', routerLink: ['/pages/council'] },
+                    { label: 'KVKK Belgeleri', icon: 'pi pi-fw pi-lock', routerLink: ['/pages/kvkk'] }
                 ]
             },
             {
                 label: 'Medya',
                 items: [
-                    { label: 'Galeri', icon: 'pi pi-fw pi-image', routerLink: ['/gallery'] }
+                    { label: 'Galeri', icon: 'pi pi-fw pi-image', routerLink: ['/pages/gallery'] }
                 ]
             },
             {
                 label: 'Sistem',
                 items: [
                     { label: 'Menü Yönetimi', icon: 'pi pi-fw pi-list', routerLink: ['/pages/menus'] },
-                    { label: 'Kullanıcılar', icon: 'pi pi-fw pi-users', routerLink: ['/users'] },
-                    { label: 'Site Ayarları', icon: 'pi pi-fw pi-cog', routerLink: ['/site-settings'] }
+                    { label: 'Kullanıcılar', icon: 'pi pi-fw pi-users', routerLink: ['/pages/users'] },
+                    { label: 'Site Ayarları', icon: 'pi pi-fw pi-cog', routerLink: ['/pages/site-settings'] }
                 ]
             }
         ];

@@ -38,34 +38,40 @@ export class AuthService {
             return false;
         }
 
-        try {
+        return new Promise<boolean>((resolve) => {
             const url = this.apiConfig.buildEndpoint('auth/login');
-            const response = await firstValueFrom(
-                this.http.post<LoginResponse>(url, {
-                    username: email.trim(),
-                    password
-                })
-            );
+            console.log('Login URL:', url);
+            console.log('Sending login request...');
 
-            if (!response?.token) {
-                return false;
-            }
+            this.http.post<LoginResponse>(url, {
+                username: email.trim(),
+                password
+            }).subscribe({
+                next: (response) => {
+                    console.log('Login response received:', response);
+                    if (!response?.token) {
+                        resolve(false);
+                        return;
+                    }
 
-            localStorage.setItem(this.authTokenKey, response.token);
-            localStorage.setItem(this.userInfoKey, JSON.stringify({ username: email.trim() }));
+                    localStorage.setItem(this.authTokenKey, response.token);
+                    localStorage.setItem(this.userInfoKey, JSON.stringify({ username: email.trim() }));
 
-            const expiresAt = this.getTokenExpiration(response.token);
-            if (expiresAt) {
-                localStorage.setItem(this.expiresAtKey, expiresAt.toISOString());
-            }
+                    const expiresAt = this.getTokenExpiration(response.token);
+                    if (expiresAt) {
+                        localStorage.setItem(this.expiresAtKey, expiresAt.toISOString());
+                    }
 
-            this._isAuthenticated.set(true);
-            this.router.navigate(['/']);
-            return true;
-        } catch (error) {
-            console.error('Login failed', error);
-            return false;
-        }
+                    this._isAuthenticated.set(true);
+                    this.router.navigate(['/']);
+                    resolve(true);
+                },
+                error: (error) => {
+                    console.error('Login failed', error);
+                    resolve(false);
+                }
+            });
+        });
     }
 
     logout(): void {

@@ -116,13 +116,15 @@ public sealed class MenuRepository : IMenuRepository
 
     private static MenuItem Map(MenuItemEntity entity)
     {
-        return new MenuItem(
-            entity.Id,
-            entity.Title,
-            entity.Url,
-            entity.ParentId,
-            entity.Order,
-            entity.IsVisible,
-            entity.Target);
+        return new MenuItem
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            Url = entity.Url,
+            ParentId = entity.ParentId,
+            Order = entity.Order,
+            IsVisible = entity.IsVisible,
+            Target = entity.Target
+        };
     }
 }

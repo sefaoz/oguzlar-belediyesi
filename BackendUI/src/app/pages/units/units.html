@@ -1,0 +1,188 @@
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card mb-4">
+            <div class="flex items-center">
+                <i class="pi pi-home mr-2 text-gray-500 cursor-pointer" routerLink="/"></i>
+                <span class="text-gray-500 mr-2">&gt;</span>
+                <span class="font-medium text-gray-900 dark:text-gray-100">Birim Yönetimi</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="m-0 text-lg font-semibold">Birimler</h5>
+                <button pButton pRipple label="Yeni Birim Ekle" icon="pi pi-plus" class="p-button-success"
+                    (click)="openNew()"></button>
+            </div>
+
+            <p-table #dt [value]="units" [rows]="10" [paginator]="true" [rowHover]="true"
+                styleClass="p-datatable-striped" [globalFilterFields]="['title']">
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-end">
+                        <div class="relative w-full md:w-auto">
+                            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Ara..."
+                                class="pl-10! w-full md:w-64" />
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="title">Başlık <p-sortIcon field="title"></p-sortIcon></th>
+                        <th>İkon</th>
+                        <th>Slug</th>
+                        <th class="text-right">İşlemler</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-unit>
+                    <tr>
+                        <td>{{unit.title}}</td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <i *ngIf="unit.icon" [class]="unit.icon" class="text-xl"></i>
+                                <span>{{unit.icon}}</span>
+                            </div>
+                        </td>
+                        <td>{{unit.slug}}</td>
+                        <td class="text-right">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
+                                (click)="editUnit(unit)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
+                                (click)="deleteUnit(unit)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex items-center justify-between">
+                        Toplam {{units ? units.length : 0}} birim var.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="unitDialog" [style]="{width: '70%', maxWidth: '900px'}" header="Birim Detayları" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="flex flex-col gap-4">
+            <div class="field">
+                <label for="title" class="font-bold">Başlık</label>
+                <input type="text" pInputText id="title" [(ngModel)]="unit.title" required autofocus />
+                <small class="p-error block" *ngIf="submitted && !unit.title">Başlık gereklidir.</small>
+            </div>
+
+            <div class="field">
+                <label for="icon" class="font-bold">İkon (FontAwesome sınıfı örn: fa-solid fa-building)</label>
+                <input type="text" pInputText id="icon" [(ngModel)]="unit.icon" />
+            </div>
+
+            <div class="field">
+                <label for="content" class="font-bold">İçerik</label>
+                <p-editor [(ngModel)]="unit.content" [style]="{'height':'320px'}"
+                    placeholder="Birim içeriğini buraya giriniz..."></p-editor>
+            </div>
+
+            <div class="field border-t pt-4">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-bold text-lg">Personel Listesi</label>
+                    <button pButton label="Personel Ekle" icon="pi pi-plus"
+                        class="p-button-sm p-button-secondary w-auto" (click)="addStaff()"></button>
+                </div>
+
+                <div *ngIf="unit.staff && unit.staff.length > 0" class="flex flex-col gap-4">
+                    <div *ngFor="let staff of unit.staff; let i = index"
+                        class="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 shadow-sm">
+
+                        <div class="flex justify-between items-center mb-3 border-b pb-2">
+                            <h6 class="font-semibold text-gray-700 dark:text-gray-200">Personel #{{i+1}}</h6>
+                            <button pButton icon="pi pi-trash" class="p-button-danger p-button-text p-button-sm"
+                                (click)="removeStaff(i)" label="Sil"></button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="field">
+                                <label class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Ad Soyad</label>
+                                <input pInputText [(ngModel)]="staff.name" class="w-full" placeholder="Ad Soyad" />
+                            </div>
+                            <div class="field">
+                                <label class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Unvan</label>
+                                <input pInputText [(ngModel)]="staff.title" class="w-full" placeholder="Unvan" />
+                            </div>
+                        </div>
+
+                        <!-- Image Section matching News Component -->
+                        <div class="field mb-2">
+                            <label class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Personel
+                                Fotoğrafı</label>
+
+                            <!-- File Input Button Styled -->
+                            <div class="mb-3">
+                                <input type="file" [id]="'staffImage'+i" (change)="onStaffImageSelected($event, i)"
+                                    accept="image/*" class="w-full p-inputtext p-component text-sm" />
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Mevcut Görsel -->
+                                <div *ngIf="staff.imageUrl" class="border rounded-lg p-3 bg-white dark:bg-gray-900">
+                                    <span class="text-sm font-semibold text-gray-500 mb-2 block">Mevcut Görsel</span>
+                                    <div
+                                        class="relative h-32 flex items-center justify-center overflow-hidden rounded bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <p-image [src]="getImageUrl(staff.imageUrl)" [preview]="true"
+                                            imageClass="max-w-full max-h-full object-contain"
+                                            class="w-full h-full flex items-center justify-center"></p-image>
+                                    </div>
+                                </div>
+
+                                <!-- Yeni Görsel Önizleme -->
+                                <div class="border rounded-lg p-3 bg-white dark:bg-gray-900"
+                                    [ngClass]="{'md:col-span-2': !staff.imageUrl}">
+                                    <span class="text-sm font-semibold text-gray-500 mb-2 block">
+                                        {{ staff.imageUrl ? 'Yeni Görsel Önizleme' : 'Görsel
+                                        Önizleme' }}
+                                    </span>
+                                    <div
+                                        class="relative h-32 flex items-center justify-center overflow-hidden rounded bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 border-dashed">
+                                        <ng-container *ngIf="staffPreviews[i]; else noStaffImage">
+                                            <p-image [src]="staffPreviews[i]" [preview]="true" alt="Önizleme"
+                                                imageClass="max-w-full max-h-full object-contain"
+                                                class="w-full h-full flex items-center justify-center"></p-image>
+                                        </ng-container>
+                                        <ng-template #noStaffImage>
+                                            <div class="text-center text-gray-400">
+                                                <i class="pi pi-image text-3xl mb-2"></i>
+                                                <p class="text-xs">Görsel seçiniz</p>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!unit.staff || unit.staff.length === 0"
+                    class="text-center p-4 text-gray-500 bg-gray-50 rounded">
+                    Henüz personel eklenmedi.
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Vazgeç" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveUnit()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; z-index: 100000;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem yapılıyor...</div>
+    </div>
+</p-blockUI>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

@@ -1,12 +1,24 @@
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\bin\Debug\net9.0\OguzlarBelediyesi.Domain.deps.json
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\bin\Debug\net9.0\OguzlarBelediyesi.Domain.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\bin\Debug\net9.0\OguzlarBelediyesi.Domain.pdb
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.GeneratedMSBuildEditorConfig.editorconfig
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.AssemblyInfoInputs.cache
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.AssemblyInfo.cs
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.csproj.CoreCompileInputs.cache
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.sourcelink.json
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\refint\OguzlarBelediyesi.Domain.dll
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\OguzlarBelediyesi.Domain.pdb
-E:\Oğuzlar Belediyesi\Backend\OguzlarBelediyesi.Domain\obj\Debug\net9.0\ref\OguzlarBelediyesi.Domain.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.deps.json
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.AssemblyInfoInputs.cache
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.AssemblyInfo.cs
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.csproj.CoreCompileInputs.cache
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.sourcelink.json
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/refint/OguzlarBelediyesi.Domain.dll
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+E:/Oğuzlar Belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/ref/OguzlarBelediyesi.Domain.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.deps.json
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/bin/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.AssemblyInfoInputs.cache
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.AssemblyInfo.cs
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.csproj.CoreCompileInputs.cache
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.sourcelink.json
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/refint/OguzlarBelediyesi.Domain.dll
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/OguzlarBelediyesi.Domain.pdb
+/home/sefa/Projects/oguzlar-belediyesi/Backend/OguzlarBelediyesi.Domain/obj/Debug/net9.0/ref/OguzlarBelediyesi.Domain.dll

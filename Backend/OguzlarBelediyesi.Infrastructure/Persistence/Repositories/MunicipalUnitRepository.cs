@@ -32,15 +32,70 @@ public sealed class MunicipalUnitRepository : IMunicipalUnitRepository
         return entities.Select(Map).ToArray();
     }
 
+    public async Task<MunicipalUnit?> GetByIdAsync(Guid id)
+    {
+        var entity = await _context.MunicipalUnits
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+
+        return entity == null ? null : Map(entity);
+    }
+
+    public async Task CreateAsync(MunicipalUnit unit)
+    {
+        var entity = new MunicipalUnitEntity
+        {
+            Id = unit.Id,
+            Title = unit.Title,
+            Content = unit.Content,
+            Icon = unit.Icon,
+            Slug = unit.Slug,
+            StaffJson = JsonSerializer.Serialize(unit.Staff ?? new List<UnitStaff>(), JsonOptions),
+            IsDeleted = false
+        };
+
+        await _context.MunicipalUnits.AddAsync(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(MunicipalUnit unit)
+    {
+        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == unit.Id);
+        if (entity == null) return;
+
+        entity.Title = unit.Title;
+        entity.Content = unit.Content;
+        entity.Icon = unit.Icon;
+        entity.Slug = unit.Slug;
+        entity.StaffJson = JsonSerializer.Serialize(unit.Staff ?? new List<UnitStaff>(), JsonOptions);
+        entity.UpdateDate = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == id);
+        if (entity == null) return;
+
+        entity.IsDeleted = true;
+        entity.UpdateDate = DateTime.UtcNow;
+        
+        await _context.SaveChangesAsync();
+    }
+
     private static MunicipalUnit Map(MunicipalUnitEntity entity)
     {
         var staff = ParseStaff(entity.StaffJson);
-        return new MunicipalUnit(
-            entity.Id,
-            entity.Title,
-            entity.Content,
-            entity.Icon,
-            staff);
+        return new MunicipalUnit
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            Slug = entity.Slug,
+            Content = entity.Content,
+            Icon = entity.Icon,
+            Staff = staff.ToList()
+        };
     }
 
     private static IReadOnlyList<UnitStaff> ParseStaff(string? json)

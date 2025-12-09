@@ -29,7 +29,7 @@ public sealed class SliderRepository : ISliderRepository
         return entities.Select(entity => Map(entity)).ToArray();
     }
 
-    public async Task<Slider?> GetByIdAsync(string id)
+    public async Task<Slider?> GetByIdAsync(Guid id)
     {
         var entity = await _context.Sliders
             .AsNoTracking()
@@ -48,7 +48,7 @@ public sealed class SliderRepository : ISliderRepository
         return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task DeleteAsync(Guid id)
     {
         var entity = await _context.Sliders.FindAsync(id);
         if (entity is not null)
@@ -64,7 +64,16 @@ public sealed class SliderRepository : ISliderRepository
 
     private static Slider Map(SliderEntity entity)
     {
-        return new Slider(entity.Id, entity.Title, entity.Description, entity.ImageUrl, entity.Link, entity.Order, entity.IsActive);
+        return new Slider
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            Description = entity.Description,
+            ImageUrl = entity.ImageUrl,
+            Link = entity.Link,
+            Order = entity.Order,
+            IsActive = entity.IsActive
+        };
     }
 
     private static SliderEntity Map(Slider slider)

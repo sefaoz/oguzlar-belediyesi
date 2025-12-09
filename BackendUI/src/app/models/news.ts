@@ -5,5 +5,7 @@ export interface News {
     image: string;
     date: string;
     slug: string;
+    tags?: string[];
     photos?: string[];
+    viewCount?: number;
 }

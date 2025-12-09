@@ -4,7 +4,7 @@
         <div *ngFor="let slider of sliders; let i = index"
             class="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-cover bg-center"
             [ngClass]="{'opacity-100': i === currentSlideIndex, 'opacity-0': i !== currentSlideIndex}"
-            [style.background-image]="'url(' + slider.imageUrl + ')'">
+            [style.background-image]="'url(' + getImageUrl(slider.imageUrl) + ')'">
             <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                 <div class="text-center text-white px-4 pt-16 md:pt-24 container mx-auto">
                     <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg animate-fade-in-up">{{ slider.title }}
@@ -129,7 +129,8 @@
                             <a *ngFor="let item of announcements" [routerLink]="['/duyurular', item.slug]"
                                 class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
                                 <span class="font-medium text-gray-700 line-clamp-1">{{ item.title }}</span>
-                                <span class="text-sm text-gray-500 whitespace-nowrap ml-4">{{ item.date }}</span>
+                                <span class="text-sm text-gray-500 whitespace-nowrap ml-4">{{ item.date | date:'dd MMMM
+                                    yyyy' }}</span>
                             </a>
                         </ng-container>
                         <ng-template #noAnnouncements>

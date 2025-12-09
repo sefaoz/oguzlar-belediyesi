@@ -12,11 +12,27 @@ using OguzlarBelediyesi.Infrastructure.Persistence.Data;
 using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 using OguzlarBelediyesi.Infrastructure.Persistence.Repositories;
 using OguzlarBelediyesi.Infrastructure.Security;
+using OguzlarBelediyesi.Infrastructure.Security;
 using OguzlarBelediyesi.WebAPI.Filters;
+using OguzlarBelediyesi.WebAPI.Services;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Kestrel for large file uploads (500MB max)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024; // 500MB
+});
+
+// Configure Form options for multipart uploads
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 500 * 1024 * 1024; // 500MB
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
 
 const string OguzlarCorsPolicy = "_oguzlarCors";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
@@ -35,6 +51,7 @@ await EnsureDatabaseExistsAsync(connectionString);
 
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<ActionLogFilter>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddSingleton<CacheResultFilter>();
 builder.Services.AddControllers(options =>
 {

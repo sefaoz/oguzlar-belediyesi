@@ -15,6 +15,7 @@ import { EventItem } from '../../shared/models/event.model';
 import { Tender } from '../../shared/models/tender.model';
 import { SliderService } from '../../services/slider.service';
 import { Slider } from '../../models/slider';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -109,5 +110,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalId);
       this.startAutoSlide();
     }
+  }
+
+  getImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${environment.imageBaseUrl}${url}`;
   }
 }

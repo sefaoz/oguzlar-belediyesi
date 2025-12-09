@@ -12,32 +12,53 @@ namespace OguzlarBelediyesi.WebAPI.Filters;
 public sealed class CacheResultFilter : IAsyncActionFilter
 {
     private readonly IMemoryCache _cache;
+    private readonly Services.ICacheService _cacheService;
 
-    public CacheResultFilter(IMemoryCache cache)
+    public CacheResultFilter(IMemoryCache cache, Services.ICacheService cacheService)
     {
         _cache = cache;
+        _cacheService = cacheService;
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        var cacheAttribute = context.ActionDescriptor.EndpointMetadata.OfType<CacheAttribute>().FirstOrDefault();
-        if (cacheAttribute is null)
-        {
-            await next();
-            return;
-        }
+        var cacheAttr = context.ActionDescriptor.EndpointMetadata.OfType<CacheAttribute>().FirstOrDefault();
+        var invalidateAttr = context.ActionDescriptor.EndpointMetadata.OfType<CacheInvalidateAttribute>().FirstOrDefault();
 
-        var key = GenerateCacheKey(context.HttpContext.Request);
-        if (_cache.TryGetValue(key, out var cachedResult) && cachedResult is IActionResult cachedActionResult)
+        if (cacheAttr != null)
         {
-            context.Result = cachedActionResult;
-            return;
+            var key = GenerateCacheKey(context.HttpContext.Request);
+            if (_cache.TryGetValue(key, out var cachedResult) && cachedResult is IActionResult cachedActionResult)
+            {
+                context.Result = cachedActionResult;
+                return;
+            }
         }
 
         var executedContext = await next();
-        if (executedContext.Result is IActionResult actionResult)
+
+        if (invalidateAttr != null && executedContext.Exception == null)
         {
-            _cache.Set(key, actionResult, TimeSpan.FromSeconds(cacheAttribute.DurationSeconds));
+            foreach (var tag in invalidateAttr.Tags)
+            {
+                _cacheService.Invalidate(tag);
+            }
+        }
+
+        if (cacheAttr != null && executedContext.Result is IActionResult actionResult && executedContext.Exception == null)
+        {
+            var key = GenerateCacheKey(context.HttpContext.Request);
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(cacheAttr.DurationSeconds)
+            };
+             
+            foreach(var tag in cacheAttr.Tags)
+            {
+                options.AddExpirationToken(_cacheService.GetToken(tag));
+            }
+
+            _cache.Set(key, actionResult, options);
         }
     }
 

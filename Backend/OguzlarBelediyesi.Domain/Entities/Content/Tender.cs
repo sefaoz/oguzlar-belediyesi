@@ -1,16 +1,16 @@
 using System;
+using OguzlarBelediyesi.Domain.Entities.Common;
 
 namespace OguzlarBelediyesi.Domain;
 
-public sealed class Tender
+public sealed class Tender : BaseEntity
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
-    public string Title { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
-    public string Date { get; init; } = string.Empty;
-    public DateTime PublishedAt { get; init; } = DateTime.UtcNow;
-    public string RegistrationNumber { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
-    public decimal? EstimatedValue { get; init; }
-    public string Slug { get; init; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public DateTime TenderDate { get; set; } = DateTime.UtcNow;
+    public string RegistrationNumber { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public decimal? EstimatedValue { get; set; }
+    public string DocumentsJson { get; set; } = "[]";
+    public string Slug { get; set; } = string.Empty;
 }

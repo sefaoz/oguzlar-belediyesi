@@ -20,12 +20,33 @@ export class SliderService {
         return this.slidersSubject.asObservable();
     }
 
-    saveSlider(slider: Slider): Observable<Slider> {
-        if (slider.id) {
-            return this.http.put<Slider>(`${this.baseUrl}/${slider.id}`, slider).pipe(tap(() => this.loadSliders()));
+    private toFormData(slider: Slider, file?: File): FormData {
+        const formData = new FormData();
+        formData.append('title', slider.title || '');
+        formData.append('description', slider.description || '');
+        formData.append('link', slider.link || '');
+        formData.append('order', String(slider.order || 0));
+        formData.append('isActive', String(slider.isActive ?? true));
+
+        if (file) {
+            formData.append('file', file);
         }
 
-        return this.http.post<Slider>(this.baseUrl, slider).pipe(tap(() => this.loadSliders()));
+        if (slider.imageUrl) {
+            formData.append('imageUrl', slider.imageUrl);
+        }
+
+        return formData;
+    }
+
+    create(slider: Slider, file?: File): Observable<Slider> {
+        const formData = this.toFormData(slider, file);
+        return this.http.post<Slider>(this.baseUrl, formData).pipe(tap(() => this.loadSliders()));
+    }
+
+    update(id: string, slider: Slider, file?: File): Observable<void> {
+        const formData = this.toFormData(slider, file);
+        return this.http.put<void>(`${this.baseUrl}/${id}`, formData).pipe(tap(() => this.loadSliders()));
     }
 
     deleteSlider(id: string): Observable<void> {

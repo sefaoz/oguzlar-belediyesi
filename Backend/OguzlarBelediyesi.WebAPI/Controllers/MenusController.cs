@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
-using OguzlarBelediyesi.WebAPI;
 using OguzlarBelediyesi.WebAPI.Filters;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
@@ -22,7 +22,7 @@ public sealed class MenusController : ControllerBase
     }
 
     [HttpGet]
-    [Cache(60)]
+    [Cache(60, "Menus")]
     public async Task<ActionResult<IEnumerable<MenuItem>>> GetAll()
     {
         var menus = await _repository.GetAllAsync();
@@ -37,24 +37,13 @@ public sealed class MenusController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [CacheInvalidate("Menus")]
     public async Task<IActionResult> Create(MenuRequest request)
     {
-        var menuItem = new MenuItem(Guid.NewGuid(), request.Title, request.Url, request.ParentId, request.Order, request.IsVisible, request.Target);
-        await _repository.AddAsync(menuItem);
-        return CreatedAtAction(nameof(GetById), new { id = menuItem.Id }, menuItem);
-    }
-
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, MenuRequest request)
-    {
-        var existing = await _repository.GetByIdAsync(id);
-        if (existing is null)
+        var menuItem = new MenuItem
         {
-            return NotFound();
-        }
-
-        var updated = existing with
-        {
+            Id = Guid.NewGuid(),
             Title = request.Title,
             Url = request.Url,
             ParentId = request.ParentId,
@@ -63,11 +52,35 @@ public sealed class MenusController : ControllerBase
             Target = request.Target
         };
 
-        await _repository.UpdateAsync(updated);
+        await _repository.AddAsync(menuItem);
+        return CreatedAtAction(nameof(GetById), new { id = menuItem.Id }, menuItem);
+    }
+
+    [HttpPut("{id:guid}")]
+    [Authorize]
+    [CacheInvalidate("Menus")]
+    public async Task<IActionResult> Update(Guid id, MenuRequest request)
+    {
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing is null)
+        {
+            return NotFound();
+        }
+
+        existing.Title = request.Title;
+        existing.Url = request.Url;
+        existing.ParentId = request.ParentId;
+        existing.Order = request.Order;
+        existing.IsVisible = request.IsVisible;
+        existing.Target = request.Target;
+
+        await _repository.UpdateAsync(existing);
         return NoContent();
     }
 
     [HttpPut("order")]
+    [Authorize]
+    [CacheInvalidate("Menus")]
     public async Task<IActionResult> UpdateOrder([FromBody] IEnumerable<MenuOrderRequest>? updates)
     {
         if (updates is null)
@@ -76,10 +89,17 @@ public sealed class MenusController : ControllerBase
         }
 
         var currentMenus = (await _repository.GetAllAsync()).ToDictionary(m => m.Id);
-        var orderedUpdates = updates
-            .Where(u => currentMenus.ContainsKey(u.Id))
-            .Select(u => currentMenus[u.Id] with { Order = u.Order, ParentId = u.ParentId })
-            .ToList();
+        var orderedUpdates = new List<MenuItem>();
+
+        foreach (var u in updates)
+        {
+            if (currentMenus.TryGetValue(u.Id, out var existing))
+            {
+                existing.Order = u.Order;
+                existing.ParentId = u.ParentId;
+                orderedUpdates.Add(existing);
+            }
+        }
 
         if (orderedUpdates.Count == 0)
         {
@@ -91,6 +111,8 @@ public sealed class MenusController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
+    [CacheInvalidate("Menus")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _repository.DeleteAsync(id);

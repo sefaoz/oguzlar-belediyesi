@@ -18,8 +18,7 @@
             </div>
 
             <p-table #dt [value]="newsList" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]"
-                [globalFilterFields]="['title','slug']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-                dataKey="id"
+                [globalFilterFields]="['title']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
                 currentPageReportTemplate="Toplam {totalRecords} kayıttan {first} ile {last} arası gösteriliyor"
                 [showCurrentPageReport]="true" styleClass="p-datatable-striped">
 
@@ -39,9 +38,11 @@
                         <th style="width: 15%">Görsel</th>
                         <th pSortableColumn="title" style="width:30%">Başlık <p-sortIcon field="title"></p-sortIcon>
                         </th>
+                        <th pSortableColumn="viewCount" style="width:10%">Görüntülenme <p-sortIcon
+                                field="viewCount"></p-sortIcon></th>
                         <th pSortableColumn="date" style="width:20%">Tarih <p-sortIcon field="date"></p-sortIcon></th>
-                        <th pSortableColumn="slug" style="width:20%">Slug <p-sortIcon field="slug"></p-sortIcon></th>
-                        <th>İşlemler</th>
+
+                        <th class="text-right" style="width: 25%">İşlemler</th>
                     </tr>
                 </ng-template>
 
@@ -50,17 +51,18 @@
                         <td>
                             <div
                                 class="w-32 h-20 rounded overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
-                                <p-image *ngIf="newsItem.image" [src]="newsItem.image" [preview]="true"
+                                <p-image *ngIf="newsItem.image" [src]="getImageUrl(newsItem.image)" [preview]="true"
                                     alt="{{newsItem.title}}" imageClass="w-full h-full object-cover">
                                 </p-image>
                                 <span *ngIf="!newsItem.image" class="text-gray-400 text-xs text-center p-2">Görsel
                                     Yok</span>
                             </div>
                         </td>
-                        <td>{{newsItem.title}}</td>
-                        <td>{{newsItem.date | date:'dd.MM.yyyy'}}</td>
-                        <td>{{newsItem.slug}}</td>
-                        <td>
+                        <td class="font-medium">{{newsItem.title}}</td>
+                        <td class="text-center">{{newsItem.viewCount || 0}}</td>
+                        <td>{{formatDate(newsItem.date)}}</td>
+
+                        <td class="text-right">
                             <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-info mr-2"
                                 (click)="editNews(newsItem)"></button>
                             <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-danger"
@@ -94,26 +96,29 @@
                             class="w-full" />
                         <small class="p-error block mt-1" *ngIf="submitted && !news.title">Başlık gereklidir.</small>
                     </div>
-                    <div class="field">
-                        <label for="slug" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Slug
-                            (URL)</label>
-                        <input type="text" pInputText id="slug" [(ngModel)]="news.slug"
-                            placeholder="Otomatik oluşturulur" class="w-full" />
-                    </div>
+
                     <div class="field">
                         <label for="date" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Tarih</label>
                         <input type="date" pInputText id="date" [(ngModel)]="news.date" class="w-full" />
+                    </div>
+                    <div class="field col-span-1 md:col-span-2">
+                        <label for="tags"
+                            class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Etiketler</label>
+                        <input type="text" pInputText id="tags" [(ngModel)]="tagsInput"
+                            placeholder="Virgül ile ayırınız (Örn: Gündem, Başkan, Ziyaret)" class="w-full" />
                     </div>
                 </div>
             </div>
 
             <!-- Medya Section -->
             <div>
-                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Haber Görseli</h6>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Kapak Fotoğrafı
+                </h6>
 
                 <div class="field mb-4">
-                    <label for="fileUpload" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Resim
-                        Seç</label>
+                    <label for="fileUpload" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Yeni
+                        Kapak
+                        Fotoğrafı Seç</label>
                     <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept="image/*"
                         class="w-full p-inputtext p-component" />
                 </div>
@@ -121,10 +126,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <!-- Mevcut Görsel -->
                     <div *ngIf="originalImageUrl" class="border rounded-lg p-3 bg-gray-50 dark:bg-gray-800">
-                        <span class="text-sm font-semibold text-gray-500 mb-2 block">Mevcut Görsel</span>
+                        <span class="text-sm font-semibold text-gray-500 mb-2 block">Mevcut Kapak Fotoğrafı</span>
                         <div
                             class="relative h-48 flex items-center justify-center overflow-hidden rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
-                            <p-image [src]="originalImageUrl" [preview]="true" alt="Mevcut Görsel"
+                            <p-image [src]="getImageUrl(originalImageUrl)" [preview]="true" alt="Mevcut Görsel"
                                 imageClass="max-w-full max-h-full object-contain"
                                 class="w-full h-full flex items-center justify-center"></p-image>
                         </div>
@@ -154,9 +159,68 @@
                 </div>
             </div>
 
+            <!-- Medya Yönetimi Section -->
+            <div>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">Galeri Fotoğrafları
+                </h6>
+
+                <div class="field mb-4">
+                    <label for="galleryUpload" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Fotoğraf
+                        Ekle (Birden Fazla)</label>
+                    <input type="file" id="galleryUpload" (change)="onGalleryFilesSelected($event)" accept="image/*"
+                        multiple class="w-full p-inputtext p-component" />
+                </div>
+
+                <!-- Mevcut Galeri Görselleri -->
+                <div *ngIf="existingGalleryPhotos.length > 0" class="mb-4">
+                    <span class="text-sm font-semibold text-gray-500 mb-2 block">Mevcut Galeri Görselleri</span>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div *ngFor="let photo of existingGalleryPhotos; let i = index"
+                            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden h-auto">
+                            <!-- Image Container -->
+                            <div
+                                class="relative w-full h-32 bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700 p-2 flex items-center justify-center">
+                                <p-image [src]="getImageUrl(photo)" [preview]="true" alt="Galeri Görseli"
+                                    imageClass="max-w-full max-h-full object-contain block mx-auto"
+                                    class="w-full h-full flex items-center justify-center"></p-image>
+                            </div>
+                            <!-- Button Container -->
+                            <div class="p-2 w-full bg-white dark:bg-gray-800">
+                                <button pButton pRipple label="Sil" icon="pi pi-trash"
+                                    class="p-button-danger p-button-sm w-full"
+                                    (click)="removeExistingGalleryPhoto(i)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yeni Seçilen Galeri Görselleri -->
+                <div *ngIf="selectedGalleryPreviews.length > 0" class="mb-4">
+                    <span class="text-sm font-semibold text-gray-500 mb-2 block">Yeni Eklenecek Fotoğraflar</span>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div *ngFor="let preview of selectedGalleryPreviews; let i = index"
+                            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden h-auto">
+                            <!-- Image Container -->
+                            <div
+                                class="relative w-full h-32 bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700 p-2 flex items-center justify-center">
+                                <p-image [src]="preview" [preview]="true" alt="Önizleme"
+                                    imageClass="max-w-full max-h-full object-contain block mx-auto"
+                                    class="w-full h-full flex items-center justify-center"></p-image>
+                            </div>
+                            <!-- Button Container -->
+                            <div class="p-2 w-full bg-white dark:bg-gray-800">
+                                <button pButton pRipple label="Sil" icon="pi pi-trash"
+                                    class="p-button-danger p-button-sm w-full" (click)="removeGalleryFile(i)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- İçerik Section -->
             <div>
-                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">İçerik Detayı</h6>
+                <h6 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">İçerik Detayı
+                </h6>
                 <div class="field">
                     <label for="description" class="font-medium text-gray-600 dark:text-gray-300 mb-2 block">Haber
                         Metni</label>
@@ -171,10 +235,19 @@
         <div class="flex justify-end gap-2 pt-2">
             <button pButton pRipple label="Vazgeç" icon="pi pi-times" class="p-button-text p-button-secondary"
                 (click)="hideDialog()"></button>
-            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary"
-                (click)="saveNews()"></button>
+            <button pButton pRipple label="Kaydet" icon="pi pi-check" class="p-button-primary" (click)="saveNews()"
+                [loading]="isLoading"></button>
         </div>
     </ng-template>
 </p-dialog>
+
+<p-blockUI [blocked]="isLoading" [baseZIndex]="99999">
+    <div class="flex flex-col items-center justify-center gap-3"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+        <div class="font-bold text-xl">İşlem Gerçekleştiriliyor...</div>
+        <div class="text-sm">Lütfen bekleyiniz.</div>
+    </div>
+</p-blockUI>
 
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

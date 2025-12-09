@@ -1,8 +1,10 @@
+using OguzlarBelediyesi.Domain.Entities.Common;
+
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 
-public sealed class SliderEntity
+public sealed class SliderEntity : BaseEntity
 {
-    public string Id { get; set; } = string.Empty;
+
 
     public string Title { get; set; } = string.Empty;
 

@@ -6,4 +6,6 @@ export interface NewsItem {
   slug: string;
   link?: string;
   photos?: string[];
+  viewCount?: number;
+  tags?: string[];
 }

@@ -5,6 +5,7 @@ import { PageContainerComponent, BreadcrumbStep } from '../../shared/components/
 import { NewsItem } from '../../shared/models/news.model';
 import { NewsService } from '../../shared/services/news.service';
 import { SeoService } from '../../shared/services/seo.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-haber-detay',
@@ -58,6 +59,18 @@ export class HaberDetayComponent implements OnInit {
     ];
   }
 
+  get readingTime(): number {
+    if (!this.newsItem?.description) return 1;
+
+    // HTML etiketlerini temizle (eğer varsa) ve kelimeleri say
+    const text = this.newsItem.description.replace(/<[^>]*>/g, '');
+    const wordCount = text.trim().split(/\s+/).length;
+
+    // Ortalama 200 kelime/dakika
+    const minutes = Math.ceil(wordCount / 200);
+    return minutes > 0 ? minutes : 1;
+  }
+
   // Lightbox Logic
   isLightboxOpen = false;
   currentLightboxImageIndex = 0;
@@ -89,6 +102,13 @@ export class HaberDetayComponent implements OnInit {
 
   // Helper to get current image URL safely
   get currentLightboxImage(): string {
-    return this.newsItem?.photos?.[this.currentLightboxImageIndex] || '';
+    const url = this.newsItem?.photos?.[this.currentLightboxImageIndex] || '';
+    return this.getImageUrl(url);
+  }
+
+  getImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${environment.imageBaseUrl}${url}`;
   }
 }

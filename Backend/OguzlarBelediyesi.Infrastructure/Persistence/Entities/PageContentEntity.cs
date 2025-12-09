@@ -1,10 +1,12 @@
 using System;
 
+using OguzlarBelediyesi.Domain.Entities.Common;
+
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Entities;
 
-public sealed class PageContentEntity
+public sealed class PageContentEntity : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+
 
     public string Key { get; set; } = string.Empty;
 
