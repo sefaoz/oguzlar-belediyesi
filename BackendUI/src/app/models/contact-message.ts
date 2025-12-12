@@ -1,10 +1,12 @@
 export interface ContactMessage {
-    id: number;
+    id: string;
     name: string;
     email: string;
     phone: string;
     message: string;
-    date: string;
+    createdAt: string;
     isRead: boolean;
-    type: 'Contact' | 'MayorMessage'; // 'İletişim' or 'Başkana Mesaj'
+    messageType: 'Contact' | 'MayorMessage';
+    kvkkAccepted?: boolean;
+    ipAddress?: string;
 }

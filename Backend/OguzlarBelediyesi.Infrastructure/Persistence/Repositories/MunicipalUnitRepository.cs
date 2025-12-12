@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -22,27 +23,27 @@ public sealed class MunicipalUnitRepository : IMunicipalUnitRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<MunicipalUnit>> GetAllAsync()
+    public async Task<IReadOnlyList<MunicipalUnit>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.MunicipalUnits
             .AsNoTracking()
             .Where(u => !u.IsDeleted)
             .OrderBy(u => u.Title)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(Map).ToArray();
     }
 
-    public async Task<MunicipalUnit?> GetByIdAsync(Guid id)
+    public async Task<MunicipalUnit?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.MunicipalUnits
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+            .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted, cancellationToken);
 
         return entity == null ? null : Map(entity);
     }
 
-    public async Task CreateAsync(MunicipalUnit unit)
+    public async Task CreateAsync(MunicipalUnit unit, CancellationToken cancellationToken = default)
     {
         var entity = new MunicipalUnitEntity
         {
@@ -55,13 +56,13 @@ public sealed class MunicipalUnitRepository : IMunicipalUnitRepository
             IsDeleted = false
         };
 
-        await _context.MunicipalUnits.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await _context.MunicipalUnits.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(MunicipalUnit unit)
+    public async Task UpdateAsync(MunicipalUnit unit, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == unit.Id);
+        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == unit.Id, cancellationToken);
         if (entity == null) return;
 
         entity.Title = unit.Title;
@@ -71,18 +72,18 @@ public sealed class MunicipalUnitRepository : IMunicipalUnitRepository
         entity.StaffJson = JsonSerializer.Serialize(unit.Staff ?? new List<UnitStaff>(), JsonOptions);
         entity.UpdateDate = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == id);
+        var entity = await _context.MunicipalUnits.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         if (entity == null) return;
 
         entity.IsDeleted = true;
         entity.UpdateDate = DateTime.UtcNow;
         
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     private static MunicipalUnit Map(MunicipalUnitEntity entity)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,7 +20,7 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Announcement>> GetAllAsync(AnnouncementFilter? filter = null)
+    public async Task<IEnumerable<Announcement>> GetAllAsync(AnnouncementFilter? filter = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Announcement> query = _context.Announcements.AsNoTracking().Where(a => !a.IsDeleted);
 
@@ -42,45 +43,45 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
             }
         }
 
-        return await query.OrderByDescending(a => a.CreatedDate).ToListAsync();
+        return await query.OrderByDescending(a => a.CreatedDate).ToListAsync(cancellationToken);
     }
 
-    public Task<Announcement?> GetBySlugAsync(string slug)
+    public async Task<Announcement?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var normalized = slug.Trim().ToLowerInvariant();
-        return _context.Announcements.AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Slug.ToLower() == normalized && !a.IsDeleted);
+        return await _context.Announcements.AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Slug.ToLower() == normalized && !a.IsDeleted, cancellationToken);
     }
 
-    public Task<Announcement?> GetByIdAsync(Guid id)
+    public async Task<Announcement?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _context.Announcements.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+        return await _context.Announcements.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
     }
 
-    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null)
+    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null, CancellationToken cancellationToken = default)
     {
         var query = _context.Announcements.AsNoTracking().Where(a => a.Slug == slug && !a.IsDeleted);
         if (excludeId.HasValue)
         {
             query = query.Where(a => a.Id != excludeId.Value);
         }
-        return await query.AnyAsync();
+        return await query.AnyAsync(cancellationToken);
     }
 
-    public async Task AddAsync(Announcement announcement)
+    public async Task AddAsync(Announcement announcement, CancellationToken cancellationToken = default)
     {
-        await _context.Announcements.AddAsync(announcement);
+        await _context.Announcements.AddAsync(announcement, cancellationToken);
     }
 
-    public Task UpdateAsync(Announcement announcement)
+    public Task UpdateAsync(Announcement announcement, CancellationToken cancellationToken = default)
     {
         _context.Announcements.Update(announcement);
         return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Announcements.FindAsync(id);
+        var entity = await _context.Announcements.FindAsync(new object[] { id }, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
@@ -88,8 +89,8 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 }

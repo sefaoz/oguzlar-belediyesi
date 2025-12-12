@@ -41,12 +41,10 @@ export class UnitService {
         formData.append('icon', unit.icon || '');
         formData.append('slug', unit.slug || '');
 
-        // Staff listesini JSON olarak gönder
         if (unit.staff) {
             formData.append('staffJson', JSON.stringify(unit.staff));
         }
 
-        // Dosyaları ekle
         Object.keys(staffFiles).forEach(key => {
             const index = Number(key);
             formData.append(`staffImage_${index}`, staffFiles[index]);

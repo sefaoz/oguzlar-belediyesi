@@ -2,7 +2,6 @@ namespace OguzlarBelediyesi.WebAPI.Helpers;
 
 public static class FileHelper
 {
-    // İzin verilen dosya uzantıları - güvenlik için whitelist yaklaşımı
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
@@ -19,7 +18,6 @@ public static class FileHelper
 
         var extension = Path.GetExtension(file.FileName);
         
-        // Güvenlik kontrolü: Sadece izin verilen uzantılar
         if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension))
         {
             throw new InvalidOperationException($"Dosya uzantısı desteklenmiyor: {extension}");

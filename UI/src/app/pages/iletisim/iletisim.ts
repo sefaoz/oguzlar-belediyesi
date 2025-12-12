@@ -39,7 +39,6 @@ export class IletisimComponent implements OnInit {
       kvkk: [false, Validators.requiredTrue]
     });
 
-    // Varsayılan harita URL'si
     this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       'https://maps.google.com/maps?q=Oğuzlar+Belediyesi+Çorum&t=&z=15&ie=UTF8&iwloc=&output=embed'
     );
@@ -54,7 +53,6 @@ export class IletisimComponent implements OnInit {
     this.pageContentService.getPageContent('iletisim').subscribe(content => {
       this.content = content;
       if (content?.mapEmbedUrl) {
-        // URL güvenlik kontrolü
         if (content.mapEmbedUrl.startsWith('https://www.google.com/maps') || content.mapEmbedUrl.startsWith('https://maps.google.com')) {
           this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(content.mapEmbedUrl);
         }
@@ -92,7 +90,6 @@ export class IletisimComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           this.submitError = 'Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
-          console.error('Form gönderme hatası:', error);
           alert(this.submitError);
         }
       });

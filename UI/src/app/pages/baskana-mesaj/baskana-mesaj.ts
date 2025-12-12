@@ -86,7 +86,6 @@ export class BaskanaMesaj implements OnInit {
         error: (error) => {
           this.isLoading = false;
           this.submitError = 'Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
-          console.error('Form gönderme hatası:', error);
           alert(this.submitError);
         }
       });

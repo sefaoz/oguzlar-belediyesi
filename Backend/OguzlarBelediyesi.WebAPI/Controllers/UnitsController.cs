@@ -1,8 +1,9 @@
-
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 using OguzlarBelediyesi.WebAPI.Helpers;
 using System.Text.Json;
@@ -24,28 +25,27 @@ public sealed class UnitsController : ControllerBase
 
     [HttpGet]
     [Cache(120, "Units")]
-    public async Task<ActionResult<IReadOnlyList<MunicipalUnit>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<MunicipalUnit>>> GetAll(CancellationToken cancellationToken)
     {
-        var units = await _repository.GetAllAsync();
+        var units = await _repository.GetAllAsync(cancellationToken);
         return Ok(units);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<MunicipalUnit>> GetById(Guid id)
+    public async Task<ActionResult<MunicipalUnit>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var unit = await _repository.GetByIdAsync(id);
+        var unit = await _repository.GetByIdAsync(id, cancellationToken);
         return unit == null ? NotFound() : Ok(unit);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Units")]
-    public async Task<IActionResult> Create([FromForm] UnitUpsertRequest request)
+    public async Task<IActionResult> Create([FromForm] UnitUpsertRequest request, CancellationToken cancellationToken)
     {
         var unitId = Guid.NewGuid();
         var slug = string.IsNullOrEmpty(request.Slug) ? request.Title.ToLower().Replace(" ", "-") : request.Slug;
 
-        // Parse Staff
         var staffList = new List<UnitStaff>();
         if (!string.IsNullOrEmpty(request.StaffJson))
         {
@@ -55,13 +55,8 @@ public sealed class UnitsController : ControllerBase
             }
             catch
             {
-                // Fallback or ignore
             }
         }
-
-        // Handle Images
-        // Front-end should append files with key "staffImage_{index}"
-        // But since we can't easily modify the incoming request model binding for dynamic keys, we use Request.Form.Files
         
         var updatedStaffList = new List<UnitStaff>();
         for (int i = 0; i < staffList.Count; i++)
@@ -88,16 +83,15 @@ public sealed class UnitsController : ControllerBase
             Staff = updatedStaffList
         };
 
-        await _repository.CreateAsync(unit);
+        await _repository.CreateAsync(unit, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = unit.Id }, unit);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Units")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] UnitUpsertRequest request)
+    public async Task<IActionResult> Update(Guid id, [FromForm] UnitUpsertRequest request, CancellationToken cancellationToken)
     {
-        // Parse Staff
         var staffList = new List<UnitStaff>();
         if (!string.IsNullOrEmpty(request.StaffJson))
         {
@@ -133,16 +127,16 @@ public sealed class UnitsController : ControllerBase
             Staff = updatedStaffList
         };
 
-        await _repository.UpdateAsync(unit);
+        await _repository.UpdateAsync(unit, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Units")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
+        await _repository.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
 }

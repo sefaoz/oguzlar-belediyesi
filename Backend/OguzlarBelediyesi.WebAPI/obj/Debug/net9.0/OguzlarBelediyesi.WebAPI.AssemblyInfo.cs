@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OguzlarBelediyesi.WebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6291970ce82a3d41603ed42c91719d3eabaf52df")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a9ac5afaf01745122c53d84f871aca670a291c00")]
 [assembly: System.Reflection.AssemblyProductAttribute("OguzlarBelediyesi.WebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OguzlarBelediyesi.WebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

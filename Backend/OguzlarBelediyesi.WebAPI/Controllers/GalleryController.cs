@@ -1,7 +1,9 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
@@ -20,41 +22,40 @@ public sealed class GalleryController : ControllerBase
     }
 
     [HttpGet("folders")]
-    //[Cache(120, "Gallery")] // Removing cache for now to see updates immediately, or handle invalidation
-    public async Task<ActionResult<IEnumerable<GalleryFolder>>> GetFolders()
+    public async Task<ActionResult<IEnumerable<GalleryFolder>>> GetFolders(CancellationToken cancellationToken)
     {
-        var folders = await _repository.GetFoldersAsync();
+        var folders = await _repository.GetFoldersAsync(cancellationToken);
         return Ok(folders);
     }
 
     [HttpGet("folders/{folderId:guid}")]
-    public async Task<ActionResult<GalleryFolder>> GetFolderById(Guid folderId)
+    public async Task<ActionResult<GalleryFolder>> GetFolderById(Guid folderId, CancellationToken cancellationToken)
     {
-        var folder = await _repository.GetFolderByIdAsync(folderId);
+        var folder = await _repository.GetFolderByIdAsync(folderId, cancellationToken);
         return folder is null ? NotFound() : Ok(folder);
     }
 
     [HttpGet("folders/slug/{slug}")]
-    public async Task<ActionResult<GalleryFolder>> GetFolderBySlug(string slug)
+    public async Task<ActionResult<GalleryFolder>> GetFolderBySlug(string slug, CancellationToken cancellationToken)
     {
-        var folder = await _repository.GetFolderBySlugAsync(slug);
+        var folder = await _repository.GetFolderBySlugAsync(slug, cancellationToken);
         return folder is null ? NotFound() : Ok(folder);
     }
 
     [HttpPost("folders")]
     [Authorize]
-    public async Task<IActionResult> CreateFolder([FromForm] GalleryFolderFormRequest request)
+    public async Task<IActionResult> CreateFolder([FromForm] GalleryFolderFormRequest request, CancellationToken cancellationToken)
     {
         if (request.IsFeatured)
         {
-             var folders = await _repository.GetFoldersAsync();
+             var folders = await _repository.GetFoldersAsync(cancellationToken);
              if (folders.Count(f => f.IsFeatured) >= 2)
              {
                  return BadRequest("En fazla 2 galeri ana sayfada gösterilebilir.");
              }
         }
 
-        var slug = await GenerateUniqueSlugAsync(request.Title);
+        var slug = await GenerateUniqueSlugAsync(request.Title, null, cancellationToken);
         string coverImageUrl = "";
 
         if (request.CoverImage != null)
@@ -74,20 +75,20 @@ public sealed class GalleryController : ControllerBase
             IsActive = request.IsActive
         };
 
-        await _repository.CreateFolderAsync(folder);
+        await _repository.CreateFolderAsync(folder, cancellationToken);
         return CreatedAtAction(nameof(GetFolderById), new { folderId = folder.Id }, folder);
     }
 
     [HttpPut("folders/{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateFolder(Guid id, [FromForm] GalleryFolderFormRequest request)
+    public async Task<IActionResult> UpdateFolder(Guid id, [FromForm] GalleryFolderFormRequest request, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetFolderByIdAsync(id);
+        var existing = await _repository.GetFolderByIdAsync(id, cancellationToken);
         if (existing is null) return NotFound();
 
         if (request.IsFeatured && !existing.IsFeatured)
         {
-             var folders = await _repository.GetFoldersAsync();
+             var folders = await _repository.GetFoldersAsync(cancellationToken);
              if (folders.Count(f => f.IsFeatured) >= 2)
              {
                  return BadRequest("En fazla 2 galeri ana sayfada gösterilebilir.");
@@ -97,7 +98,7 @@ public sealed class GalleryController : ControllerBase
         var slug = existing.Slug;
         if (existing.Title != request.Title)
         {
-            slug = await GenerateUniqueSlugAsync(request.Title, id);
+            slug = await GenerateUniqueSlugAsync(request.Title, id, cancellationToken);
         }
 
         if (request.CoverImage != null)
@@ -111,32 +112,32 @@ public sealed class GalleryController : ControllerBase
         existing.IsFeatured = request.IsFeatured;
         existing.IsActive = request.IsActive;
 
-        await _repository.UpdateFolderAsync(existing);
+        await _repository.UpdateFolderAsync(existing, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("folders/{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> DeleteFolder(Guid id)
+    public async Task<IActionResult> DeleteFolder(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteFolderAsync(id);
+        await _repository.DeleteFolderAsync(id, cancellationToken);
         return NoContent();
     }
 
     [HttpGet("folders/{folderId:guid}/images")]
-    public async Task<ActionResult<IEnumerable<GalleryImage>>> GetImagesByFolder(Guid folderId)
+    public async Task<ActionResult<IEnumerable<GalleryImage>>> GetImagesByFolder(Guid folderId, CancellationToken cancellationToken)
     {
-        var images = await _repository.GetImagesByFolderAsync(folderId);
+        var images = await _repository.GetImagesByFolderAsync(folderId, cancellationToken);
         return Ok(images);
     }
 
     [HttpPost("images")]
     [Authorize]
-    public async Task<IActionResult> AddImage([FromForm] Guid folderId, [FromForm] string? title, [FromForm] IFormFile file)
+    public async Task<IActionResult> AddImage([FromForm] Guid folderId, [FromForm] string? title, [FromForm] IFormFile file, CancellationToken cancellationToken)
     {
          if (file is null) return BadRequest("File is required");
 
-         var folder = await _repository.GetFolderByIdAsync(folderId);
+         var folder = await _repository.GetFolderByIdAsync(folderId, cancellationToken);
          if (folder is null) return NotFound("Folder not found");
 
          var url = await OguzlarBelediyesi.WebAPI.Helpers.ImageHelper.SaveImageAsWebPAsync(file, "uploads/gallery", _env.WebRootPath);
@@ -148,23 +149,23 @@ public sealed class GalleryController : ControllerBase
              Id = Guid.NewGuid(),
              FolderId = folderId,
              Url = url,
-             ThumbnailUrl = url, // Using same URL for now, strictly should create thumbnail
+             ThumbnailUrl = url,
              Title = title
          };
 
-         await _repository.AddImageAsync(image);
+         await _repository.AddImageAsync(image, cancellationToken);
          return Ok(image);
     }
 
     [HttpDelete("images/{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> DeleteImage(Guid id)
+    public async Task<IActionResult> DeleteImage(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteImageAsync(id);
+        await _repository.DeleteImageAsync(id, cancellationToken);
         return NoContent();
     }
 
-    private async Task<string> GenerateUniqueSlugAsync(string title, Guid? excludeId = null)
+    private async Task<string> GenerateUniqueSlugAsync(string title, Guid? excludeId, CancellationToken cancellationToken)
     {
         var baseSlug = OguzlarBelediyesi.WebAPI.Helpers.SlugHelper.GenerateSlug(title);
         var slug = baseSlug;
@@ -172,21 +173,19 @@ public sealed class GalleryController : ControllerBase
 
         while (true)
         {
-             var existing = await _repository.GetFolderBySlugAsync(slug);
-             // If existing is found AND it is NOT the one we are excluding (updating), then slug is taken
+             var existing = await _repository.GetFolderBySlugAsync(slug, cancellationToken);
              if (existing != null) 
              {
                  if (excludeId.HasValue && existing.Id == excludeId.Value)
                  {
-                     break; // It's the same record, so slug is fine
+                     break;
                  }
-                 // Taken, try next
                  slug = OguzlarBelediyesi.WebAPI.Helpers.SlugHelper.AppendNumber(baseSlug, counter);
                  counter++;
              }
              else
              {
-                 break; // Not found, safe to use
+                 break;
              }
         }
 

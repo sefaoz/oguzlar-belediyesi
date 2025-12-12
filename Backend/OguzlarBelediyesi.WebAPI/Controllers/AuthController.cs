@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using OguzlarBelediyesi.Application.Contracts.Services;
 using OguzlarBelediyesi.WebAPI;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
 
@@ -16,10 +17,6 @@ public sealed class AuthController : ControllerBase
         _authenticationService = authenticationService;
     }
 
-    /// <summary>
-    /// Kullanıcı girişi yapar ve JWT token döner.
-    /// Rate limiting: IP başına dakikada maksimum 5 deneme.
-    /// </summary>
     [HttpPost("login")]
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login(LoginRequest request)
@@ -30,10 +27,6 @@ public sealed class AuthController : ControllerBase
             : Unauthorized();
     }
 
-    /// <summary>
-    /// Süresi dolmuş token'ı yeniler.
-    /// Rate limiting: IP başına dakikada maksimum 5 deneme.
-    /// </summary>
     [HttpPost("refresh-token")]
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)

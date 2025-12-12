@@ -1,7 +1,9 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 using OguzlarBelediyesi.WebAPI.Helpers;
 
@@ -22,16 +24,16 @@ public sealed class VehiclesController : ControllerBase
 
     [HttpGet]
     [Cache(120, "Vehicles")]
-    public async Task<ActionResult<IReadOnlyList<Vehicle>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<Vehicle>>> GetAll(CancellationToken cancellationToken)
     {
-        var vehicles = await _repository.GetAllAsync();
+        var vehicles = await _repository.GetAllAsync(cancellationToken);
         return Ok(vehicles);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Vehicles")]
-    public async Task<IActionResult> Create([FromForm] VehicleRequest request, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Create([FromForm] VehicleRequest request, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
         var image = request.ImageUrl ?? string.Empty;
 
@@ -50,17 +52,17 @@ public sealed class VehiclesController : ControllerBase
             ImageUrl = image
         };
 
-        await _repository.AddAsync(vehicle);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(vehicle, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return Created($"/api/vehicles/{vehicle.Id}", vehicle);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Vehicles")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] VehicleRequest request, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Update(Guid id, [FromForm] VehicleRequest request, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
@@ -83,18 +85,18 @@ public sealed class VehiclesController : ControllerBase
         existing.Description = request.Description;
         existing.ImageUrl = image;
 
-        await _repository.UpdateAsync(existing);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(existing, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Vehicles")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }

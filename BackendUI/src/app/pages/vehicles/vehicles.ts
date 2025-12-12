@@ -51,6 +51,9 @@ export class VehiclesComponent implements OnInit {
     selectedImage: File | undefined;
     selectedImagePreview: string | undefined;
     originalImageUrl: string | undefined;
+    isLoading: boolean = false;
+    progressValue: number = 0;
+    progressInterval: any;
 
     constructor(
         private vehicleService: VehicleService,
@@ -68,7 +71,6 @@ export class VehiclesComponent implements OnInit {
                 this.vehicles = data;
             },
             error: (error) => {
-                console.error('Araçlar yüklenirken hata oluştu:', error);
                 this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Araçlar yüklenemedi.' });
             }
         });
@@ -105,7 +107,6 @@ export class VehiclesComponent implements OnInit {
                         this.getVehicles();
                     },
                     error: (error) => {
-                        console.error('Silme hatası:', error);
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Araç silinirken hata oluştu.' });
                     }
                 });
@@ -130,10 +131,6 @@ export class VehiclesComponent implements OnInit {
         }
     }
 
-    isLoading: boolean = false;
-    progressValue: number = 0;
-    progressInterval: any;
-
     saveVehicle() {
         this.submitted = true;
 
@@ -148,7 +145,6 @@ export class VehiclesComponent implements OnInit {
             };
 
             if (this.vehicle.id) {
-                // Update
                 const { id, ...vehicleData } = this.vehicle;
                 this.vehicleService.update(id, vehicleData, this.selectedImage).subscribe({
                     next: () => {
@@ -158,13 +154,11 @@ export class VehiclesComponent implements OnInit {
                         this.vehicle = {} as Vehicle;
                     },
                     error: (error) => {
-                        console.error('Güncelleme hatası:', error);
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Araç güncellenirken hata oluştu.' });
                     },
                     complete: finalizeCallback
                 });
             } else {
-                // Create
                 this.vehicleService.create(this.vehicle, this.selectedImage).subscribe({
                     next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Araç oluşturuldu.', life: 3000 });
@@ -173,7 +167,6 @@ export class VehiclesComponent implements OnInit {
                         this.vehicle = {} as Vehicle;
                     },
                     error: (error) => {
-                        console.error('Oluşturma hatası:', error);
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Araç oluşturulurken hata oluştu.' });
                     },
                     complete: finalizeCallback
@@ -196,7 +189,6 @@ export class VehiclesComponent implements OnInit {
         this.progressInterval = setInterval(() => {
             this.progressValue += 1;
             if (this.progressValue >= 90) {
-                // Do not reach 100% automatically
             }
         }, 100);
     }

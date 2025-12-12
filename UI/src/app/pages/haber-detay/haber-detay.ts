@@ -63,16 +63,13 @@ export class HaberDetayComponent implements OnInit {
   get readingTime(): number {
     if (!this.newsItem?.description) return 1;
 
-    // HTML etiketlerini temizle (eğer varsa) ve kelimeleri say
     const text = this.newsItem.description.replace(/<[^>]*>/g, '');
     const wordCount = text.trim().split(/\s+/).length;
 
-    // Ortalama 200 kelime/dakika
     const minutes = Math.ceil(wordCount / 200);
     return minutes > 0 ? minutes : 1;
   }
 
-  // Lightbox Logic
   isLightboxOpen = false;
   currentLightboxImageIndex = 0;
 
@@ -80,12 +77,12 @@ export class HaberDetayComponent implements OnInit {
   openLightbox(index: number) {
     this.currentLightboxImageIndex = index;
     this.isLightboxOpen = true;
-    document.body.style.overflow = 'hidden'; // Prevent scrolling
+    document.body.style.overflow = 'hidden';
   }
 
   closeLightbox() {
     this.isLightboxOpen = false;
-    document.body.style.overflow = ''; // Restore scrolling
+    document.body.style.overflow = '';
   }
 
   nextImage(event?: Event) {

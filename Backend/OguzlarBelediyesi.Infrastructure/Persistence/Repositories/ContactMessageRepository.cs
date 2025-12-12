@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain.Entities.Messages;
@@ -5,9 +10,6 @@ using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 
 namespace OguzlarBelediyesi.Infrastructure.Persistence.Repositories;
 
-/// <summary>
-/// İletişim mesajları için repository implementasyonu.
-/// </summary>
 public sealed class ContactMessageRepository : IContactMessageRepository
 {
     private readonly OguzlarBelediyesiDbContext _context;
@@ -17,55 +19,57 @@ public sealed class ContactMessageRepository : IContactMessageRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<ContactMessage>> GetAllAsync()
+    public async Task<IReadOnlyList<ContactMessage>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _context.ContactMessages
+            .Where(m => !m.IsDeleted)
             .OrderByDescending(m => m.CreatedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<ContactMessage>> GetByTypeAsync(string messageType)
+    public async Task<IReadOnlyList<ContactMessage>> GetByTypeAsync(string messageType, CancellationToken cancellationToken = default)
     {
         return await _context.ContactMessages
-            .Where(m => m.MessageType == messageType)
+            .Where(m => m.MessageType == messageType && !m.IsDeleted)
             .OrderByDescending(m => m.CreatedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<ContactMessage?> GetByIdAsync(Guid id)
+    public async Task<ContactMessage?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.ContactMessages.FindAsync(id);
+        return await _context.ContactMessages.FirstOrDefaultAsync(m => m.Id == id && !m.IsDeleted, cancellationToken);
     }
 
-    public async Task<int> GetUnreadCountAsync()
+    public async Task<int> GetUnreadCountAsync(CancellationToken cancellationToken = default)
     {
         return await _context.ContactMessages
-            .Where(m => !m.IsRead)
-            .CountAsync();
+            .Where(m => !m.IsRead && !m.IsDeleted)
+            .CountAsync(cancellationToken);
     }
 
-    public async Task AddAsync(ContactMessage message)
+    public async Task AddAsync(ContactMessage message, CancellationToken cancellationToken = default)
     {
-        await _context.ContactMessages.AddAsync(message);
+        await _context.ContactMessages.AddAsync(message, cancellationToken);
     }
 
-    public async Task UpdateAsync(ContactMessage message)
+    public Task UpdateAsync(ContactMessage message, CancellationToken cancellationToken = default)
     {
         _context.ContactMessages.Update(message);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var message = await _context.ContactMessages.FindAsync(id);
+        var message = await _context.ContactMessages.FindAsync(new object[] { id }, cancellationToken);
         if (message != null)
         {
-            _context.ContactMessages.Remove(message);
+            message.IsDeleted = true;
+            message.UpdateDate = DateTime.UtcNow;
         }
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 }

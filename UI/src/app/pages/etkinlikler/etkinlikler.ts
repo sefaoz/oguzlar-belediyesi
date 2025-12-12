@@ -23,7 +23,6 @@ export class EtkinliklerComponent {
   allEvents: EventItem[] = [];
   events: EventItem[] = [];
 
-  // Pagination
   currentPage = 1;
   pageSize = 9;
   totalPages = 0;

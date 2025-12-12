@@ -1,3 +1,4 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -22,16 +23,16 @@ public sealed class KvkkController : ControllerBase
 
     [HttpGet]
     [Cache(60, "Kvkk")]
-    public async Task<ActionResult<IReadOnlyList<KvkkDocument>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<KvkkDocument>>> GetAll(CancellationToken cancellationToken)
     {
-        var documents = await _repository.GetAllAsync();
+        var documents = await _repository.GetAllAsync(cancellationToken);
         return Ok(documents);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Kvkk")]
-    public async Task<IActionResult> Create([FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Create([FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
         var fileUrl = string.Empty;
         if (file != null)
@@ -47,17 +48,17 @@ public sealed class KvkkController : ControllerBase
             FileUrl = fileUrl
         };
 
-        await _repository.AddAsync(document);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(document, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return Ok(document);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Kvkk")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Update(Guid id, [FromForm] string title, [FromForm] string type, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing == null) return NotFound();
 
         if (file != null)
@@ -68,18 +69,18 @@ public sealed class KvkkController : ControllerBase
         existing.Title = title;
         existing.Type = type;
 
-        await _repository.UpdateAsync(existing);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(existing, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return Ok(existing);
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Kvkk")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }

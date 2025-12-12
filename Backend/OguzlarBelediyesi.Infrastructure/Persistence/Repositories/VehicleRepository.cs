@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -18,13 +20,13 @@ public sealed class VehicleRepository : IVehicleRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Vehicle>> GetAllAsync()
+    public async Task<IReadOnlyList<Vehicle>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var vehicles = await _context.Vehicles
             .AsNoTracking()
             .Where(v => !v.IsDeleted)
             .OrderBy(v => v.Name)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return vehicles.Select(entity => new Vehicle
         {
@@ -36,9 +38,10 @@ public sealed class VehicleRepository : IVehicleRepository
             ImageUrl = entity.ImageUrl
         }).ToArray();
     }
-    public async Task<Vehicle?> GetByIdAsync(Guid id)
+
+    public async Task<Vehicle?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
+        var entity = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted, cancellationToken);
         if (entity == null) return null;
 
         return new Vehicle
@@ -52,7 +55,7 @@ public sealed class VehicleRepository : IVehicleRepository
         };
     }
 
-    public async Task AddAsync(Vehicle vehicle)
+    public async Task AddAsync(Vehicle vehicle, CancellationToken cancellationToken = default)
     {
         var entity = new VehicleEntity
         {
@@ -64,12 +67,12 @@ public sealed class VehicleRepository : IVehicleRepository
             ImageUrl = vehicle.ImageUrl
         };
 
-        await _context.Vehicles.AddAsync(entity);
+        await _context.Vehicles.AddAsync(entity, cancellationToken);
     }
 
-    public async Task UpdateAsync(Vehicle vehicle)
+    public async Task UpdateAsync(Vehicle vehicle, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Vehicles.FindAsync(vehicle.Id);
+        var entity = await _context.Vehicles.FindAsync(new object[] { vehicle.Id }, cancellationToken);
         if (entity != null)
         {
             entity.Name = vehicle.Name;
@@ -82,9 +85,9 @@ public sealed class VehicleRepository : IVehicleRepository
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Vehicles.FindAsync(id);
+        var entity = await _context.Vehicles.FindAsync(new object[] { id }, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
@@ -92,8 +95,8 @@ public sealed class VehicleRepository : IVehicleRepository
         }
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 }

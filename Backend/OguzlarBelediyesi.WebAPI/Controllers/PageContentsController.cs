@@ -1,3 +1,4 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -22,26 +23,26 @@ public sealed class PageContentsController : ControllerBase
 
     [HttpGet]
     [Cache(60, "PageContents")]
-    public async Task<ActionResult<IEnumerable<PageContent>>> GetAll()
+    public async Task<ActionResult<IEnumerable<PageContent>>> GetAll(CancellationToken cancellationToken)
     {
-        var pages = await _repository.GetAllAsync();
+        var pages = await _repository.GetAllAsync(cancellationToken);
         return Ok(pages);
     }
 
     [HttpGet("{key}")]
     [Cache(120, "PageContents")]
-    public async Task<ActionResult<PageContent>> GetByKey(string key)
+    public async Task<ActionResult<PageContent>> GetByKey(string key, CancellationToken cancellationToken)
     {
-        var pageContent = await _repository.GetByKeyAsync(key);
+        var pageContent = await _repository.GetByKeyAsync(key, cancellationToken);
         return pageContent is null ? NotFound() : Ok(pageContent);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("PageContents")]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        var form = await Request.ReadFormAsync();
+        var form = await Request.ReadFormAsync(cancellationToken);
         var formData = PageContentUploadHelper.ParsePageContentForm(form);
         if (string.IsNullOrWhiteSpace(formData.Key) || string.IsNullOrWhiteSpace(formData.Title))
         {
@@ -66,22 +67,22 @@ public sealed class PageContentsController : ControllerBase
             ContactDetails = formData.ContactDetails?.ToList()
         };
 
-        await _repository.AddAsync(pageContent);
+        await _repository.AddAsync(pageContent, cancellationToken);
         return CreatedAtAction(nameof(GetByKey), new { key = pageContent.Key }, pageContent);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("PageContents")]
-    public async Task<IActionResult> Update(Guid id)
+    public async Task<IActionResult> Update(Guid id, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
         }
 
-        var form = await Request.ReadFormAsync();
+        var form = await Request.ReadFormAsync(cancellationToken);
         var formData = PageContentUploadHelper.ParsePageContentForm(form);
         if (string.IsNullOrWhiteSpace(formData.Key) || string.IsNullOrWhiteSpace(formData.Title))
         {
@@ -107,16 +108,16 @@ public sealed class PageContentsController : ControllerBase
         existing.MapEmbedUrl = formData.MapEmbedUrl;
         existing.ContactDetails = formData.ContactDetails?.ToList();
 
-        await _repository.UpdateAsync(existing);
+        await _repository.UpdateAsync(existing, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("PageContents")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
+        await _repository.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
 

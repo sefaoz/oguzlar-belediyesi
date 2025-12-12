@@ -23,7 +23,6 @@ export class DuyurularComponent {
   allAnnouncements: Announcement[] = [];
   announcements: Announcement[] = [];
 
-  // Pagination
   currentPage = 1;
   pageSize = 6;
   totalPages = 0;

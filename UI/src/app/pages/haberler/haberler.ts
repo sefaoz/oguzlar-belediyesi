@@ -25,7 +25,6 @@ export class HaberlerComponent implements OnInit {
 
   newsList: NewsItem[] = [];
 
-  // Filters
   selectedMonth: number | null = null;
   selectedYear: number | null = null;
 
@@ -80,7 +79,6 @@ export class HaberlerComponent implements OnInit {
   get filteredNews(): NewsItem[] {
     let filtered = this.newsList;
 
-    // Search Filter
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(news =>
@@ -88,7 +86,6 @@ export class HaberlerComponent implements OnInit {
         news.description.toLowerCase().includes(term)
       );
     } else {
-      // Month Filter
       if (this.selectedMonth) {
         filtered = filtered.filter(news => {
           const d = new Date(news.date);
@@ -96,13 +93,11 @@ export class HaberlerComponent implements OnInit {
             return (d.getMonth() + 1) === +this.selectedMonth!;
           }
 
-          // Try DD.MM.YYYY
           let parts = news.date.split('.');
           if (parts.length === 3) {
             return parseInt(parts[1], 10) === +this.selectedMonth!;
           }
 
-          // Try DD MonthName YYYY (e.g. 12 Kasım 2025)
           parts = news.date.split(' ');
           if (parts.length >= 3) {
             const monthName = parts[1];
@@ -112,7 +107,6 @@ export class HaberlerComponent implements OnInit {
         });
       }
 
-      // Year Filter
       if (this.selectedYear) {
         filtered = filtered.filter(news => {
           const d = new Date(news.date);
@@ -120,13 +114,11 @@ export class HaberlerComponent implements OnInit {
             return d.getFullYear() === +this.selectedYear!;
           }
 
-          // Try DD.MM.YYYY
           let parts = news.date.split('.');
           if (parts.length === 3) {
             return parseInt(parts[2], 10) === +this.selectedYear!;
           }
 
-          // Try DD MonthName YYYY (e.g. 12 Kasım 2025)
           parts = news.date.split(' ');
           if (parts.length >= 3) {
             const year = parts[2];
@@ -140,7 +132,6 @@ export class HaberlerComponent implements OnInit {
     return filtered;
   }
 
-  // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 6;
 
@@ -183,7 +174,6 @@ export class HaberlerComponent implements OnInit {
     }
   }
 
-  // Trigger page reset when filters change
   onFilterChange() {
     this.currentPage = 1;
   }

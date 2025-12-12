@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -18,27 +20,27 @@ public sealed class CouncilRepository : ICouncilRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<CouncilDocument>> GetAllAsync()
+    public async Task<IReadOnlyList<CouncilDocument>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.CouncilDocuments
             .AsNoTracking()
             .Where(d => !d.IsDeleted)
             .OrderByDescending(d => d.Date)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(Map).ToArray();
     }
 
-    public async Task<CouncilDocument?> GetByIdAsync(Guid id)
+    public async Task<CouncilDocument?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.CouncilDocuments
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task AddAsync(CouncilDocument document)
+    public async Task AddAsync(CouncilDocument document, CancellationToken cancellationToken = default)
     {
         var entity = new CouncilDocumentEntity
         {
@@ -49,12 +51,12 @@ public sealed class CouncilRepository : ICouncilRepository
             Description = document.Description,
             FileUrl = document.FileUrl
         };
-        await _context.CouncilDocuments.AddAsync(entity);
+        await _context.CouncilDocuments.AddAsync(entity, cancellationToken);
     }
 
-    public async Task UpdateAsync(CouncilDocument document)
+    public async Task UpdateAsync(CouncilDocument document, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.CouncilDocuments.FirstOrDefaultAsync(x => x.Id == document.Id);
+        var entity = await _context.CouncilDocuments.FirstOrDefaultAsync(x => x.Id == document.Id, cancellationToken);
         if (entity != null)
         {
             entity.Title = document.Title;
@@ -67,9 +69,9 @@ public sealed class CouncilRepository : ICouncilRepository
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.CouncilDocuments.FirstOrDefaultAsync(x => x.Id == id);
+        var entity = await _context.CouncilDocuments.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
@@ -77,9 +79,9 @@ public sealed class CouncilRepository : ICouncilRepository
         }
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 
     private static CouncilDocument Map(CouncilDocumentEntity entity)

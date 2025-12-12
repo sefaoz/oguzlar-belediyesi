@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
@@ -23,23 +25,23 @@ public sealed class MenusController : ControllerBase
 
     [HttpGet]
     [Cache(60, "Menus")]
-    public async Task<ActionResult<IEnumerable<MenuItem>>> GetAll()
+    public async Task<ActionResult<IEnumerable<MenuItem>>> GetAll(CancellationToken cancellationToken)
     {
-        var menus = await _repository.GetAllAsync();
+        var menus = await _repository.GetAllAsync(cancellationToken);
         return Ok(menus);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<MenuItem>> GetById(Guid id)
+    public async Task<ActionResult<MenuItem>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var menu = await _repository.GetByIdAsync(id);
+        var menu = await _repository.GetByIdAsync(id, cancellationToken);
         return menu is null ? NotFound() : Ok(menu);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Menus")]
-    public async Task<IActionResult> Create(MenuRequest request)
+    public async Task<IActionResult> Create(MenuRequest request, CancellationToken cancellationToken)
     {
         var menuItem = new MenuItem
         {
@@ -52,16 +54,16 @@ public sealed class MenusController : ControllerBase
             Target = request.Target
         };
 
-        await _repository.AddAsync(menuItem);
+        await _repository.AddAsync(menuItem, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = menuItem.Id }, menuItem);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Menus")]
-    public async Task<IActionResult> Update(Guid id, MenuRequest request)
+    public async Task<IActionResult> Update(Guid id, MenuRequest request, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
@@ -74,21 +76,21 @@ public sealed class MenusController : ControllerBase
         existing.IsVisible = request.IsVisible;
         existing.Target = request.Target;
 
-        await _repository.UpdateAsync(existing);
+        await _repository.UpdateAsync(existing, cancellationToken);
         return NoContent();
     }
 
     [HttpPut("order")]
     [Authorize]
     [CacheInvalidate("Menus")]
-    public async Task<IActionResult> UpdateOrder([FromBody] IEnumerable<MenuOrderRequest>? updates)
+    public async Task<IActionResult> UpdateOrder([FromBody] IEnumerable<MenuOrderRequest>? updates, CancellationToken cancellationToken)
     {
         if (updates is null)
         {
             return BadRequest();
         }
 
-        var currentMenus = (await _repository.GetAllAsync()).ToDictionary(m => m.Id);
+        var currentMenus = (await _repository.GetAllAsync(cancellationToken)).ToDictionary(m => m.Id);
         var orderedUpdates = new List<MenuItem>();
 
         foreach (var u in updates)
@@ -106,16 +108,16 @@ public sealed class MenusController : ControllerBase
             return BadRequest();
         }
 
-        await _repository.UpdateOrderAsync(orderedUpdates);
+        await _repository.UpdateOrderAsync(orderedUpdates, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Menus")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
+        await _repository.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
 }

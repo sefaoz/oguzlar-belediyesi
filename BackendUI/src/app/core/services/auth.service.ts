@@ -42,15 +42,12 @@ export class AuthService {
 
         return new Promise<boolean>((resolve) => {
             const url = this.apiConfig.buildEndpoint('auth/login');
-            console.log('Login URL:', url);
-            console.log('Sending login request...');
 
             this.http.post<LoginResponse>(url, {
                 username: email.trim(),
                 password
             }).subscribe({
                 next: (response) => {
-                    console.log('Login response received:', response);
                     if (!response?.token) {
                         resolve(false);
                         return;

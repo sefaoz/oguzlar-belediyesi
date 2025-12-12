@@ -15,22 +15,21 @@ using OguzlarBelediyesi.Infrastructure.Persistence.Database;
 using OguzlarBelediyesi.Infrastructure.Persistence.Repositories;
 using OguzlarBelediyesi.Infrastructure.Security;
 using OguzlarBelediyesi.WebAPI.Filters;
+using OguzlarBelediyesi.WebAPI.Middleware;
 using OguzlarBelediyesi.WebAPI.Services;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel for large file uploads (500MB max)
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024; // 500MB
+    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024;
 });
 
-// Configure Form options for multipart uploads
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 500 * 1024 * 1024; // 500MB
+    options.MultipartBodyLengthLimit = 500 * 1024 * 1024;
     options.ValueLengthLimit = int.MaxValue;
     options.MultipartHeadersLengthLimit = int.MaxValue;
 });
@@ -42,10 +41,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
+        .MinimumLevel.Warning()
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Error)
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
         .Enrich.FromLogContext()
         .Enrich.WithProperty("Application", "OguzlarBelediyesi")
-        .WriteTo.Console()
-        .WriteTo.Sink(new MySqlLogSink(connectionString, "SerilogLogs"));
+        .WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
+        .WriteTo.Sink(new MySqlLogSink(connectionString, "SerilogLogs"), restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning);
 });
 
 await EnsureDatabaseExistsAsync(connectionString);
@@ -54,10 +57,16 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<ActionLogFilter>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddSingleton<CacheResultFilter>();
+builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddControllers(options =>
 {
     options.Filters.AddService<ActionLogFilter>();
     options.Filters.AddService<CacheResultFilter>();
+    options.Filters.AddService<ValidationFilter>();
+})
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IPageContentRepository, PageContentRepository>();
@@ -117,12 +126,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Rate Limiting yapılandırması - Brute-force saldırılarına karşı koruma
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     
-    // Genel API limiti: IP başına dakikada 100 istek
     options.AddFixedWindowLimiter("fixed", limiterOptions =>
     {
         limiterOptions.PermitLimit = 100;
@@ -131,7 +138,6 @@ builder.Services.AddRateLimiter(options =>
         limiterOptions.QueueLimit = 5;
     });
     
-    // Login endpoint için özel sıkı limit: IP başına dakikada 5 deneme
     options.AddFixedWindowLimiter("auth", limiterOptions =>
     {
         limiterOptions.PermitLimit = 5;
@@ -140,7 +146,6 @@ builder.Services.AddRateLimiter(options =>
         limiterOptions.QueueLimit = 0;
     });
     
-    // Global fallback policy
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
@@ -166,6 +171,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+app.UseExceptionHandling();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(OguzlarCorsPolicy);

@@ -35,7 +35,7 @@ import { BlockUIModule } from 'primeng/blockui';
 })
 export class MenuManagementComponent implements OnInit {
     menus: TreeNode[] = [];
-    rawMenus: Menu[] = []; // For dropdown selection
+    rawMenus: Menu[] = [];
     menuDialog: boolean = false;
     menu: Menu = this.createEmptyMenu();
     submitted: boolean = false;
@@ -72,7 +72,6 @@ export class MenuManagementComponent implements OnInit {
         const map = new Map<string, TreeNode>();
         const roots: TreeNode[] = [];
 
-        // First pass: create TreeNodes
         menus.forEach(menu => {
             map.set(menu.id, {
                 data: menu,
@@ -81,7 +80,6 @@ export class MenuManagementComponent implements OnInit {
             });
         });
 
-        // Second pass: connect children to parents
         menus.forEach(menu => {
             const node = map.get(menu.id);
             if (menu.parentId && map.has(menu.parentId)) {
@@ -91,7 +89,6 @@ export class MenuManagementComponent implements OnInit {
             }
         });
 
-        // Sort by order
         const sortNodes = (nodes: TreeNode[]) => {
             nodes.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
             nodes.forEach(node => {

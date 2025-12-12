@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,28 +25,28 @@ public sealed class CouncilController : ControllerBase
 
     [HttpGet]
     [Cache(60, "Council")]
-    public async Task<ActionResult<IReadOnlyList<CouncilDocument>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<CouncilDocument>>> GetAll(CancellationToken cancellationToken)
     {
-        var documents = await _repository.GetAllAsync();
+        var documents = await _repository.GetAllAsync(cancellationToken);
         return Ok(documents);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CouncilDocument>> GetById(Guid id)
+    public async Task<ActionResult<CouncilDocument>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var document = await _repository.GetByIdAsync(id);
+        var document = await _repository.GetByIdAsync(id, cancellationToken);
         return document is null ? NotFound() : Ok(document);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Council")]
-    public async Task<IActionResult> Create([FromForm] CouncilDocumentRequest request, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Create([FromForm] CouncilDocumentRequest request, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
         var fileUrl = string.Empty;
         if (file is not null)
         {
-            fileUrl = await SaveFileAsync(file, "uploads/council");
+            fileUrl = await SaveFileAsync(file, "uploads/council", cancellationToken);
         }
 
         var document = new CouncilDocument
@@ -58,8 +59,8 @@ public sealed class CouncilController : ControllerBase
             FileUrl = fileUrl
         };
 
-        await _repository.AddAsync(document);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(document, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return Created($"/api/meclis/{document.Id}", document);
     }
@@ -67,9 +68,9 @@ public sealed class CouncilController : ControllerBase
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Council")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] CouncilDocumentRequest request, [FromForm] IFormFile? file)
+    public async Task<IActionResult> Update(Guid id, [FromForm] CouncilDocumentRequest request, [FromForm] IFormFile? file, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
@@ -78,7 +79,7 @@ public sealed class CouncilController : ControllerBase
         var fileUrl = existing.FileUrl;
         if (file is not null)
         {
-            fileUrl = await SaveFileAsync(file, "uploads/council");
+            fileUrl = await SaveFileAsync(file, "uploads/council", cancellationToken);
         }
 
         existing.Title = request.Title;
@@ -87,8 +88,8 @@ public sealed class CouncilController : ControllerBase
         existing.Description = request.Description;
         existing.FileUrl = fileUrl;
 
-        await _repository.UpdateAsync(existing);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(existing, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -96,14 +97,14 @@ public sealed class CouncilController : ControllerBase
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Council")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
-    private async Task<string> SaveFileAsync(IFormFile file, string folderPath)
+    private async Task<string> SaveFileAsync(IFormFile file, string folderPath, CancellationToken cancellationToken)
     {
         if (file == null || file.Length == 0) return string.Empty;
         
@@ -117,7 +118,7 @@ public sealed class CouncilController : ControllerBase
         
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(stream);
+            await file.CopyToAsync(stream, cancellationToken);
         }
         
         return Path.Combine("/", folderPath, fileName).Replace("\\", "/");

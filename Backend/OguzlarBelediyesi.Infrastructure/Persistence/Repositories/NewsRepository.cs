@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -22,36 +23,36 @@ public sealed class NewsRepository : INewsRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<NewsItem>> GetAllAsync()
+    public async Task<IEnumerable<NewsItem>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.NewsItems
             .AsNoTracking()
             .Where(n => !n.IsDeleted)
             .OrderByDescending(n => n.CreatedDate)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(Map).ToList();
     }
 
-    public async Task<NewsItem?> GetBySlugAsync(string slug)
+    public async Task<NewsItem?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var entity = await _context.NewsItems
             .AsNoTracking()
-            .FirstOrDefaultAsync(n => n.Slug == slug && !n.IsDeleted);
+            .FirstOrDefaultAsync(n => n.Slug == slug && !n.IsDeleted, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task<NewsItem?> GetByIdAsync(Guid id)
+    public async Task<NewsItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.NewsItems
             .AsNoTracking()
-            .FirstOrDefaultAsync(n => n.Id == id && !n.IsDeleted);
+            .FirstOrDefaultAsync(n => n.Id == id && !n.IsDeleted, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null)
+    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null, CancellationToken cancellationToken = default)
     {
         var query = _context.NewsItems.AsNoTracking().Where(n => n.Slug == slug);
         
@@ -60,18 +61,18 @@ public sealed class NewsRepository : INewsRepository
             query = query.Where(n => n.Id != excludeId.Value);
         }
         
-        return await query.AnyAsync();
+        return await query.AnyAsync(cancellationToken);
     }
 
-    public async Task AddAsync(NewsItem newsItem)
+    public async Task AddAsync(NewsItem newsItem, CancellationToken cancellationToken = default)
     {
         var entity = MapToEntity(newsItem);
-        await _context.NewsItems.AddAsync(entity);
+        await _context.NewsItems.AddAsync(entity, cancellationToken);
     }
 
-    public async Task UpdateAsync(NewsItem newsItem)
+    public async Task UpdateAsync(NewsItem newsItem, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.NewsItems.FindAsync(newsItem.Id);
+        var entity = await _context.NewsItems.FindAsync(new object[] { newsItem.Id }, cancellationToken);
         if (entity is not null)
         {
             entity.Title = newsItem.Title;
@@ -89,9 +90,9 @@ public sealed class NewsRepository : INewsRepository
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.NewsItems.FindAsync(id);
+        var entity = await _context.NewsItems.FindAsync(new object[] { id }, cancellationToken);
         if (entity is not null)
         {
             entity.IsDeleted = true;
@@ -99,18 +100,18 @@ public sealed class NewsRepository : INewsRepository
         }
     }
 
-    public async Task IncrementViewCountAsync(string slug)
+    public async Task IncrementViewCountAsync(string slug, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.NewsItems.FirstOrDefaultAsync(n => n.Slug == slug);
+        var entity = await _context.NewsItems.FirstOrDefaultAsync(n => n.Slug == slug, cancellationToken);
         if (entity is not null)
         {
             entity.ViewCount++;
         }
     }
 
-    public Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 
     private static NewsItem Map(NewsEntity entity)

@@ -1,16 +1,18 @@
-using OguzlarBelediyesi.Domain;
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using OguzlarBelediyesi.Domain;
 
 namespace OguzlarBelediyesi.Application.Contracts.Repositories;
 
 public interface IUserRepository
 {
-    Task<IEnumerable<User>> GetAllAsync();
-    Task<User?> GetByIdAsync(Guid id);
-    Task<User?> GetByUsernameAsync(string username);
-    Task AddAsync(User user);
-    Task UpdateAsync(User user);
-    Task DeleteAsync(User user);
-    Task SaveChangesAsync();
+    Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
+    Task AddAsync(User user, CancellationToken cancellationToken = default);
+    Task UpdateAsync(User user, CancellationToken cancellationToken = default);
+    Task DeleteAsync(User user, CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

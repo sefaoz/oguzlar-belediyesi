@@ -7,7 +7,6 @@ export interface Tender {
     status: string;
     documentsJson: string;
     slug: string;
-    // Helper used in UI, parsed from documentsJson
     documentsList?: TenderDocument[];
 }
 

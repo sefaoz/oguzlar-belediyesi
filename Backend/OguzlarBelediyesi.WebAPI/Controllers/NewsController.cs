@@ -1,8 +1,10 @@
 using System;
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 using OguzlarBelediyesi.WebAPI.Helpers;
 
@@ -23,21 +25,21 @@ public sealed class NewsController : ControllerBase
 
     [HttpGet]
     [Cache(60, "News")]
-    public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll()
+    public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll(CancellationToken cancellationToken)
     {
-        var news = await _repository.GetAllAsync();
+        var news = await _repository.GetAllAsync(cancellationToken);
         return Ok(news);
     }
 
     [HttpGet("{slug}")]
-    public async Task<ActionResult<NewsItem>> GetBySlug(string slug)
+    public async Task<ActionResult<NewsItem>> GetBySlug(string slug, CancellationToken cancellationToken)
     {
-        var newsItem = await _repository.GetBySlugAsync(slug);
+        var newsItem = await _repository.GetBySlugAsync(slug, cancellationToken);
         
         if (newsItem is not null)
         {
-             await _repository.IncrementViewCountAsync(slug);
-             await _repository.SaveChangesAsync();
+             await _repository.IncrementViewCountAsync(slug, cancellationToken);
+             await _repository.SaveChangesAsync(cancellationToken);
         }
 
         return newsItem is null ? NotFound() : Ok(newsItem);
@@ -46,17 +48,15 @@ public sealed class NewsController : ControllerBase
     [HttpPost]
     [Authorize]
     [CacheInvalidate("News")]
-    public async Task<IActionResult> Create([FromForm] NewsRequest request, [FromForm] IFormFile? file, [FromForm] List<IFormFile>? galleryFiles)
+    public async Task<IActionResult> Create([FromForm] NewsRequest request, [FromForm] IFormFile? file, [FromForm] List<IFormFile>? galleryFiles, CancellationToken cancellationToken)
     {
         var image = request.Image ?? string.Empty;
 
-        // Dosya yükleme işlemi
         if (file is not null)
         {
             image = await ImageHelper.SaveImageAsWebPAsync(file, "uploads/news", _env.WebRootPath);
         }
 
-        // Galeri dosyaları yükleme
         var photos = new List<string>();
         if (galleryFiles is not null && galleryFiles.Count > 0)
         {
@@ -70,8 +70,7 @@ public sealed class NewsController : ControllerBase
              }
         }
 
-        // Slug oluştur ve benzersizliğini kontrol et
-        var slug = await GenerateUniqueSlugAsync(request.Title);
+        var slug = await GenerateUniqueSlugAsync(request.Title, null, cancellationToken);
 
         var newsItem = new NewsItem
         {
@@ -85,17 +84,17 @@ public sealed class NewsController : ControllerBase
             Tags = request.Tags?.ToList()
         };
 
-        await _repository.AddAsync(newsItem);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(newsItem, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return Created($"/api/news/{newsItem.Slug}", newsItem);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("News")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] NewsRequest request, [FromForm] IFormFile? file, [FromForm] List<IFormFile>? galleryFiles)
+    public async Task<IActionResult> Update(Guid id, [FromForm] NewsRequest request, [FromForm] IFormFile? file, [FromForm] List<IFormFile>? galleryFiles, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
@@ -103,7 +102,6 @@ public sealed class NewsController : ControllerBase
 
         var image = existing.Image;
 
-        // Dosya yükleme işlemi
         if (file is not null)
         {
             image = await ImageHelper.SaveImageAsWebPAsync(file, "uploads/news", _env.WebRootPath);
@@ -114,7 +112,6 @@ public sealed class NewsController : ControllerBase
             image = request.Image;
         }
 
-        // Galeri dosyaları ve mevcut fotoğraflar
         var currentPhotos = request.Photos?.ToList() ?? new List<string>();
         if (galleryFiles is not null && galleryFiles.Count > 0)
         {
@@ -128,11 +125,10 @@ public sealed class NewsController : ControllerBase
              }
         }
 
-        // Title değiştiyse yeni Slug oluştur
         var slug = existing.Slug;
         if (existing.Title != request.Title)
         {
-            slug = await GenerateUniqueSlugAsync(request.Title, id);
+            slug = await GenerateUniqueSlugAsync(request.Title, id, cancellationToken);
         }
 
         existing.Title = request.Title;
@@ -143,32 +139,28 @@ public sealed class NewsController : ControllerBase
         existing.Photos = currentPhotos;
         existing.Tags = request.Tags?.ToList();
 
-        await _repository.UpdateAsync(existing);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(existing, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("News")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
-    /// <summary>
-    /// Title'dan benzersiz bir Slug oluşturur.
-    /// Eğer aynı Slug veritabanında varsa, sonuna sayı ekleyerek benzersiz yapar.
-    /// </summary>
-    private async Task<string> GenerateUniqueSlugAsync(string title, Guid? excludeId = null)
+    private async Task<string> GenerateUniqueSlugAsync(string title, Guid? excludeId, CancellationToken cancellationToken)
     {
         var baseSlug = SlugHelper.GenerateSlug(title);
         var slug = baseSlug;
         var counter = 2;
 
-        while (await _repository.SlugExistsAsync(slug, excludeId))
+        while (await _repository.SlugExistsAsync(slug, excludeId, cancellationToken))
         {
             slug = SlugHelper.AppendNumber(baseSlug, counter);
             counter++;

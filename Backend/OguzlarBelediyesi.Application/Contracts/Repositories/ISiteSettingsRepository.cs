@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using OguzlarBelediyesi.Domain.Entities.Configuration;
 
-namespace OguzlarBelediyesi.Application.Contracts.Repositories
+namespace OguzlarBelediyesi.Application.Contracts.Repositories;
+
+public interface ISiteSettingsRepository
 {
-    public interface ISiteSettingsRepository
-    {
-        Task<List<SiteSetting>> GetAllAsync();
-        Task<List<SiteSetting>> GetByGroupAsync(string groupKey);
-        Task<SiteSetting?> GetByKeyAsync(string groupKey, string key);
-        Task AddAsync(SiteSetting setting);
-        Task UpdateAsync(SiteSetting setting);
-        Task DeleteAsync(SiteSetting setting);
-    }
+    Task<List<SiteSetting>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<List<SiteSetting>> GetByGroupAsync(string groupKey, CancellationToken cancellationToken = default);
+    Task<SiteSetting?> GetByKeyAsync(string groupKey, string key, CancellationToken cancellationToken = default);
+    Task<SiteSetting?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task AddAsync(SiteSetting setting, CancellationToken cancellationToken = default);
+    Task UpdateAsync(SiteSetting setting, CancellationToken cancellationToken = default);
+    Task DeleteAsync(SiteSetting setting, CancellationToken cancellationToken = default);
 }

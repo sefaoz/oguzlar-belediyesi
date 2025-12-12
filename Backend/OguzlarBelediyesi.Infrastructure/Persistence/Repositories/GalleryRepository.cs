@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,69 +20,68 @@ public sealed class GalleryRepository : IGalleryRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<GalleryFolder>> GetFoldersAsync()
+    public async Task<IEnumerable<GalleryFolder>> GetFoldersAsync(CancellationToken cancellationToken = default)
     {
         var folders = await _context.GalleryFolders
             .AsNoTracking()
             .Where(g => !g.IsDeleted)
             .OrderBy(g => g.Title)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return folders.Select(MapFolder);
     }
 
-    public async Task<GalleryFolder?> GetFolderByIdAsync(Guid folderId)
+    public async Task<GalleryFolder?> GetFolderByIdAsync(Guid folderId, CancellationToken cancellationToken = default)
     {
         var entity = await _context.GalleryFolders
             .AsNoTracking()
-            .FirstOrDefaultAsync(g => g.Id == folderId && !g.IsDeleted);
+            .FirstOrDefaultAsync(g => g.Id == folderId && !g.IsDeleted, cancellationToken);
 
         return entity is null ? null : MapFolder(entity);
     }
 
-    public async Task<GalleryFolder?> GetFolderBySlugAsync(string slug)
+    public async Task<GalleryFolder?> GetFolderBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var entity = await _context.GalleryFolders
             .AsNoTracking()
-            .FirstOrDefaultAsync(g => g.Slug == slug && !g.IsDeleted);
+            .FirstOrDefaultAsync(g => g.Slug == slug && !g.IsDeleted, cancellationToken);
 
         return entity is null ? null : MapFolder(entity);
     }
 
-    public async Task<IEnumerable<GalleryImage>> GetImagesByFolderAsync(Guid folderId)
+    public async Task<IEnumerable<GalleryImage>> GetImagesByFolderAsync(Guid folderId, CancellationToken cancellationToken = default)
     {
         var images = await _context.GalleryImages
             .AsNoTracking()
             .Where(img => img.FolderId == folderId && !img.IsDeleted)
             .OrderBy(img => img.Id)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return images.Select(MapImage);
     }
 
 
 
-    public async Task DeleteFolderAsync(Guid folderId)
+    public async Task DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.GalleryFolders.FindAsync(folderId);
+        var entity = await _context.GalleryFolders.FindAsync(new object[] { folderId }, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
             entity.UpdateDate = DateTime.UtcNow;
 
-            // Soft delete images logic
-             var images = await _context.GalleryImages.Where(i => i.FolderId == folderId).ToListAsync();
+             var images = await _context.GalleryImages.Where(i => i.FolderId == folderId).ToListAsync(cancellationToken);
              foreach (var img in images)
              {
                  img.IsDeleted = true;
                  img.UpdateDate = DateTime.UtcNow;
              }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 
-    public async Task AddImageAsync(GalleryImage image)
+    public async Task AddImageAsync(GalleryImage image, CancellationToken cancellationToken = default)
     {
         var entity = new GalleryImageEntity
         {
@@ -94,8 +94,7 @@ public sealed class GalleryRepository : IGalleryRepository
 
         _context.GalleryImages.Add(entity);
         
-        // Update folder image count
-        var folder = await _context.GalleryFolders.FindAsync(image.FolderId);
+        var folder = await _context.GalleryFolders.FindAsync(new object[] { image.FolderId }, cancellationToken);
         if (folder != null)
         {
             folder.ImageCount++;
@@ -105,29 +104,28 @@ public sealed class GalleryRepository : IGalleryRepository
             }
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteImageAsync(Guid imageId)
+    public async Task DeleteImageAsync(Guid imageId, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.GalleryImages.FindAsync(imageId);
+        var entity = await _context.GalleryImages.FindAsync(new object[] { imageId }, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
             entity.UpdateDate = DateTime.UtcNow;
             
-             // Update folder image count
-            var folder = await _context.GalleryFolders.FindAsync(entity.FolderId);
+            var folder = await _context.GalleryFolders.FindAsync(new object[] { entity.FolderId }, cancellationToken);
             if (folder != null)
             {
                 folder.ImageCount = folder.ImageCount > 0 ? folder.ImageCount - 1 : 0;
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 
-    public async Task CreateFolderAsync(GalleryFolder folder)
+    public async Task CreateFolderAsync(GalleryFolder folder, CancellationToken cancellationToken = default)
     {
         var entity = new GalleryFolderEntity
         {
@@ -142,12 +140,12 @@ public sealed class GalleryRepository : IGalleryRepository
         };
 
         _context.GalleryFolders.Add(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateFolderAsync(GalleryFolder folder)
+    public async Task UpdateFolderAsync(GalleryFolder folder, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.GalleryFolders.FirstOrDefaultAsync(f => f.Id == folder.Id);
+        var entity = await _context.GalleryFolders.FirstOrDefaultAsync(f => f.Id == folder.Id, cancellationToken);
         if (entity == null) return;
 
         entity.Title = folder.Title;
@@ -158,7 +156,7 @@ public sealed class GalleryRepository : IGalleryRepository
         entity.IsActive = folder.IsActive;
         
         _context.GalleryFolders.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     private static GalleryFolder MapFolder(GalleryFolderEntity entity)

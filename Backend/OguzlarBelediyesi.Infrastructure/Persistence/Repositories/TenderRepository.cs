@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,7 +20,7 @@ public sealed class TenderRepository : ITenderRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Tender>> GetAllAsync(TenderFilter? filter = null)
+    public async Task<IEnumerable<Tender>> GetAllAsync(TenderFilter? filter = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Tender> query = _context.Tenders.AsNoTracking().Where(t => !t.IsDeleted);
 
@@ -35,68 +36,52 @@ public sealed class TenderRepository : ITenderRepository
             query = query.Where(t => t.Title.ToLower().Contains(term) || t.Description.ToLower().Contains(term));
         }
 
-        return await query.OrderByDescending(t => t.TenderDate).ToListAsync();
+        return await query.OrderByDescending(t => t.TenderDate).ToListAsync(cancellationToken);
     }
 
-    public Task<Tender?> GetBySlugAsync(string slug)
+    public async Task<Tender?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var normalized = slug.Trim().ToLowerInvariant();
-        return _context.Tenders.AsNoTracking()
+        return await _context.Tenders.AsNoTracking()
             .Where(t => !t.IsDeleted)
-            .FirstOrDefaultAsync(t => t.Slug.ToLower() == normalized);
+            .FirstOrDefaultAsync(t => t.Slug.ToLower() == normalized, cancellationToken);
     }
 
-    public async Task AddAsync(Tender tender)
+    public async Task AddAsync(Tender tender, CancellationToken cancellationToken = default)
     {
         _context.Tenders.Add(tender);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Tender tender)
+    public async Task UpdateAsync(Tender tender, CancellationToken cancellationToken = default)
     {
         _context.Tenders.Update(tender);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var tender = await _context.Tenders.FindAsync(id);
+        var tender = await _context.Tenders.FindAsync(new object[] { id }, cancellationToken);
         if (tender != null)
         {
-            tender.IsDeleted = true; // Key assumption: user wants soft delete maintained? BaseEntity has IsDeleted.
-            // Usually delete means soft delete in this project if BaseEntity has IsDeleted.
-            // However, typical EF "Delete" means Remove.
-            // Let's check BaseEntity usage. It has IsDeleted.
-            // But look at AnnouncementRepository or others to see pattern.
-            // I'll stick to simple update IsDeleted = true or Remove depending on requirement.
-            // User: "Soft Deletion for Announcements" was a previous task.
-            // I'll assume Soft Delete is preferred if IsDeleted exists.
-            // But wait, I'll use Remove in repository if unaware, BUT BaseEntity suggests soft delete.
-            // Let's look at `OguzlarBelediyesiDbContext` or other Repos.
-            // I'll use Remove for now, or check Filter query.
-            // GetAllAsync uses AsNoTracking() but doesn't filter !IsDeleted.
-            // Wait, does DbContext have QueryFilter?
-            // I didn't see Global Query Filter in DbContext.
-            // But `AnnouncementRepository` conversation mentions "Soft Deletion".
-            // I will use `tender.IsDeleted = true;` and Update.
             tender.IsDeleted = true;
             _context.Tenders.Update(tender);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 
-    public async Task<Tender?> GetByIdAsync(Guid id)
+    public async Task<Tender?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Tenders.FindAsync(id);
+        return await _context.Tenders.FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null)
+    public async Task<bool> SlugExistsAsync(string slug, Guid? excludeId = null, CancellationToken cancellationToken = default)
     {
         var query = _context.Tenders.AsNoTracking().Where(t => t.Slug == slug);
         if (excludeId.HasValue)
         {
             query = query.Where(t => t.Id != excludeId.Value);
         }
-        return await query.AnyAsync();
+        return await query.AnyAsync(cancellationToken);
     }
 }

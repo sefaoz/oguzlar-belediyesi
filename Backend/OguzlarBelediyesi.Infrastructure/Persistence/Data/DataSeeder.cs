@@ -135,7 +135,6 @@ public sealed class DataSeeder
 
     private static readonly SiteSetting[] DefaultSiteSettings = new[]
     {
-        // Topbar
         new SiteSetting
         {
             GroupKey = "Topbar",
@@ -150,7 +149,6 @@ public sealed class DataSeeder
             Description = "Left side topbar links"
         },
         
-        // Footer
         new SiteSetting
         {
             GroupKey = "Footer",
@@ -186,7 +184,6 @@ public sealed class DataSeeder
             Description = "Social media links"
         },
 
-        // E-Municipality
         new SiteSetting
         {
             GroupKey = "EMunicipality",
@@ -203,7 +200,6 @@ public sealed class DataSeeder
             Description = "Homepage E-Municipality shortcut links"
         },
 
-        // SEO
         new SiteSetting
         {
             GroupKey = "SEO",

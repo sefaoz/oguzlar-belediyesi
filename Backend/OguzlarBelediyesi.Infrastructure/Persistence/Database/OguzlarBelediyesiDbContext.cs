@@ -80,6 +80,7 @@ public sealed class OguzlarBelediyesiDbContext : DbContext
             entity.Property(e => e.Location).IsRequired().HasMaxLength(200);
 
             entity.Property(e => e.EventDate).IsRequired();
+            entity.Property(e => e.EventTime).HasMaxLength(10); // Format: HH:mm
             entity.Property(e => e.Image).HasMaxLength(512);
             entity.Property(e => e.Slug).IsRequired().HasMaxLength(256);
             entity.HasIndex(e => e.Slug).IsUnique();

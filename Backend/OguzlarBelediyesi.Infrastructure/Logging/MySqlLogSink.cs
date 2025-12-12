@@ -104,7 +104,6 @@ INSERT INTO `{_tableName}` (
             }
             catch
             {
-                // ignored
             }
         }
 

@@ -66,7 +66,6 @@ export class IhaleDetay implements OnInit {
       try {
         this.documents = JSON.parse(this.tender.documentsJson);
       } catch (e) {
-        console.error('Error parsing documents JSON', e);
         this.documents = [];
       }
     } else {
@@ -77,7 +76,6 @@ export class IhaleDetay implements OnInit {
   getFileUrl(url: string): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    // Ensure there is a slash between base and url
     const baseUrl = environment.imageBaseUrl.endsWith('/') ? environment.imageBaseUrl : `${environment.imageBaseUrl}/`;
     const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
     return `${baseUrl}${cleanUrl}`;

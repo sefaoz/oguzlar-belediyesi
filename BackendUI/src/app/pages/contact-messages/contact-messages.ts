@@ -54,7 +54,7 @@ export class ContactMessagesComponent implements OnInit {
     }
 
     getMessages() {
-        this.messageService.getMessages().subscribe({
+        this.messageService.getAll().subscribe({
             next: (data) => {
                 this.messages = data;
             },
@@ -89,7 +89,7 @@ export class ContactMessagesComponent implements OnInit {
             acceptLabel: 'Evet',
             rejectLabel: 'Hayır',
             accept: () => {
-                this.messageService.deleteMessage(message.id).subscribe({
+                this.messageService.delete(message.id).subscribe({
                     next: () => {
                         this.messageServiceToast.add({ severity: 'success', summary: 'Başarılı', detail: 'Mesaj silindi.', life: 3000 });
                         // Remove from local list to avoid reload flicker or fetch again

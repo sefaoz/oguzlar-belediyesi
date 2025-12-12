@@ -27,7 +27,7 @@
                             <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
                             <input pInputText type="text"
                                 (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Ara..."
-                                class="!pl-10 w-full md:w-64" />
+                                class="pl-10! w-full md:w-64" />
                         </div>
                     </div>
                 </ng-template>
@@ -40,8 +40,10 @@
                         </th>
                         <th pSortableColumn="phone" style="width:15%">Telefon <p-sortIcon field="phone"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="type" style="width:15%">Tür <p-sortIcon field="type"></p-sortIcon></th>
-                        <th pSortableColumn="date" style="width:15%">Tarih <p-sortIcon field="date"></p-sortIcon></th>
+                        <th pSortableColumn="messageType" style="width:15%">Tür <p-sortIcon
+                                field="messageType"></p-sortIcon></th>
+                        <th pSortableColumn="createdAt" style="width:15%">Tarih <p-sortIcon
+                                field="createdAt"></p-sortIcon></th>
                         <th class="text-right" style="width: 15%">İşlemler</th>
                     </tr>
                 </ng-template>
@@ -52,10 +54,10 @@
                         <td>{{msg.email}}</td>
                         <td>{{msg.phone}}</td>
                         <td>
-                            <p-tag [value]="msg.type === 'MayorMessage' ? 'Başkana Mesaj' : 'İletişim'"
-                                [severity]="msg.type === 'MayorMessage' ? 'warn' : 'info'"></p-tag>
+                            <p-tag [value]="msg.messageType === 'MayorMessage' ? 'Başkana Mesaj' : 'İletişim'"
+                                [severity]="msg.messageType === 'MayorMessage' ? 'warn' : 'info'"></p-tag>
                         </td>
-                        <td>{{formatDate(msg.date)}}</td>
+                        <td>{{formatDate(msg.createdAt)}}</td>
                         <td class="text-right">
                             <button pButton pRipple icon="pi pi-eye" class="p-button-text p-button-info mr-2"
                                 (click)="viewMessage(msg)" pTooltip="Görüntüle" tooltipPosition="top"></button>
@@ -89,7 +91,7 @@
                 <div class="field">
                     <label class="font-bold block mb-2">Tarih</label>
                     <div class="p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-                        {{formatDate(message.date)}}
+                        {{formatDate(message.createdAt)}}
                     </div>
                 </div>
                 <div class="field">
@@ -109,8 +111,8 @@
             <div class="field">
                 <label class="font-bold block mb-2">Mesaj Türü</label>
                 <div>
-                    <p-tag [value]="message.type === 'MayorMessage' ? 'Başkana Mesaj' : 'İletişim Formu'"
-                        [severity]="message.type === 'MayorMessage' ? 'warn' : 'info'"></p-tag>
+                    <p-tag [value]="message.messageType === 'MayorMessage' ? 'Başkana Mesaj' : 'İletişim Formu'"
+                        [severity]="message.messageType === 'MayorMessage' ? 'warn' : 'info'"></p-tag>
                 </div>
             </div>
 

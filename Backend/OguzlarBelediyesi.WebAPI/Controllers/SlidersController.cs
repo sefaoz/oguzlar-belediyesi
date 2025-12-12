@@ -1,8 +1,10 @@
 using System;
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 using OguzlarBelediyesi.WebAPI.Filters;
 using OguzlarBelediyesi.WebAPI.Helpers;
 
@@ -23,27 +25,25 @@ public sealed class SlidersController : ControllerBase
 
     [HttpGet]
     [Cache(60, "Sliders")]
-    public async Task<ActionResult<IEnumerable<Slider>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Slider>>> GetAll(CancellationToken cancellationToken)
     {
-        var sliders = await _repository.GetAllAsync();
+        var sliders = await _repository.GetAllAsync(cancellationToken);
         return Ok(sliders);
     }
 
     [HttpPost]
     [Authorize]
     [CacheInvalidate("Sliders")]
-    public async Task<IActionResult> Create([FromForm] SliderFormRequest request)
+    public async Task<IActionResult> Create([FromForm] SliderFormRequest request, CancellationToken cancellationToken)
     {
         string imageUrl = string.Empty;
 
-        // Görsel dosyası varsa yükle
         if (request.File != null && request.File.Length > 0)
         {
             imageUrl = await ImageHelper.SaveImageAsWebPAsync(request.File, "uploads/sliders", _env.WebRootPath);
         }
         else if (!string.IsNullOrWhiteSpace(request.ImageUrl))
         {
-            // Mevcut imageUrl varsa kullan
             imageUrl = request.ImageUrl;
         }
         else
@@ -62,23 +62,22 @@ public sealed class SlidersController : ControllerBase
             IsActive = request.IsActive
         };
 
-        await _repository.AddAsync(slider);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(slider, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return Created($"/api/sliders/{slider.Id}", slider);
     }
 
     [HttpPut("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Sliders")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] SliderFormRequest request)
+    public async Task<IActionResult> Update(Guid id, [FromForm] SliderFormRequest request, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(id, cancellationToken);
         if (existing is null)
         {
             return NotFound();
         }
 
-        // Yeni görsel dosyası varsa yükle
         if (request.File != null && request.File.Length > 0)
         {
             existing.ImageUrl = await ImageHelper.SaveImageAsWebPAsync(request.File, "uploads/sliders", _env.WebRootPath);
@@ -102,30 +101,18 @@ public sealed class SlidersController : ControllerBase
         existing.Order = request.Order;
         existing.IsActive = request.IsActive;
 
-        await _repository.UpdateAsync(existing);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(existing, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     [CacheInvalidate("Sliders")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
-}
-
-// FormData ile görsel yüklemeyi destekleyen request sınıfı
-public class SliderFormRequest
-{
-    public string? Title { get; set; }
-    public string? Description { get; set; }
-    public string? ImageUrl { get; set; }
-    public string? Link { get; set; }
-    public int Order { get; set; }
-    public bool IsActive { get; set; }
-    public IFormFile? File { get; set; }
 }

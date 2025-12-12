@@ -54,6 +54,10 @@ export class EventsComponent implements OnInit {
     selectedImagePreview: string | undefined;
     originalImageUrl: string | undefined;
 
+    isLoading: boolean = false;
+    progressValue: number = 0;
+    progressInterval: any;
+
     constructor(
         private eventService: EventService,
         private messageService: MessageService,
@@ -70,8 +74,7 @@ export class EventsComponent implements OnInit {
             next: (data) => {
                 this.eventsList = data;
             },
-            error: (error) => {
-                console.error('Etkinlikler yüklenirken hata oluştu:', error);
+            error: () => {
                 this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Etkinlikler yüklenemedi.' });
             }
         });
@@ -79,9 +82,7 @@ export class EventsComponent implements OnInit {
 
     openNew() {
         this.eventItem = {} as EventItem;
-        // Varsayılan tarih olarak bugünü ata
         const today = new Date();
-        // input type="date" formatı: yyyy-MM-dd
         this.eventItem.eventDate = this.datePipe.transform(today, 'yyyy-MM-dd') || '';
         this.eventItem.eventTime = this.datePipe.transform(today, 'HH:mm') || '';
 
@@ -95,7 +96,6 @@ export class EventsComponent implements OnInit {
     editEvent(item: EventItem) {
         this.eventItem = { ...item };
         if (this.eventItem.eventDate) {
-            // Backend sends ISO string, likely standard format. input type="date" needs yyyy-MM-dd
             this.eventItem.eventDate = this.datePipe.transform(this.eventItem.eventDate, 'yyyy-MM-dd') || '';
         }
         this.originalImageUrl = this.eventItem.image;
@@ -118,8 +118,7 @@ export class EventsComponent implements OnInit {
                         this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Etkinlik silindi.', life: 3000 });
                         this.getEvents();
                     },
-                    error: (error) => {
-                        console.error('Silme hatası:', error);
+                    error: () => {
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Etkinlik silinirken hata oluştu.' });
                     }
                 });
@@ -144,10 +143,6 @@ export class EventsComponent implements OnInit {
         }
     }
 
-    isLoading: boolean = false;
-    progressValue: number = 0;
-    progressInterval: any;
-
     saveEvent() {
         this.submitted = true;
 
@@ -162,7 +157,6 @@ export class EventsComponent implements OnInit {
             };
 
             if (this.eventItem.id) {
-                // Güncelleme
                 const { id, ...eventData } = this.eventItem;
                 this.eventService.update(id, eventData, this.selectedImage).subscribe({
                     next: () => {
@@ -172,13 +166,11 @@ export class EventsComponent implements OnInit {
                         this.eventItem = {} as EventItem;
                     },
                     error: (error) => {
-                        console.error('Güncelleme hatası:', error);
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Etkinlik güncellenirken hata oluştu.' });
                     },
                     complete: finalizeCallback
                 });
             } else {
-                // Yeni Kayıt
                 this.eventService.create(this.eventItem, this.selectedImage).subscribe({
                     next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Etkinlik oluşturuldu.', life: 3000 });
@@ -187,7 +179,6 @@ export class EventsComponent implements OnInit {
                         this.eventItem = {} as EventItem;
                     },
                     error: (error) => {
-                        console.error('Oluşturma hatası:', error);
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Etkinlik oluşturulurken hata oluştu.' });
                     },
                     complete: finalizeCallback

@@ -55,10 +55,13 @@ export class NewsComponent implements OnInit {
   originalImageUrl: string | undefined;
   tagsInput: string = '';
 
-  // Gallery
   selectedGalleryFiles: File[] = [];
   selectedGalleryPreviews: string[] = [];
   existingGalleryPhotos: string[] = [];
+
+  isLoading: boolean = false;
+  progressValue: number = 0;
+  progressInterval: any;
 
   constructor(
     private newsService: NewsService,
@@ -76,8 +79,7 @@ export class NewsComponent implements OnInit {
       next: (data) => {
         this.newsList = data;
       },
-      error: (error) => {
-        console.error('Haberler yüklenirken hata oluştu:', error);
+      error: () => {
         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Haberler yüklenemedi.' });
       }
     });
@@ -85,7 +87,6 @@ export class NewsComponent implements OnInit {
 
   openNew() {
     this.news = {} as News;
-    // Varsayılan tarih olarak bugünü ata
     const today = new Date();
     this.news.date = this.datePipe.transform(today, 'yyyy-MM-dd') || '';
 
@@ -96,7 +97,6 @@ export class NewsComponent implements OnInit {
     this.originalImageUrl = undefined;
     this.tagsInput = '';
 
-    // Gallery reset
     this.selectedGalleryFiles = [];
     this.selectedGalleryPreviews = [];
     this.existingGalleryPhotos = [];
@@ -112,10 +112,8 @@ export class NewsComponent implements OnInit {
     this.selectedImage = undefined;
     this.tagsInput = this.news.tags ? this.news.tags.join(', ') : '';
 
-    // Gallery Init
     this.selectedGalleryFiles = [];
     this.selectedGalleryPreviews = [];
-    // photos array'inin kopyasını oluştur (referans koparmak için)
     this.existingGalleryPhotos = this.news.photos ? [...this.news.photos] : [];
 
     this.newsDialog = true;
@@ -134,8 +132,7 @@ export class NewsComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Haber silindi.', life: 3000 });
             this.getNews();
           },
-          error: (error) => {
-            console.error('Silme hatası:', error);
+          error: () => {
             this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Haber silinirken hata oluştu.' });
           }
         });
@@ -167,7 +164,6 @@ export class NewsComponent implements OnInit {
         const file = files[i];
         this.selectedGalleryFiles.push(file);
 
-        // Preview
         const reader = new FileReader();
         reader.onload = (e) => {
           this.selectedGalleryPreviews.push(e.target?.result as string);
@@ -183,36 +179,18 @@ export class NewsComponent implements OnInit {
   }
 
   removeExistingGalleryPhoto(index: number) {
-    // Backend'den de silmek isterseniz burada ayrı bir servis çağrısı yapabilirsiniz 
-    // veya güncelleme servisine "silinecekler" listesi gönderebilirsiniz.
-    // Şimdilik sadece listeden çıkartıyoruz, Update edildiğinde backend
-    // mevcut listeyi (eğer gönderiyorsak) güncelleyebilir ama genelde 
-    // dosya silme işlemleri backend tarafında biraz daha farklı ele alınır.
-    // Basitlik adına şu an listeden siliyoruz, backend tarafına 
-    // "kalanları" göndermiyoruz (çünkü photos string array), 
-    // Backend genelde gelen dosyaları ekler. Silme için ayrı endpoint olabilir.
-
-    // Bu örnekte, sadece UI'dan görsel olarak kaldırıyoruz. 
-    // Eğer backend kalan fotoğraflar listesini beklemiyorsa, bu işlem 
-    // refresh sonrası geri gelir. 
-    // Backend'inizin "update" metodunda, "photos" arrayini de güncellediğini varsayarsak:
     this.existingGalleryPhotos.splice(index, 1);
     this.news.photos = this.existingGalleryPhotos;
   }
-
-  isLoading: boolean = false;
-  progressValue: number = 0;
-  progressInterval: any;
 
   saveNews() {
     this.submitted = true;
 
     if (this.news.title?.trim()) {
-      this.isLoading = true; // Start loading
+      this.isLoading = true;
       this.progressValue = 0;
       this.startTimer();
 
-      // Tags İşleme
       if (this.tagsInput) {
         this.news.tags = this.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
       } else {
@@ -220,12 +198,11 @@ export class NewsComponent implements OnInit {
       }
 
       const finalizeCallback = () => {
-        this.isLoading = false; // Stop loading regardless of success or failure
+        this.isLoading = false;
         this.stopTimer();
       };
 
       if (this.news.id) {
-        // Güncelleme
         const { id, ...newsData } = this.news;
         this.newsService.update(id, newsData, this.selectedImage, this.selectedGalleryFiles).subscribe({
           next: () => {
@@ -235,13 +212,11 @@ export class NewsComponent implements OnInit {
             this.news = {} as News;
           },
           error: (error) => {
-            console.error('Güncelleme hatası:', error);
             this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Haber güncellenirken hata oluştu.' });
           },
           complete: finalizeCallback
         });
       } else {
-        // Yeni Kayıt
         this.newsService.create(this.news, this.selectedImage, this.selectedGalleryFiles).subscribe({
           next: () => {
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Haber oluşturuldu.', life: 3000 });
@@ -250,7 +225,6 @@ export class NewsComponent implements OnInit {
             this.news = {} as News;
           },
           error: (error) => {
-            console.error('Oluşturma hatası:', error);
             this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Haber oluşturulurken hata oluştu.' });
           },
           complete: finalizeCallback
@@ -259,9 +233,6 @@ export class NewsComponent implements OnInit {
     }
   }
 
-
-
-
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
@@ -269,14 +240,12 @@ export class NewsComponent implements OnInit {
   formatDate(dateString: string): string {
     if (!dateString) return '';
     const date = new Date(dateString);
-    // Check if date is valid
     if (!isNaN(date.getTime())) {
-      // Use explicit formatting to ensure consistency
       return this.datePipe.transform(date, 'dd.MM.yyyy') || '';
     }
-    // Fallback for non-standard formats (like "29 Ekim 2025" if it somehow persists)
     return dateString;
   }
+
   getImageUrl(url: string): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
@@ -287,8 +256,6 @@ export class NewsComponent implements OnInit {
     this.progressInterval = setInterval(() => {
       this.progressValue += 1;
       if (this.progressValue >= 90) {
-        // Do not reach 100% automatically, wait for success
-        // Keep it moving slowly or stop at 90
       }
     }, 100);
   }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,39 +20,39 @@ public sealed class SliderRepository : ISliderRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Slider>> GetAllAsync()
+    public async Task<IEnumerable<Slider>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.Sliders
             .AsNoTracking()
             .Where(s => !s.IsDeleted)
             .OrderBy(s => s.Order)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(entity => Map(entity)).ToArray();
     }
 
-    public async Task<Slider?> GetByIdAsync(Guid id)
+    public async Task<Slider?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.Sliders
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted, cancellationToken);
         return entity is null ? null : Map(entity);
     }
 
-    public async Task AddAsync(Slider slider)
+    public async Task AddAsync(Slider slider, CancellationToken cancellationToken = default)
     {
-        await _context.Sliders.AddAsync(Map(slider));
+        await _context.Sliders.AddAsync(Map(slider), cancellationToken);
     }
 
-    public Task UpdateAsync(Slider slider)
+    public Task UpdateAsync(Slider slider, CancellationToken cancellationToken = default)
     {
         _context.Sliders.Update(Map(slider));
         return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Sliders.FindAsync(id);
+        var entity = await _context.Sliders.FindAsync(new object[] { id }, cancellationToken);
         if (entity is not null)
         {
             entity.IsDeleted = true;
@@ -59,9 +60,9 @@ public sealed class SliderRepository : ISliderRepository
         }
     }
 
-    public Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 
     private static Slider Map(SliderEntity entity)

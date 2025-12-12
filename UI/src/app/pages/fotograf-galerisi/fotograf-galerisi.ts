@@ -52,7 +52,6 @@ export class FotografGalerisi implements OnInit {
           this.images = images;
         });
 
-        // Update SEO for specific folder
         this.seoService.updateSeo({
           title: folder.title,
           description: `${folder.title} fotoğraf albümü. Oğuzlar Belediyesi etkinlik ve proje fotoğrafları.`,
@@ -99,12 +98,12 @@ export class FotografGalerisi implements OnInit {
 
   openPreview(image: GalleryImage) {
     this.selectedImage = image;
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
   }
 
   closePreview() {
     this.selectedImage = null;
-    document.body.style.overflow = 'auto'; // Restore scrolling
+    document.body.style.overflow = 'auto';
   }
 
   nextImage(event?: Event) {

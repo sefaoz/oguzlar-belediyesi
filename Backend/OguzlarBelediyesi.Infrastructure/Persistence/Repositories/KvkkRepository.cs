@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,13 +20,13 @@ public sealed class KvkkRepository : IKvkkRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<KvkkDocument>> GetAllAsync()
+    public async Task<IReadOnlyList<KvkkDocument>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.KvkkDocuments
             .AsNoTracking()
             .Where(d => !d.IsDeleted)
             .OrderBy(d => d.Title)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(entity => new KvkkDocument
         {
@@ -36,9 +37,9 @@ public sealed class KvkkRepository : IKvkkRepository
         }).ToArray();
     }
 
-    public async Task<KvkkDocument?> GetByIdAsync(Guid id)
+    public async Task<KvkkDocument?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.KvkkDocuments.FirstOrDefaultAsync(d => d.Id == id && !d.IsDeleted);
+        var entity = await _context.KvkkDocuments.FirstOrDefaultAsync(d => d.Id == id && !d.IsDeleted, cancellationToken);
         if (entity == null) return null;
 
         return new KvkkDocument
@@ -50,7 +51,7 @@ public sealed class KvkkRepository : IKvkkRepository
         };
     }
 
-    public async Task AddAsync(KvkkDocument document)
+    public async Task AddAsync(KvkkDocument document, CancellationToken cancellationToken = default)
     {
         var entity = new KvkkDocumentEntity
         {
@@ -59,12 +60,12 @@ public sealed class KvkkRepository : IKvkkRepository
             Type = document.Type,
             FileUrl = document.FileUrl
         };
-        await _context.KvkkDocuments.AddAsync(entity);
+        await _context.KvkkDocuments.AddAsync(entity, cancellationToken);
     }
 
-    public async Task UpdateAsync(KvkkDocument document)
+    public async Task UpdateAsync(KvkkDocument document, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.KvkkDocuments.FindAsync(document.Id);
+        var entity = await _context.KvkkDocuments.FindAsync(new object[] { document.Id }, cancellationToken);
         if (entity != null)
         {
             entity.Title = document.Title;
@@ -74,9 +75,9 @@ public sealed class KvkkRepository : IKvkkRepository
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.KvkkDocuments.FindAsync(id);
+        var entity = await _context.KvkkDocuments.FindAsync(new object[] { id }, cancellationToken);
         if (entity != null)
         {
             entity.IsDeleted = true;
@@ -84,8 +85,8 @@ public sealed class KvkkRepository : IKvkkRepository
         }
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 }

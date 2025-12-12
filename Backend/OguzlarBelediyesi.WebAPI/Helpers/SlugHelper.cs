@@ -15,10 +15,6 @@ public static class SlugHelper
         { 'ü', "u" }, { 'Ü', "u" }
     };
 
-    /// <summary>
-    /// Verilen metinden URL-dostu bir slug oluşturur.
-    /// Türkçe karakterleri dönüştürür, özel karakterleri temizler.
-    /// </summary>
     public static string GenerateSlug(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -26,10 +22,8 @@ public static class SlugHelper
             return string.Empty;
         }
 
-        // Küçük harfe çevir
         text = text.ToLowerInvariant();
 
-        // Türkçe karakterleri dönüştür
         var sb = new StringBuilder();
         foreach (var c in text)
         {
@@ -44,25 +38,17 @@ public static class SlugHelper
         }
         text = sb.ToString();
 
-        // Boşlukları tire ile değiştir
         text = text.Replace(' ', '-');
 
-        // Sadece harf, rakam ve tire bırak
         text = Regex.Replace(text, @"[^a-z0-9\-]", string.Empty);
 
-        // Ardışık tireleri tek tire yap
         text = Regex.Replace(text, @"-+", "-");
 
-        // Baş ve sondaki tireleri kaldır
         text = text.Trim('-');
 
         return text;
     }
 
-    /// <summary>
-    /// Slug'a sayı ekleyerek benzersiz bir slug oluşturur.
-    /// Örnek: "haber-basligi" -> "haber-basligi-2"
-    /// </summary>
     public static string AppendNumber(string slug, int number)
     {
         return $"{slug}-{number}";

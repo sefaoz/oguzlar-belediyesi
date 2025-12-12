@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -19,35 +20,36 @@ public sealed class MenuRepository : IMenuRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<MenuItem>> GetAllAsync()
+    public async Task<IEnumerable<MenuItem>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.MenuItems
             .AsNoTracking()
+            .Where(e => !e.IsDeleted)
             .OrderBy(e => e.Order)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(Map);
     }
 
-    public async Task<MenuItem?> GetByIdAsync(Guid id)
+    public async Task<MenuItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.MenuItems
             .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.Id == id);
+            .FirstOrDefaultAsync(m => m.Id == id && !m.IsDeleted, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task AddAsync(MenuItem menuItem)
+    public async Task AddAsync(MenuItem menuItem, CancellationToken cancellationToken = default)
     {
         var entity = Map(menuItem);
-        await _context.MenuItems.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await _context.MenuItems.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(MenuItem menuItem)
+    public async Task UpdateAsync(MenuItem menuItem, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.MenuItems.FirstOrDefaultAsync(m => m.Id == menuItem.Id);
+        var entity = await _context.MenuItems.FirstOrDefaultAsync(m => m.Id == menuItem.Id, cancellationToken);
         if (entity is null)
         {
             return;
@@ -61,20 +63,21 @@ public sealed class MenuRepository : IMenuRepository
         entity.Target = menuItem.Target;
 
         _context.MenuItems.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.MenuItems.FirstOrDefaultAsync(m => m.Id == id);
+        var entity = await _context.MenuItems.FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
         if (entity is not null)
         {
-            _context.MenuItems.Remove(entity);
-            await _context.SaveChangesAsync();
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 
-    public async Task UpdateOrderAsync(IEnumerable<MenuItem> orderedItems)
+    public async Task UpdateOrderAsync(IEnumerable<MenuItem> orderedItems, CancellationToken cancellationToken = default)
     {
         if (orderedItems is null)
         {
@@ -82,7 +85,7 @@ public sealed class MenuRepository : IMenuRepository
         }
 
         var ids = orderedItems.Select(m => m.Id).ToHashSet();
-        var entities = await _context.MenuItems.Where(e => ids.Contains(e.Id)).ToListAsync();
+        var entities = await _context.MenuItems.Where(e => ids.Contains(e.Id)).ToListAsync(cancellationToken);
 
         foreach (var entity in entities)
         {
@@ -97,7 +100,7 @@ public sealed class MenuRepository : IMenuRepository
         }
 
         _context.MenuItems.UpdateRange(entities);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     private static MenuItemEntity Map(MenuItem menuItem)

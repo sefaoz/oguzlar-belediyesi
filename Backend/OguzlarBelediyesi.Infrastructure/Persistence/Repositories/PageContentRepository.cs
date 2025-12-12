@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
@@ -22,34 +23,35 @@ public sealed class PageContentRepository : IPageContentRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<PageContent>> GetAllAsync()
+    public async Task<IEnumerable<PageContent>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await _context.PageContents
             .AsNoTracking()
-            .ToListAsync();
+            .Where(pc => !pc.IsDeleted)
+            .ToListAsync(cancellationToken);
 
         return entities.Select(Map);
     }
 
-    public async Task<PageContent?> GetByKeyAsync(string key)
+    public async Task<PageContent?> GetByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         var entity = await _context.PageContents
             .AsNoTracking()
-            .FirstOrDefaultAsync(pc => pc.Key == key);
+            .FirstOrDefaultAsync(pc => pc.Key == key && !pc.IsDeleted, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task<PageContent?> GetByIdAsync(Guid id)
+    public async Task<PageContent?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _context.PageContents
             .AsNoTracking()
-            .FirstOrDefaultAsync(pc => pc.Id == id);
+            .FirstOrDefaultAsync(pc => pc.Id == id && !pc.IsDeleted, cancellationToken);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task AddAsync(PageContent pageContent)
+    public async Task AddAsync(PageContent pageContent, CancellationToken cancellationToken = default)
     {
         var entity = new PageContentEntity
         {
@@ -63,13 +65,13 @@ public sealed class PageContentRepository : IPageContentRepository
             ContactDetailsJson = pageContent.ContactDetails is null ? null : JsonSerializer.Serialize(pageContent.ContactDetails, JsonOptions)
         };
 
-        await _context.PageContents.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await _context.PageContents.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(PageContent pageContent)
+    public async Task UpdateAsync(PageContent pageContent, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.PageContents.FirstOrDefaultAsync(pc => pc.Id == pageContent.Id);
+        var entity = await _context.PageContents.FirstOrDefaultAsync(pc => pc.Id == pageContent.Id, cancellationToken);
         if (entity is null)
         {
             return;
@@ -84,16 +86,17 @@ public sealed class PageContentRepository : IPageContentRepository
         entity.ContactDetailsJson = pageContent.ContactDetails is null ? null : JsonSerializer.Serialize(pageContent.ContactDetails, JsonOptions);
 
         _context.PageContents.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.PageContents.FirstOrDefaultAsync(pc => pc.Id == id);
+        var entity = await _context.PageContents.FirstOrDefaultAsync(pc => pc.Id == id, cancellationToken);
         if (entity is not null)
         {
-            _context.PageContents.Remove(entity);
-            await _context.SaveChangesAsync();
+            entity.IsDeleted = true;
+            entity.UpdateDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 

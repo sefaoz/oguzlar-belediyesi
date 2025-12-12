@@ -27,7 +27,6 @@ public static class ImageHelper
             await image.SaveAsWebpAsync(filePath, new WebpEncoder { Quality = 80 });
         }
 
-        // Return URL path (convert backslashes to forward slashes for URL compatibility)
         return Path.Combine("/", folderPath, fileName).Replace("\\", "/");
     }
 }

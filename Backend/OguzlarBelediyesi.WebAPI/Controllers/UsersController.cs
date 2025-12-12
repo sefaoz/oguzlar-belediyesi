@@ -1,8 +1,10 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain;
 using OguzlarBelediyesi.Infrastructure.Security;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
 
@@ -21,16 +23,16 @@ public sealed class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var users = await _userRepository.GetAllAsync();
+        var users = await _userRepository.GetAllAsync(cancellationToken);
         return Ok(users);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id, cancellationToken);
         if (user is null)
         {
             return NotFound();
@@ -39,10 +41,9 @@ public sealed class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(UserRequest request)
+    public async Task<IActionResult> Create(UserRequest request, CancellationToken cancellationToken)
     {
-        // Check if username already exists
-        if (await _userRepository.GetByUsernameAsync(request.Username) != null)
+        if (await _userRepository.GetByUsernameAsync(request.Username, cancellationToken) != null)
         {
             return BadRequest("Username already exists.");
         }
@@ -59,16 +60,16 @@ public sealed class UsersController : ControllerBase
             Role = request.Role
         };
 
-        await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
+        await _userRepository.AddAsync(user, cancellationToken);
+        await _userRepository.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, UserRequest request)
+    public async Task<IActionResult> Update(Guid id, UserRequest request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id, cancellationToken);
         if (user is null)
         {
             return NotFound();
@@ -82,23 +83,23 @@ public sealed class UsersController : ControllerBase
             user.PasswordHash = _passwordHasher.Hash(request.Password);
         }
 
-        await _userRepository.UpdateAsync(user);
-        await _userRepository.SaveChangesAsync();
+        await _userRepository.UpdateAsync(user, cancellationToken);
+        await _userRepository.SaveChangesAsync(cancellationToken);
 
         return Ok(user);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id, cancellationToken);
         if (user is null)
         {
             return NotFound();
         }
 
-        await _userRepository.DeleteAsync(user);
-        await _userRepository.SaveChangesAsync();
+        await _userRepository.DeleteAsync(user, cancellationToken);
+        await _userRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

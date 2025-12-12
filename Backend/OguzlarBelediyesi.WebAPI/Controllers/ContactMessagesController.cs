@@ -1,8 +1,10 @@
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using OguzlarBelediyesi.Application.Contracts.Repositories;
 using OguzlarBelediyesi.Domain.Entities.Messages;
+using OguzlarBelediyesi.WebAPI.Contracts.Requests;
 
 namespace OguzlarBelediyesi.WebAPI.Controllers;
 
@@ -17,57 +19,42 @@ public sealed class ContactMessagesController : ControllerBase
         _repository = repository;
     }
 
-    /// <summary>
-    /// Tüm mesajları getirir (Admin için).
-    /// </summary>
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var messages = await _repository.GetAllAsync();
+        var messages = await _repository.GetAllAsync(cancellationToken);
         return Ok(messages);
     }
 
-    /// <summary>
-    /// Belirli tipteki mesajları getirir.
-    /// </summary>
     [HttpGet("type/{messageType}")]
     [Authorize]
-    public async Task<IActionResult> GetByType(string messageType)
+    public async Task<IActionResult> GetByType(string messageType, CancellationToken cancellationToken)
     {
-        var messages = await _repository.GetByTypeAsync(messageType);
+        var messages = await _repository.GetByTypeAsync(messageType, cancellationToken);
         return Ok(messages);
     }
 
-    /// <summary>
-    /// Okunmamış mesaj sayısını getirir.
-    /// </summary>
     [HttpGet("unread-count")]
     [Authorize]
-    public async Task<IActionResult> GetUnreadCount()
+    public async Task<IActionResult> GetUnreadCount(CancellationToken cancellationToken)
     {
-        var count = await _repository.GetUnreadCountAsync();
+        var count = await _repository.GetUnreadCountAsync(cancellationToken);
         return Ok(new { count });
     }
 
-    /// <summary>
-    /// Belirli bir mesajı getirir.
-    /// </summary>
     [HttpGet("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var message = await _repository.GetByIdAsync(id);
+        var message = await _repository.GetByIdAsync(id, cancellationToken);
         if (message is null) return NotFound();
         return Ok(message);
     }
 
-    /// <summary>
-    /// Yeni iletişim mesajı gönderir (Public - Rate Limited).
-    /// </summary>
     [HttpPost("contact")]
     [EnableRateLimiting("fixed")]
-    public async Task<IActionResult> CreateContactMessage([FromBody] ContactMessageRequest request)
+    public async Task<IActionResult> CreateContactMessage([FromBody] ContactMessageRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -84,18 +71,15 @@ public sealed class ContactMessagesController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
 
-        await _repository.AddAsync(message);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(message, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return Ok(new { success = true, message = "Mesajınız başarıyla iletildi." });
     }
 
-    /// <summary>
-    /// Başkana mesaj gönderir (Public - Rate Limited).
-    /// </summary>
     [HttpPost("mayor")]
     [EnableRateLimiting("fixed")]
-    public async Task<IActionResult> CreateMayorMessage([FromBody] ContactMessageRequest request)
+    public async Task<IActionResult> CreateMayorMessage([FromBody] ContactMessageRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -112,49 +96,32 @@ public sealed class ContactMessagesController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
 
-        await _repository.AddAsync(message);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(message, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return Ok(new { success = true, message = "Mesajınız Başkana iletilmek üzere kaydedildi." });
     }
 
-    /// <summary>
-    /// Mesajı okundu olarak işaretler.
-    /// </summary>
     [HttpPut("{id:guid}/mark-read")]
     [Authorize]
-    public async Task<IActionResult> MarkAsRead(Guid id)
+    public async Task<IActionResult> MarkAsRead(Guid id, CancellationToken cancellationToken)
     {
-        var message = await _repository.GetByIdAsync(id);
+        var message = await _repository.GetByIdAsync(id, cancellationToken);
         if (message is null) return NotFound();
 
         message.IsRead = true;
-        await _repository.UpdateAsync(message);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(message, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
 
-    /// <summary>
-    /// Mesajı siler (Soft delete yerine hard delete).
-    /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(id, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }
-
-/// <summary>
-/// İletişim mesajı gönderme isteği modeli.
-/// </summary>
-public record ContactMessageRequest(
-    string Name,
-    string Email,
-    string Phone,
-    string Message,
-    bool KvkkAccepted
-);

@@ -90,12 +90,10 @@ export class PageContentComponent implements OnInit {
 
     editPageContent(pageContent: PageContent) {
         this.pageContent = { ...pageContent };
-        // Join paragraphs with empty string if it's HTML content
         this.paragraphsText = this.pageContent.paragraphs ? this.pageContent.paragraphs.join('') : '';
         this.originalImageUrl = pageContent.imageUrl || null;
         this.selectedImagePreview = null;
         this.selectedFile = null;
-        // Ensure contactDetails is initialized
         if (!this.pageContent.contactDetails) {
             this.pageContent.contactDetails = [];
         }
@@ -129,7 +127,6 @@ export class PageContentComponent implements OnInit {
 
         if (this.pageContent.title?.trim() && this.pageContent.key?.trim()) {
             this.isLoading = true;
-            // Save as single element array containing the HTML from editor
             this.pageContent.paragraphs = [this.paragraphsText];
 
             const finalize = () => {
